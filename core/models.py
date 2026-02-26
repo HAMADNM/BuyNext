@@ -18,7 +18,7 @@ class User(AbstractUser):
         ('SELLER', 'Seller'),
         ('CUSTOMER', 'Customer')
     )
-    phone_number = models.CharField(max_length=15, unique=True, null=True, blank=True)
+    phone_number = models.CharField(max_length=30, unique=True, null=True, blank=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='CUSTOMER')
     profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     is_verified = models.BooleanField(default=False)
