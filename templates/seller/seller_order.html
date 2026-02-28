@@ -1,0 +1,255 @@
+{% extends "seller/base.html" %}
+
+{% block title %}Manage Orders{% endblock %}
+{% block header_title %}Orders & Fulfillment{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-50 text-brand-blue rounded-2xl flex items-center justify-center">
+                <span class="material-icons-outlined">shopping_bag</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Orders</p>
+                <h3 class="text-2xl font-black text-slate-800">12</h3>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-orange-50 text-brand-orange rounded-2xl flex items-center justify-center">
+                <span class="material-icons-outlined">assignment_return</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Returns Pending</p>
+                <h3 class="text-2xl font-black text-slate-800">3</h3>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
+                <span class="material-icons-outlined">payments</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Revenue</p>
+                <h3 class="text-2xl font-black text-slate-800">$4,280.50</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+    <div class="flex flex-1 items-center gap-4">
+        <form method="GET" class="relative flex-1 max-w-md">
+            <span class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+            <input type="text" name="q" placeholder="Order # or customer name..." 
+                   value="{{ request.GET.q|default:'' }}"
+                   class="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-[1.5rem] outline-none focus:ring-4 focus:ring-brand-blue/10 focus:border-brand-blue transition-all font-medium text-sm">
+        </form>
+        
+        <form method="GET" id="filterForm" class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+            <button type="submit" name="status" value="active" 
+                    class="px-6 py-3 {% if request.GET.status == 'active' %}bg-brand-blue text-white shadow-lg shadow-blue-100{% else %}bg-white text-slate-600 border border-slate-200{% endif %} rounded-full text-xs font-bold whitespace-nowrap transition-all">
+                Active
+            </button>
+            <button type="submit" name="status" value="returns" 
+                    class="px-6 py-3 {% if request.GET.status == 'returns' %}bg-brand-orange text-white shadow-lg shadow-orange-100{% else %}bg-white text-slate-600 border border-slate-200{% endif %} rounded-full text-xs font-bold whitespace-nowrap transition-all">
+                Return Requested
+            </button>
+            <button type="submit" name="status" value="cancelled" 
+                    class="px-6 py-3 {% if request.GET.status == 'cancelled' %}bg-red-500 text-white shadow-lg shadow-red-100{% else %}bg-white text-slate-600 border border-slate-200{% endif %} rounded-full text-xs font-bold whitespace-nowrap transition-all">
+                Cancelled
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead class="bg-slate-50/50 text-[10px] uppercase font-black text-slate-400 tracking-[0.15em]">
+                <tr>
+                    <th class="px-8 py-6">Order Info</th>
+                    <th class="px-8 py-6">Customer</th>
+                    <th class="px-8 py-6">Product Item</th>
+                    <th class="px-8 py-6">Qty</th>
+                    <th class="px-8 py-6">Price</th>
+                    <th class="px-8 py-6">Status</th>
+                    <th class="px-8 py-6 text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                <tr class="hover:bg-slate-50/50 transition-all">
+                    <td class="px-8 py-5">
+                        <span class="text-sm font-black text-slate-800">#ORD-9921</span>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">Today, 10:45 AM</p>
+                    </td>
+                    <td class="px-8 py-5">
+                        <p class="font-bold text-slate-700 text-sm">Alex Thompson</p>
+                        <p class="text-[10px] text-slate-400">alex.t@email.com</p>
+                    </td>
+                    <td class="px-8 py-5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100" class="w-full h-full object-cover">
+                            </div>
+                            <span class="text-sm font-bold text-slate-700">Studio Wireless Pro</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-5 text-sm font-black text-slate-600">x1</td>
+                    <td class="px-8 py-5 text-sm font-black text-brand-blue">$199.99</td>
+                    <td class="px-8 py-5">
+                        <span class="px-3 py-1 bg-blue-50 text-brand-blue rounded-lg text-[10px] font-black uppercase tracking-wider">Processing</span>
+                    </td>
+                    <td class="px-8 py-5 text-center">
+                        <button onclick="openOrderDetails('ORD-9921')" class="w-10 h-10 bg-slate-50 text-slate-400 hover:bg-brand-blue hover:text-white rounded-xl transition-all">
+                            <span class="material-icons-outlined text-xl">visibility</span>
+                        </button>
+                    </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/50 transition-all">
+                    <td class="px-8 py-5">
+                        <span class="text-sm font-black text-slate-800">#ORD-9840</span>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">Yesterday</p>
+                    </td>
+                    <td class="px-8 py-5">
+                        <p class="font-bold text-slate-700 text-sm">Sarah Jenkins</p>
+                    </td>
+                    <td class="px-8 py-5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100" class="w-full h-full object-cover">
+                            </div>
+                            <span class="text-sm font-bold text-slate-700">Minimalist Quartz</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-5 text-sm font-black text-slate-600">x1</td>
+                    <td class="px-8 py-5 text-sm font-black text-brand-blue">$145.00</td>
+                    <td class="px-8 py-5">
+                        <span class="px-3 py-1 bg-orange-50 text-brand-orange rounded-lg text-[10px] font-black uppercase tracking-wider">Return Requested</span>
+                    </td>
+                    <td class="px-8 py-5 text-center">
+                        <button class="w-10 h-10 bg-slate-50 text-slate-400 hover:bg-brand-blue hover:text-white rounded-xl transition-all">
+                            <span class="material-icons-outlined text-xl">visibility</span>
+                        </button>
+                    </td>
+                </tr>
+
+                {% for item in order_items %}
+                <tr class="hover:bg-slate-50/50 transition-all">
+                    <td class="px-8 py-5">
+                        <span class="text-sm font-black text-slate-800">#{{ item.order.order_number }}</span>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">{{ item.order.created_at|date:"d M, Y" }}</p>
+                    </td>
+                    <td class="px-8 py-5">
+                        <p class="font-bold text-slate-700 text-sm">{{ item.order.customer_name }}</p>
+                    </td>
+                    <td class="px-8 py-5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="{{ item.product.primary_image.url }}" class="w-full h-full object-cover">
+                            </div>
+                            <span class="text-sm font-bold text-slate-700">{{ item.product.name }}</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-5 text-sm font-black text-slate-600">x{{ item.quantity }}</td>
+                    <td class="px-8 py-5 text-sm font-black text-brand-blue">${{ item.price_at_purchase }}</td>
+                    <td class="px-8 py-5">
+                        {% if item.status == 'cancelled' %}
+                            <span class="px-3 py-1 bg-red-50 text-red-500 rounded-lg text-[10px] font-black uppercase tracking-wider">Cancelled</span>
+                        {% elif item.status == 'shipped' %}
+                            <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-wider">Shipped</span>
+                        {% else %}
+                            <span class="px-3 py-1 bg-blue-50 text-brand-blue rounded-lg text-[10px] font-black uppercase tracking-wider">{{ item.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-8 py-5 text-center">
+                        <a href="#" class="w-10 h-10 inline-flex items-center justify-center bg-slate-50 text-slate-400 hover:bg-brand-blue hover:text-white rounded-xl transition-all">
+                            <span class="material-icons-outlined text-xl">visibility</span>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-8 py-20 text-center">
+                        <div class="max-w-xs mx-auto">
+                            <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <span class="material-icons-outlined text-3xl">inbox</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-800">No orders found</h3>
+                            <p class="text-sm text-slate-400 mt-1">Try adjusting your filters or search terms.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="orderModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center p-4">
+    <div onclick="closeOrderDetails()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+    <div class="relative bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl p-10 animate-in zoom-in duration-300">
+        <div class="flex justify-between items-start mb-8">
+            <div>
+                <h3 class="text-2xl font-black text-slate-800" id="modalOrderTitle">Order Details</h3>
+                <p class="text-sm text-slate-500 font-medium">Customer and Shipping Information</p>
+            </div>
+            <button onclick="closeOrderDetails()" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-8 mb-10">
+            <div class="bg-slate-50 p-6 rounded-2xl">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Shipping Address</p>
+                <p class="text-sm font-bold text-slate-700 leading-relaxed" id="modalShipping">
+                    123 Marketplace Ave<br>Tech City, TC 54321
+                </p>
+            </div>
+            <div class="bg-slate-50 p-6 rounded-2xl">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Order Status</p>
+                <select class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-brand-blue/20 outline-none">
+                    <option>Processing</option>
+                    <option>Shipped</option>
+                    <option>Delivered</option>
+                    <option>Cancelled</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <button onclick="closeOrderDetails()" class="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-bold text-sm hover:bg-slate-200 transition-all">Close Window</button>
+            <button class="flex-1 py-4 bg-brand-blue text-white rounded-2xl font-bold text-sm shadow-lg shadow-blue-100 hover:bg-blue-600 transition-all">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openOrderDetails(orderId) {
+        document.getElementById('modalOrderTitle').innerText = `Order #${orderId}`;
+        document.getElementById('orderModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeOrderDetails() {
+        document.getElementById('orderModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Auto-submit filter form on button click is handled by the "type=submit"
+</script>
+
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+{% endblock %}

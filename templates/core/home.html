@@ -182,7 +182,17 @@
                                 </a>
 
                                 <div class="px-2 pt-2">
-                                    <a href="{% url 'user_seller' %}" class="flex items-center justify-center gap-2 
+                                    {%if request.user.is_verified_seller %}
+                                    <a href="{% url 'seller_dashboard' %}" class="flex items-center justify-center gap-2 
+               bg-orange-500 text-white 
+               p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest 
+               hover:bg-orange-600 hover:shadow-lg hover:scale-[1.02] 
+               transition-all duration-200">
+                                        <span class="material-icons-outlined text-sm">storefront</span>
+                                        Go To Seller Hub
+                                    </a>
+                                    {% else %}
+                                     <a href="{% url 'user_seller' %}" class="flex items-center justify-center gap-2 
                bg-orange-500 text-white 
                p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest 
                hover:bg-orange-600 hover:shadow-lg hover:scale-[1.02] 
@@ -190,6 +200,7 @@
                                         <span class="material-icons-outlined text-sm">storefront</span>
                                         Sell on BuyNext
                                     </a>
+                                    {% endif %}
                                 </div>
 
                                 <div class="h-px bg-brand-muted my-2 mx-2"></div>

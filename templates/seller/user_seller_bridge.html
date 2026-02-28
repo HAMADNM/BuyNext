@@ -82,7 +82,7 @@
                     Join thousands of artisans and businesses reaching millions of customers daily. We provide the
                     tools; you provide the craft.
                 </p>
-
+              {% if not request.user.is_seller%}
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="{% url 'seller_registration' %}"
                         class="px-8 py-4 bg-brand-orange text-white rounded-2xl font-bold text-center shadow-xl shadow-brand-orange/30 hover:brightness-110 transition-all">
@@ -95,6 +95,14 @@
                     </a>
                     {% endif %}
                 </div>
+                {% else %}
+                 <div class="flex flex-col sm:flex-row gap-4"></div>
+                  <a href="{% url 'seller_profile' %}"
+                        class="px-8 py-4 bg-brand-orange text-white rounded-2xl font-bold text-center shadow-xl shadow-brand-orange/30 hover:brightness-110 transition-all">
+                        Go To Seller Profile
+                    </a>
+
+                {% endif %}
             </div>
 
             <div class="relative">

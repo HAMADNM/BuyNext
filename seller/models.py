@@ -28,12 +28,15 @@ class SellerProfile(models.Model):
     gst_number = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True, help_text="Store bio/description shown to customers")
     logo = models.ImageField(upload_to='seller_logos/', null=True, blank=True)
+    rejection_reason = models.TextField(blank=True, null=True)
+    verified_at = models.DateTimeField(null=True, blank=True)
     verification_status = models.CharField(
         max_length=20,
         choices=VERIFICATION_STATUS,
         default='PENDING',
         db_index=True
     )
+    banner = models.ImageField(upload_to='seller_banners/',null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -74,6 +77,11 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    model_number = models.CharField(max_length=100, blank=True)
+    is_cancellable = models.BooleanField(default=True)
+    is_returnable = models.BooleanField(default=True)
+    return_days = models.IntegerField(default=7)
+    approval_status = models.CharField(max_length=20, default="PENDING")
 
     class Meta:
         ordering = ['-created_at']
@@ -115,6 +123,7 @@ class ProductVariant(models.Model):
         max_digits=10, decimal_places=2,
         help_text="Actual selling price; must be <= MRP"
     )
+    cost_price = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     stock_quantity = models.IntegerField(default=0, help_text="Current available stock")
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

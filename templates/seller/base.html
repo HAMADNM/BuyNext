@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BuyNext Seller Hub | {% block title %}Dashboard{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            blue: '#2563eb',
+                            orange: '#f97316',
+                            olive: '#556B2F',
+                            cream: '#FAF9EE',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .active-link {
+            background: #f97316;
+            color: white !important;
+        }
+
+        .active-link span {
+            color: white !important;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-[#F4F7FE] font-sans text-slate-800">
+
+    <!-- Sidebar -->
+    <aside class="fixed inset-y-0 left-0 w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-50">
+
+        <div class="p-8 flex flex-col">
+
+            <!-- Logo Row -->
+            <div class="flex items-center gap-3">
+
+                <!-- Shopping Bag Icon -->
+                <div class="w-10 h-10 rounded-xl bg-brand-cream shadow-md flex items-center justify-center">
+                    <span class="material-icons-outlined text-brand-blue text-xl">
+                        shopping_bag
+                    </span>
+                </div>
+
+                <!-- BuyNext + Seller Hub Block -->
+                <div class="flex flex-col leading-tight">
+
+                    <!-- BuyNext -->
+                    <span class="text-2xl font-extrabold tracking-tight">
+                        <span class="text-blue-600">Buy</span><span class="text-orange-500">Next</span>
+                    </span>
+
+                    <!-- Seller Hub (Closer + Noticeable) -->
+                    <span class="text-xs font-bold text-brand-orange tracking-widest uppercase mt-1">
+                        Seller Hub
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Sidebar Navigation -->
+        <nav id="sidebarNav" class="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
+
+            <a href="{% url 'seller_dashboard' %}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_dashboard' %}active-link{% endif %}">
+                <span class="material-icons-outlined">dashboard</span> Dashboard
+            </a>
+
+            <a href="{% url 'seller_product' %}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_product' %}active-link{% endif %}">
+                <span class="material-icons-outlined">inventory_2</span> Products
+            </a>
+
+            <a href="{% url 'add_product' %}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_add_product' %}active-link{% endif %}">
+                <span class="material-icons-outlined">add_box</span> Add Product
+            </a>
+
+            <a href="{% url 'seller_order' %}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_orders' %}active-link{% endif %}">
+                <span class="material-icons-outlined">receipt_long</span> Orders
+            </a>
+            <a href="{% url 'seller_reviews' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 
+          hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold 
+          {% if request.resolver_match.url_name == 'seller_reviews' %}active-link{% endif %}">
+                <span class="material-icons-outlined">rate_review</span> Customer Reviews
+            </a>
+
+            <a href="{% url 'offer_discount' %}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_offers' %}active-link{% endif %}">
+                <span class="material-icons-outlined">local_offer</span> Offers & Discounts
+            </a>
+
+            <a href="{% url 'seller_inventory' %}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_inventory' %}active-link{% endif %}">
+                <span class="material-icons-outlined">warehouse</span> Inventory
+            </a>
+
+            <a href="{% url 'seller_earnings' %}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_earnings' %}active-link{% endif %}">
+                <span class="material-icons-outlined">payments</span> Earnings
+            </a>
+
+            <div class="pt-4 border-t border-slate-100 mt-4">
+                <a href="{% url 'seller_profile' %}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_profile' %}active-link{% endif %}">
+                    <span class="material-icons-outlined">storefront</span> Store Profile
+                </a>
+
+                <a href="{% url 'seller_settings' %}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_settings' %}active-link{% endif %}">
+                    <span class="material-icons-outlined">settings</span> Settings
+                </a>
+            </div>
+        </nav>
+
+        <!-- Logout -->
+        <div class="p-4 border-t border-slate-100">
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-red-500 font-bold hover:bg-red-50 rounded-xl transition-all">
+                    <span class="material-icons-outlined">logout</span> Logout
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-72 min-h-screen">
+
+        <header
+            class="h-20 bg-white/80 backdrop-blur-md sticky top-0 z-40 px-8 flex items-center justify-between border-b border-slate-100">
+            <div class="flex flex-col">
+                <h2 class="text-xl font-extrabold text-slate-800">
+                    {% block header_title %}Dashboard{% endblock %}
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Welcome back,
+                    <span class="font-bold text-brand-orange">
+                        {{ user.seller_profile.store_name }}
+                    </span> 👋
+                </p>
+            </div>
+
+            <div class="flex items-center gap-6">
+
+                <!-- Notification -->
+                <button class="p-2 bg-slate-100 rounded-full text-slate-500 relative">
+                    <span class="material-icons-outlined">notifications</span>
+                    <span class="absolute top-0 right-0 w-2 h-2 bg-brand-orange rounded-full"></span>
+                </button>
+
+                <!-- Go Back Button -->
+                <a href="{% url 'home' %}"
+                    class="flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-brand-orange rounded-xl text-sm font-bold transition-all shadow-md hover:bg-brand-orange/10 hover:border-brand-blue hover:scale-105">
+                    <span class="material-icons-outlined text-base">arrow_back</span>
+                    Go Back to
+                    <span class="font-extrabold">
+                        <span class="text-brand-blue">Buy</span>
+                        <span class="text-brand-orange">Next</span>
+                    </span>
+                </a>
+
+                <!-- Account Section -->
+                <div class="flex items-center gap-3 border-l pl-6 border-slate-200">
+                    <div class="text-right">
+                        <p class="text-sm font-bold leading-none">
+                            {{ user.seller_profile.store_name }}
+                        </p>
+                        <p class="text-[10px] text-brand-blue font-bold uppercase">
+                            Seller ID: #{{ user.id|truncatechars:6 }}
+                        </p>
+                    </div>
+
+                    <a href="{% url 'seller_profile' %}" class="block">
+                        {% if user.seller_profile.logo %}
+                        <img src="{{ user.seller_profile.logo.url }}"
+                            class="w-10 h-10 rounded-full object-cover hover:scale-105 transition-transform"
+                            alt="Store">
+                        {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ user.seller_profile.store_name }}&background=2563eb&color=fff"
+                            class="w-10 h-10 rounded-full hover:scale-105 transition-transform" alt="Store">
+                        {% endif %}
+                    </a>
+                </div>
+
+            </div>
+        </header>
+
+        <div class="p-8">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+    </main>
+
+    <!-- Active Sidebar Script -->
+    <script>
+        const links = document.querySelectorAll('#sidebarNav a');
+
+        links.forEach(link => {
+            link.addEventListener('click', function () {
+
+                links.forEach(l => l.classList.remove('active-link'));
+
+                this.classList.add('active-link');
+            });
+        });
+    </script>
+
+</body>
+
+</html>

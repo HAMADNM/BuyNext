@@ -110,83 +110,85 @@
                     24-48 hours after submission for account activation.
                 </p>
             </div>
+            {% if messages %}
+            <div class="mb-8 space-y-4">
+                {% for message in messages %}
+                <div
+                    class="flex items-center p-4 rounded-2xl {% if message.tags == 'error' %}bg-red-50 border border-red-100 text-red-700{% else %}bg-emerald-50 border border-emerald-100 text-emerald-700{% endif %} shadow-sm animate-pulse">
+                    <span class="material-icons-outlined mr-3">{% if message.tags == 'error' %}error
+                        {% else%}check_circle{% endif %}</span>
+                    <p class="text-sm font-bold">{{ message }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
 
-            <form id="registrationForm" action="" method="POST" enctype="multipart/form-data" class="space-y-10">
+            <form id="registrationForm"  method="POST" enctype="multipart/form-data" class="space-y-10">
                 {% csrf_token %}
 
                 <div class="space-y-6">
-                    <div class="flex items-center gap-4">
-                        <span
-                            class="text-[10px] font-black uppercase tracking-[0.2em] text-brand-olive bg-brand-olive/10 px-3 py-1 rounded-full">
-                            Step 1: Account
-                        </span>
-                        <div class="h-px flex-1 bg-gray-100"></div>
-                    </div>
+                    <div class="space-y-6">
+    <div class="flex items-center gap-4">
+        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-brand-olive bg-brand-olive/10 px-3 py-1 rounded-full">
+            Step 1: Account
+        </span>
+        <div class="h-px flex-1 bg-gray-100"></div>
+    </div>
 
-                    <div class="space-y-3">
-                        <label
-                            class="block text-xs font-bold text-gray-700 ml-1 uppercase tracking-wider">Identification
-                            Method</label>
-                        <div class="relative bg-gray-100 p-1 rounded-2xl flex w-full max-w-md">
-                            <div id="tab-highlight"
-                                class="absolute top-1 left-1 w-[calc(50%-4px)] h-[calc(100%-8px)] bg-white rounded-xl shadow-sm z-0">
-                            </div>
-                            <button type="button" onclick="switchIdentityTab('name')" id="btn-name"
-                                class="relative z-10 flex-1 py-2.5 text-sm font-bold transition-colors duration-200 text-brand-olive">Full
-                                Name</button>
-                            <button type="button" onclick="switchIdentityTab('username')" id="btn-username"
-                                class="relative z-10 flex-1 py-2.5 text-sm font-bold transition-colors duration-200 text-gray-500">Username</button>
-                        </div>
-                    </div>
+    <div class="space-y-3">
+        <label class="block text-xs font-bold text-gray-700 ml-1 uppercase tracking-wider">Identification Method</label>
+        <div class="relative bg-gray-100 p-1 rounded-2xl flex w-full max-w-md">
+            <div id="tab-highlight" class="absolute top-1 left-1 w-[calc(50%-4px)] h-[calc(100%-8px)] bg-white rounded-xl shadow-sm z-0"></div>
+            <button type="button" onclick="switchIdentityTab('name')" id="btn-name" class="relative z-10 flex-1 py-2.5 text-sm font-bold transition-colors duration-200 text-brand-olive">Full Name</button>
+            <button type="button" onclick="switchIdentityTab('username')" id="btn-username" class="relative z-10 flex-1 py-2.5 text-sm font-bold transition-colors duration-200 text-gray-500">Username</button>
+        </div>
+    </div>
 
-                    <div id="dynamicIdentityContainer" class="space-y-5">
-                        <div id="nameFields" class="grid grid-cols-1 sm:grid-cols-2 gap-5 transition-all duration-300">
-                            <div class="space-y-2">
-                                <label class="block text-xs font-bold text-gray-700 ml-1">First Name</label>
-                                <input type="text" name="first_name" placeholder="enter your first name"
-                                    value="{% if request.user.is_authenticated %}{{ request.user.first_name }}{% endif %}"
-                                    class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="block text-xs font-bold text-gray-700 ml-1">Last Name</label>
-                                <input type="text" name="last_name" placeholder="enter your last name "
-                                    value="{% if request.user.is_authenticated %}{{ request.user.last_name }}{% endif %}"
-                                    class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none">
-                            </div>
-                        </div>
+    <div id="dynamicIdentityContainer">
+        <div id="nameFields" class="grid grid-cols-1 sm:grid-cols-2 gap-5 transition-all duration-300">
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-gray-700 ml-1">First Name</label>
+                <input type="text" name="first_name" placeholder="Enter first name" 
+                    value="{% if request.user.is_authenticated %}{{ request.user.first_name }}{% else %}{{ data.first_name }}{% endif %}"
+                    class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none">
+            </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-gray-700 ml-1">Last Name</label>
+                <input type="text" name="last_name" placeholder="Enter last name"
+                    value="{% if request.user.is_authenticated %}{{ request.user.last_name }}{% else %}{{ data.last_name }}{% endif %}"
+                    class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none">
+            </div>
+        </div>
 
-                        <div id="usernameField" class="hidden transition-all duration-300">
-                            <div class="space-y-2">
-                                <label class="block text-xs font-bold text-gray-700 ml-1">Account Username</label>
-                                <input type="text" name="username" placeholder="enter your username" 
-                                   {% if not request.user.is_authenticated %}required{% endif %}
-                                   {% if  request.user.is_authenticated %} value="{{ request.user.username }}" readonly 
-                                   {% endif %}
-                                    class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none {% if request.user.is_authenticated %}cursor-not-allowed opacity-80{% endif %}">
-                            </div>
-                        </div>
-                    </div>
+        <div id="usernameField" class="hidden transition-all duration-300 mt-0">
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-gray-700 ml-1">Account Username</label>
+                <input type="text" name="username" placeholder="Enter username" 
+                    value="{% if request.user.is_authenticated %}{{ request.user.username }}{% endif %}"
+                    {% if request.user.is_authenticated %} readonly {% endif %}
+                    class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none {% if request.user.is_authenticated %}cursor-not-allowed opacity-80{% endif %}">
+            </div>
+        </div>
+    </div>
+</div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-700 ml-1">Work Email</label>
-                            <input type="email" name="email" placeholder="enter your email address" 
-                            {% if not request.user.is_authenticated %}
-                                required
-                                {% endif %}
-                                 {% if request.user.is_authenticated %}
-                                value="{{ request.user.email }}" readonly
-                                {% endif %}
-                                class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none {% if request.user.is_authenticated %}cursor-not-allowed opacity-80{% endif %}">
+                          <input type="email" name="email" placeholder="enter your email address"
+            {% if not request.user.is_authenticated %} required {% endif %} 
+            value="{% if request.user.is_authenticated %}{{ request.user.email }}{% else %}{{ data.email }}{% endif %}"
+            {% if request.user.is_authenticated %} readonly {% endif %}
+            class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none {% if request.user.is_authenticated %}cursor-not-allowed opacity-80{% endif %}">
                         </div>
 
                         <div class="space-y-2">
-                            <label class="block text-xs font-bold text-gray-700 ml-1">Buisness pnone Number</label>
-                            <input id="phone" type="tel" name="phone_display" placeholder="enter your phone number"
-                                {% if not request.user.is_authenticated %}required{% endif %}
-                                 {% if request.user.is_authenticated %} value="{{ request.user.phone_number }}" readonly
-                                 {% endif %}
-                                class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none {% if request.user.is_authenticated %}cursor-not-allowed opacity-80{% endif %}">
+                            <label class="block text-xs font-bold text-gray-700 ml-1">Buisness phone Number</label>
+                           <input id="phone" type="text" name="phone_display" placeholder="enter your phone number" 
+            {% if not request.user.is_authenticated %} required {% endif %}
+            value="{% if request.user.is_authenticated %}{{ request.user.phone_number }}{% else %}{{ data.phone_display }}{% endif %}"
+            {% if request.user.is_authenticated %} readonly {% endif %}
+            class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none {% if request.user.is_authenticated %}cursor-not-allowed opacity-80{% endif %}">
                         </div>
                     </div>
 
@@ -230,12 +232,12 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-700 ml-1">Legal Store Name</label>
-                            <input type="text" name="store_name" required placeholder="The Artisan Hub"
-                                class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none">
+                            <input type="text" name="store_name" required placeholder="enter store name" value="{{data.store_name}}" 
+                                class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none ">
                         </div>
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-700 ml-1">GSTIN / Tax ID</label>
-                            <input type="text" name="gst_number" required placeholder="15-digit Alpha-numeric"
+                            <input type="text" name="gst_number" value= "{{data.gst_number}}" required placeholder="15-digit Alpha-numeric"
                                 class="w-full bg-inputBg border-transparent focus:ring-2 focus:ring-brand-olive focus:border-brand-olive rounded-xl px-4 py-3 text-sm transition-all outline-none uppercase font-mono tracking-wider">
                         </div>
                     </div>
@@ -244,9 +246,10 @@
                             About Your Business
                         </label>
 
-                        <textarea name="business_description" rows="4" autocomplete="off" required
+                        <textarea name="description" rows="4" autocomplete="off" required
+                            
                             placeholder="Tell us what products you plan to sell, your sourcing method, brand details, and business experience..."
-                            class="w-full bg-inputBg border-transparent text-gray-800 placeholder:text-gray-500 focus:ring-2 focus:ring-brand-olive focus:border-brand-olive focus:bg-white rounded-xl px-4 py-3 text-sm transition-all outline-none resize-none"></textarea>
+                            class="w-full bg-inputBg border-transparent text-gray-800 placeholder:text-gray-500 focus:ring-2 focus:ring-brand-olive focus:border-brand-olive focus:bg-white rounded-xl px-4 py-3 text-sm transition-all outline-none resize-none">{% if data.description %}{{ data.description }}{% endif %}</textarea>
 
                         <p class="text-[10px] text-gray-400 ml-1">
                             This helps our team review and approve your seller account.
@@ -321,31 +324,35 @@
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.3/build/js/intlTelInput.min.js"></script>
     <script>
         // TAB SWITCH LOGIC
-        function switchIdentityTab(type) {
-            const nameFields = document.getElementById('nameFields');
-            const usernameField = document.getElementById('usernameField');
-            const highlight = document.getElementById('tab-highlight');
-            const btnName = document.getElementById('btn-name');
-            const btnUser = document.getElementById('btn-username');
+     function switchIdentityTab(type) {
+    const nameFields = document.getElementById('nameFields');
+    const usernameField = document.getElementById('usernameField');
+    const highlight = document.getElementById('tab-highlight');
+    const btnName = document.getElementById('btn-name');
+    const btnUser = document.getElementById('btn-username');
 
-            if (type === 'name') {
-                nameFields.classList.remove('hidden');
-                usernameField.classList.add('hidden');
-                highlight.style.transform = 'translateX(0)';
-                btnName.classList.add('text-brand-olive');
-                btnName.classList.remove('text-gray-500');
-                btnUser.classList.add('text-gray-500');
-                btnUser.classList.remove('text-brand-olive');
-            } else {
-                nameFields.classList.add('hidden');
-                usernameField.classList.remove('hidden');
-                highlight.style.transform = 'translateX(100%)';
-                btnUser.classList.add('text-brand-olive');
-                btnUser.classList.remove('text-gray-500');
-                btnName.classList.add('text-gray-500');
-                btnName.classList.remove('text-brand-olive');
-            }
-        }
+    const usernameInput = usernameField.querySelector('input');
+
+    if (type === 'name') {
+        nameFields.classList.remove('hidden');
+        usernameField.classList.add('hidden');
+
+        usernameInput.removeAttribute("required");
+
+        highlight.style.transform = 'translateX(0)';
+        btnName.classList.add('text-brand-olive');
+        btnUser.classList.remove('text-brand-olive');
+    } else {
+        nameFields.classList.add('hidden');
+        usernameField.classList.remove('hidden');
+
+        usernameInput.setAttribute("required", "required");
+
+        highlight.style.transform = 'translateX(100%)';
+        btnUser.classList.add('text-brand-olive');
+        btnName.classList.remove('text-brand-olive');
+    }
+}
 
         document.addEventListener("DOMContentLoaded", function () {
             const phoneInput = document.querySelector("#phone");
@@ -368,15 +375,19 @@
                 icon.textContent = field.type === "password" ? "visibility_off" : "visibility";
             };
 
-            form.addEventListener("submit", function (e) {
-                if (iti && !phoneInput.readOnly) { // Only validate if the user can actually edit it
-                    if (!iti.isValidNumber()) {
-                        alert("Please enter a valid phone number.");
-                        e.preventDefault();
-                        return;
-                    }
-                }
-            });
+           form.addEventListener("submit", function (e) {
+    if (iti && !phoneInput.readOnly) {
+
+        if (!iti.isValidNumber()) {
+            alert("Please enter a valid phone number.");
+            e.preventDefault();
+            return;
+        }
+
+        // 🔥 This line is the key
+        phoneInput.value = iti.getNumber();
+    }
+});
         });
         const logoInput = document.getElementById("logoInput");
         const logoPreview = document.getElementById("logoPreview");

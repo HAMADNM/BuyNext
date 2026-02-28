@@ -1,0 +1,292 @@
+{% extends "seller/base.html" %}
+
+{% block title %}Promotions & Marketing | Seller Hub{% endblock %}
+
+{% block header_title %}
+    <div class="flex items-center gap-3">
+        <span class="p-2 bg-orange-50 text-brand-orange rounded-lg">
+            <span class="material-icons-outlined">campaign</span>
+        </span>
+        <span>Offers & Discounts</span>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+        <div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Offers</p>
+            <h3 class="text-2xl font-black text-slate-800">{{ active_offers_count|default:"12" }}</h3>
+        </div>
+        <div class="w-12 h-12 bg-orange-50 text-brand-orange rounded-xl flex items-center justify-center">
+            <span class="material-icons-outlined">campaign</span>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+        <div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Discounts</p>
+            <h3 class="text-2xl font-black text-slate-800">{{ active_discounts_count|default:"24" }}</h3>
+        </div>
+        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+            <span class="material-icons-outlined">sell</span>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+        <div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Coupons</p>
+            <h3 class="text-2xl font-black text-slate-800">{{ active_coupons_count|default:"05" }}</h3>
+        </div>
+        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+            <span class="material-icons-outlined">confirmation_number</span>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+        <div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Products Under Offer</p>
+            <h3 class="text-2xl font-black text-slate-800">{{ total_products_under_offer|default:"86" }}</h3>
+        </div>
+        <div class="w-12 h-12 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center">
+            <span class="material-icons-outlined">inventory_2</span>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+    <div class="p-8 border-b border-slate-50">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="flex p-1 bg-slate-100 rounded-2xl w-fit">
+                <button onclick="switchTab('offers')" id="tab-offers" class="tab-btn active px-8 py-3 rounded-xl text-sm font-bold transition-all bg-white text-slate-800 shadow-sm">Offers</button>
+                <button onclick="switchTab('discounts')" id="tab-discounts" class="tab-btn px-8 py-3 rounded-xl text-sm font-bold transition-all text-slate-500">Discounts</button>
+                <button onclick="switchTab('coupons')" id="tab-coupons" class="tab-btn px-8 py-3 rounded-xl text-sm font-bold transition-all text-slate-500">Coupons</button>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="relative flex-1 lg:w-64">
+                    <span class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+                    <input type="text" placeholder="Search promotions..." class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-transparent rounded-xl outline-none focus:border-brand-orange transition-all text-sm font-medium">
+                </div>
+                <button class="p-3 bg-slate-50 text-slate-600 rounded-xl hover:bg-slate-100 transition-all shadow-sm" title="Export CSV">
+                    <span class="material-icons-outlined text-xl">file_download</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="content-offers" class="tab-content block">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50/50 text-[10px] uppercase font-black text-slate-400 tracking-[0.15em]">
+                    <tr>
+                        <th class="px-8 py-6">Offer Details</th>
+                        <th class="px-8 py-6">Type</th>
+                        <th class="px-8 py-6">Period</th>
+                        <th class="px-8 py-6">Items</th>
+                        <th class="px-8 py-6">Status</th>
+                        <th class="px-8 py-6 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    <tr class="hover:bg-slate-50/50 transition-all group">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-8 rounded bg-orange-100 flex items-center justify-center border border-orange-200"><span class="material-icons text-brand-orange text-sm">bolt</span></div>
+                                <div>
+                                    <p class="font-bold text-slate-800 text-sm">Flash Midnight Sale</p>
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">ID: #OFF-9921</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5"><span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-wider">Product Specific</span></td>
+                        <td class="px-8 py-5"><p class="text-xs font-bold text-slate-600">01 Mar - 05 Mar</p></td>
+                        <td class="px-8 py-5"><span class="text-sm font-black text-slate-700">14</span></td>
+                        <td class="px-8 py-5">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-brand-orange after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                            </label>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <button class="w-9 h-9 text-slate-400 hover:text-brand-orange hover:bg-orange-50 rounded-xl"><span class="material-icons-outlined text-lg">edit</span></button>
+                                <button class="w-9 h-9 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl"><span class="material-icons-outlined text-lg">delete</span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="p-8 border-t border-slate-50">
+            <button onclick="openModal('offerModal')" class="flex items-center gap-2 px-8 py-4 bg-brand-orange text-white rounded-2xl font-bold text-sm shadow-xl shadow-orange-100 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                <span class="material-icons-outlined">add</span> Create New Offer
+            </button>
+        </div>
+    </div>
+
+    <div id="content-discounts" class="tab-content hidden p-20 text-center">
+        <div class="max-w-xs mx-auto">
+            <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <span class="material-icons-outlined text-4xl">percent</span>
+            </div>
+            <h4 class="text-xl font-bold text-slate-800 mb-2">Automated Discounts</h4>
+            <p class="text-sm text-slate-500 mb-8 font-medium">Create rule-based price drops like "Buy 2 Get 1 Free" or wholesale pricing.</p>
+            <button class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-100">Setup Discount Rule</button>
+        </div>
+    </div>
+
+    <div id="content-coupons" class="tab-content hidden p-20 text-center">
+        <div class="max-w-xs mx-auto">
+            <div class="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <span class="material-icons-outlined text-4xl">confirmation_number</span>
+            </div>
+            <h4 class="text-xl font-bold text-slate-800 mb-2">Coupon Codes</h4>
+            <p class="text-sm text-slate-500 mb-8 font-medium">Generate unique codes for your social media influencers or loyal customers.</p>
+            <button class="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-emerald-100">Generate Coupon</button>
+        </div>
+    </div>
+</div>
+
+<div id="offerModal" class="fixed inset-0 z-[99] hidden flex items-center justify-center p-4">
+    <div onclick="closeModal('offerModal')" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+    <div class="relative bg-white w-full max-w-3xl rounded-[2.5rem] shadow-2xl p-10 animate-in zoom-in duration-300 overflow-y-auto max-h-[90vh] no-scrollbar">
+        
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-2xl font-black text-slate-800">New Campaign</h3>
+            <button onclick="closeModal('offerModal')" class="w-10 h-10 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center hover:bg-red-50 transition-all">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        
+        <form class="space-y-8" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Campaign Title</label>
+                    <input type="text" name="title" required class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:border-brand-orange outline-none font-bold text-sm" placeholder="e.g. Flash Summer Sale">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Offer Category</label>
+                    <select name="type" class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:border-brand-orange outline-none font-bold text-sm appearance-none cursor-pointer">
+                        <option value="product">Product Specific</option>
+                        <option value="category">Category Wide</option>
+                        <option value="store">Store Front Badge</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Promotion Banner</label>
+                <div class="relative group">
+                    <input type="file" name="banner" id="bannerUpload" class="hidden" accept="image/*" onchange="previewImage(this)">
+                    <label for="bannerUpload" id="bannerLabel" class="w-full h-44 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center bg-slate-50 hover:bg-orange-50 hover:border-brand-orange transition-all cursor-pointer overflow-hidden">
+                        <div id="uploadPlaceholder" class="text-center">
+                            <span class="material-icons-outlined text-brand-orange text-4xl mb-2">add_photo_alternate</span>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">1200 x 400 recommended</p>
+                        </div>
+                        <img id="imgPreview" class="hidden w-full h-full object-cover">
+                    </label>
+                    <button type="button" id="removeBtn" onclick="removePreview()" class="hidden absolute top-4 right-4 bg-white p-2 rounded-full text-red-500 shadow-md hover:bg-red-500 hover:text-white transition-all">
+                        <span class="material-icons text-sm">close</span>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Applicable Products</label>
+                <div class="border border-slate-100 rounded-[2rem] overflow-hidden bg-white shadow-inner">
+                    <div class="p-4 bg-slate-50/50 border-b border-slate-100 flex items-center gap-3">
+                        <span class="material-icons text-slate-400 text-sm">search</span>
+                        <input type="text" id="productSearch" onkeyup="filterProducts()" placeholder="Filter items by name..." class="bg-transparent border-none outline-none text-xs font-bold w-full">
+                    </div>
+                    <div class="max-h-40 overflow-y-auto p-4 space-y-2 no-scrollbar" id="productList">
+                        <label class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center"><span class="material-icons text-blue-500 text-xs">checkroom</span></div>
+                                <span class="text-xs font-bold text-slate-700">Premium Cotton T-Shirt (White)</span>
+                            </div>
+                            <input type="checkbox" name="product_ids" value="1" class="w-5 h-5 rounded-md border-slate-300 text-brand-orange">
+                        </label>
+                        <label class="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center"><span class="material-icons text-orange-500 text-xs">watch</span></div>
+                                <span class="text-xs font-bold text-slate-700">Minimalist Analog Watch</span>
+                            </div>
+                            <input type="checkbox" name="product_ids" value="2" class="w-5 h-5 rounded-md border-slate-300 text-brand-orange">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <label class="block text-[9px] font-black text-slate-400 uppercase mb-2">Campaign Start</label>
+                    <input type="date" name="start" required class="w-full bg-transparent outline-none font-bold text-sm text-slate-700">
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <label class="block text-[9px] font-black text-slate-400 uppercase mb-2">Campaign End</label>
+                    <input type="date" name="end" required class="w-full bg-transparent outline-none font-bold text-sm text-slate-700">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full py-5 bg-brand-orange text-white rounded-[1.5rem] font-black text-sm shadow-xl shadow-orange-100 hover:bg-orange-600 transition-all uppercase tracking-widest">
+                Confirm and Publish Promotion
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active', 'bg-white', 'text-slate-800', 'shadow-sm');
+            btn.classList.add('text-slate-500');
+        });
+        const activeBtn = document.getElementById('tab-' + tabId);
+        activeBtn.classList.add('active', 'bg-white', 'text-slate-800', 'shadow-sm');
+        activeBtn.classList.remove('text-slate-500');
+
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+        document.getElementById('content-' + tabId).classList.remove('hidden');
+    }
+
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function previewImage(input) {
+        const preview = document.getElementById('imgPreview');
+        const placeholder = document.getElementById('uploadPlaceholder');
+        const removeBtn = document.getElementById('removeBtn');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                removeBtn.classList.remove('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function removePreview() {
+        document.getElementById('bannerUpload').value = "";
+        document.getElementById('imgPreview').classList.add('hidden');
+        document.getElementById('uploadPlaceholder').classList.remove('hidden');
+        document.getElementById('removeBtn').classList.add('hidden');
+    }
+
+    function filterProducts() {
+        let input = document.getElementById('productSearch').value.toLowerCase();
+        let items = document.getElementById('productList').getElementsByTagName('label');
+        for (let item of items) {
+            item.style.display = item.innerText.toLowerCase().includes(input) ? "flex" : "none";
+        }
+    }
+</script>
+{% endblock %}
