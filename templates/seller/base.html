@@ -101,11 +101,18 @@
             </a>
 
             <a href="{% url 'add_product' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_add_product' %}active-link{% endif %}">
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'add_product' %}active-link{% endif %}">
                 <span class="material-icons-outlined">add_box</span> Add Product
             </a>
+            <a href="{% url 'product_status' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl 
+          text-slate-500 hover:bg-orange-100 hover:text-brand-orange 
+          transition-all font-semibold 
+          {% if request.resolver_match.url_name == 'product_status' %}active-link{% endif %}">
+                <span class="material-icons-outlined">inventory</span>
+                <span>Product Status</span>
+            </a>
 
-            <a href="{% url 'seller_order' %}"
+            <a href="{% url 'seller_orders' %}"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_orders' %}active-link{% endif %}">
                 <span class="material-icons-outlined">receipt_long</span> Orders
             </a>
@@ -116,7 +123,7 @@
             </a>
 
             <a href="{% url 'offer_discount' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_offers' %}active-link{% endif %}">
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'offer_discount' %}active-link{% endif %}">
                 <span class="material-icons-outlined">local_offer</span> Offers & Discounts
             </a>
 

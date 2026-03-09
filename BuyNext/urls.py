@@ -23,6 +23,7 @@ urlpatterns = [
     path("",include("core.urls")),
     path("",include("customer.urls")),
     path("",include("seller.urls")),
+    path("bnadmin/",include("bnadmin.urls")),
 
 ]
 if settings.DEBUG:

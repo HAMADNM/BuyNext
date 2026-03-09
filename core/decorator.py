@@ -9,14 +9,14 @@ from django.urls import reverse_lazy
 def _dashboard_for_user(user):
 
 
-    if user.is_staff:
+    if user.is_admin_role:
         return reverse_lazy("admin_dashboard")
 
     if user.is_seller:
            if user.is_verified_seller:
                return reverse_lazy("seller_profile")
           
-           return reverse_lazy("user_seller")
+           return reverse_lazy("seller_profile")
 
     return reverse_lazy("home")
 
@@ -77,15 +77,6 @@ def verified_seller_required(view_func=None,login_url=None):
 # ==============================================================================
 
 def admin_required(view_func=None, login_url=None):
-    """
-    Allows only staff users (Admin).
-
-    Checks:
-    1. user.is_authenticated
-    2. user.is_active
-    3. user.is_staff
-    """
-
     login_url = login_url or reverse_lazy("login")
 
     def decorator(view_func):
@@ -93,23 +84,17 @@ def admin_required(view_func=None, login_url=None):
         def wrapper(request, *args, **kwargs):
             user = request.user
 
-            # 1️⃣ Not logged in
             if not user.is_authenticated:
                 return redirect(
                     f"{login_url}?{REDIRECT_FIELD_NAME}={request.get_full_path()}"
                 )
 
-            # 2️⃣ Account disabled
             if not user.is_active:
                 messages.error(request, "Your account has been deactivated.")
                 return redirect(login_url)
 
-            # 3️⃣ Not admin
-            if not user.is_staff:
-                messages.error(
-                    request,
-                    "You do not have permission to access this page."
-                )
+            if not user.is_admin_role:
+                messages.error(request, "You do not have permission to access this page.")
                 return redirect(_dashboard_for_user(user))
 
             return view_func(request, *args, **kwargs)
@@ -119,5 +104,6 @@ def admin_required(view_func=None, login_url=None):
     if view_func:
         return decorator(view_func)
     return decorator
+
 
 

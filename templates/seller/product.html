@@ -7,23 +7,27 @@
 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
     <div class="flex flex-1 items-center gap-4">
         <form method="GET" class="relative flex-1 max-w-md group">
-            <span class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-blue transition-colors text-xl">search</span>
-            <input type="text" name="q" placeholder="Search by name, brand, or SKU..." 
-                   value="{{ request.GET.q|default:'' }}"
-                   class="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-[1.5rem] outline-none focus:ring-4 focus:ring-brand-blue/10 focus:border-brand-blue transition-all font-medium text-sm shadow-sm">
+            <span
+                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-blue transition-colors text-xl">search</span>
+            <input type="text" name="q" placeholder="Search by name, brand, or SKU..."
+                value="{{ request.GET.q|default:'' }}"
+                class="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-[1.5rem] outline-none focus:ring-4 focus:ring-brand-blue/10 focus:border-brand-blue transition-all font-medium text-sm shadow-sm">
         </form>
-        
+
         <form method="GET" class="relative">
-            <select name="status" onchange="this.form.submit()" class="appearance-none pl-12 pr-10 py-4 bg-white border border-slate-200 rounded-[1.5rem] text-sm font-bold text-slate-600 outline-none focus:ring-4 focus:ring-brand-blue/10 cursor-pointer shadow-sm">
+            <select name="status" onchange="this.form.submit()"
+                class="appearance-none pl-12 pr-10 py-4 bg-white border border-slate-200 rounded-[1.5rem] text-sm font-bold text-slate-600 outline-none focus:ring-4 focus:ring-brand-blue/10 cursor-pointer shadow-sm">
                 <option value="all">All Status</option>
                 <option value="active">Active Only</option>
                 <option value="inactive">Inactive</option>
             </select>
-            <span class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">tune</span>
+            <span
+                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">tune</span>
         </form>
     </div>
 
-    <a href="#" class="flex items-center justify-center gap-3 px-8 py-4 bg-brand-orange text-white rounded-[1.5rem] font-bold text-sm shadow-xl shadow-orange-200 hover:scale-[1.02] active:scale-[0.98] transition-all group">
+    <a href="{% url 'add_product'%}"
+        class="flex items-center justify-center gap-3 px-8 py-4 bg-brand-orange text-white rounded-[1.5rem] font-bold text-sm shadow-xl shadow-orange-200 hover:scale-[1.02] active:scale-[0.98] transition-all group">
         <span class="material-icons-outlined group-hover:rotate-90 transition-transform">add</span>
         Add New Product
     </a>
@@ -43,115 +47,226 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
-                <tr class="hover:bg-slate-50/80 transition-all group">
-                    <td class="px-8 py-5">
-                        <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 bg-slate-100 rounded-2xl flex-shrink-0 overflow-hidden border border-slate-100 shadow-sm relative">
-                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200" alt="Headphones" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            </div>
-                            <div>
-                                <p class="font-bold text-slate-800 text-base leading-tight group-hover:text-brand-blue transition-colors">Studio Wireless Pro</p>
-                                <p class="text-[10px] text-slate-400 font-black uppercase mt-1 tracking-wider">AudioTechnica</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-8 py-5">
-                        <div class="inline-flex items-center px-3 py-1 bg-blue-50 text-brand-blue rounded-lg">
-                            <span class="text-xs font-black uppercase">2 Styles</span>
-                        </div>
-                    </td>
-                    <td class="px-8 py-5">
-                        <div class="flex flex-col">
-                            <span id="stock-val-dummy1" class="text-sm font-black text-slate-700">85 Units</span>
-                            <div class="w-24 h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
-                                <div id="stock-bar-dummy1" class="h-full transition-all duration-500 bg-brand-blue" style="width: 60%"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-8 py-5">
-                        <span class="flex items-center gap-1.5 text-emerald-600">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="text-[10px] font-black uppercase tracking-widest">Active</span>
-                        </span>
-                    </td>
-                    <td class="px-8 py-5">
-                        <p class="text-sm font-bold text-slate-700">12 Feb, 2026</p>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">at 14:30</p>
-                    </td>
-                    <td class="px-8 py-5 text-center">
-                        <div class="flex items-center justify-center gap-2">
-                            <button onclick="openStockModal('dummy1', 'Studio Wireless Pro', 85)" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all" title="Manage Stock">
-                                <span class="material-icons-outlined text-xl">inventory_2</span>
-                            </button>
-                            <button onclick="openPreview(
-                                'Studio Wireless Pro', 
-                                'AudioTechnica', 
-                                ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800', 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800', 'https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=800'], 
-                                '$199.99', 
-                                'Active', 
-                                'Professional grade wireless headphones with premium noise cancellation and 40-hour battery life.', 
-                                [{name: 'Midnight Black', stock: 45, price: '$199.99'}, {name: 'Arctic White', stock: 40, price: '$199.99'}]
-                            )" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-brand-blue hover:bg-blue-50 rounded-xl transition-all">
-                                <span class="material-icons-outlined text-xl">visibility</span>
-                            </button>
-                            <a href="#" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-brand-orange hover:bg-orange-50 rounded-xl transition-all"><span class="material-icons-outlined text-xl">edit</span></a>
-                            <button onclick="confirmDelete('dummy1')" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><span class="material-icons-outlined text-xl">delete</span></button>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr class="hover:bg-slate-50/80 transition-all group">
-                    <td class="px-8 py-5">
-                        <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 bg-slate-100 rounded-2xl flex-shrink-0 overflow-hidden border border-slate-100 shadow-sm relative">
-                                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200" alt="Watch" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            </div>
-                            <div>
-                                <p class="font-bold text-slate-800 text-base leading-tight group-hover:text-brand-blue transition-colors">Minimalist Quartz</p>
-                                <p class="text-[10px] text-slate-400 font-black uppercase mt-1 tracking-wider">Nordic Design</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-8 py-5">
-                        <div class="inline-flex items-center px-3 py-1 bg-blue-50 text-brand-blue rounded-lg">
-                            <span class="text-xs font-black uppercase">1 Style</span>
-                        </div>
-                    </td>
-                    <td class="px-8 py-5">
-                        <div class="flex flex-col">
-                            <span id="stock-val-dummy2" class="text-sm font-black text-slate-700">4 Units</span>
-                            <div class="w-24 h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
-                                <div id="stock-bar-dummy2" class="h-full transition-all duration-500 bg-red-500" style="width: 5%"></div>
-                            </div>
-                            <span id="low-stock-label-dummy2" class="text-[9px] font-bold text-red-500 uppercase mt-1">Low Stock</span>
-                        </div>
-                    </td>
-                    <td class="px-8 py-5">
-                        <span class="flex items-center gap-1.5 text-emerald-600">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="text-[10px] font-black uppercase tracking-widest">Active</span>
-                        </span>
-                    </td>
-                    <td class="px-8 py-5">
-                        <p class="text-sm font-bold text-slate-700">01 Jan, 2026</p>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">at 09:15</p>
-                    </td>
-                    <td class="px-8 py-5 text-center">
-                        <div class="flex items-center justify-center gap-2">
-                            <button onclick="openStockModal('dummy2', 'Minimalist Quartz', 4)" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all">
-                                <span class="material-icons-outlined text-xl">inventory_2</span>
-                            </button>
-                            <button onclick="openPreview('Minimalist Quartz', 'Nordic Design', ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800'], '$145.00', 'Active', 'Timeless design meets modern precision.', [])" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-brand-blue hover:bg-blue-50 rounded-xl transition-all">
-                                <span class="material-icons-outlined text-xl">visibility</span>
-                            </button>
-                            <a href="#" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-brand-orange hover:bg-orange-50 rounded-xl transition-all"><span class="material-icons-outlined text-xl">edit</span></a>
-                            <button onclick="confirmDelete('dummy2')" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><span class="material-icons-outlined text-xl">delete</span></button>
-                        </div>
-                    </td>
-                </tr>
 
                 {% for product in products %}
+                <tr class="hover:bg-slate-50/80 transition-all group cursor-pointer border-b border-slate-50"
+                    onclick="toggleVariants('variants-{{ product.id }}', this)">
+
+                    <td class="px-8 py-5">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="flex flex-col items-center justify-center text-slate-300 group-hover:text-brand-blue transition-colors">
+                                <span
+                                    class="material-icons-outlined text-xl transition-transform duration-300 transform"
+                                    id="icon-{{ product.id }}">expand_more</span>
+                            </div>
+                            <div class="w-14 h-14 bg-slate-100 rounded-2xl overflow-hidden border">
+                                {% if product.gallery.first %}
+                                <img src="{{ product.gallery.first.image.url }}" class="w-full h-full object-cover">
+                                {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                    <span class="material-icons-outlined">image</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800 group-hover:text-brand-blue transition-colors">
+                                    {{product.name }}</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase mt-0.5">
+                                    {{ product.subcategory.name }}</p>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="px-8 py-5">
+                        <div class="inline-flex items-center px-3 py-1 bg-blue-50 text-brand-blue rounded-lg">
+                            <span class="text-xs font-black uppercase">{{ product.variant_count }} Variant
+                                {{ product.variant_count|pluralize }}</span>
+                        </div>
+                    </td>
+
+                    <td class="px-8 py-5">
+                        <div class="flex flex-col">
+                            <span
+                                class="text-sm font-bold {% if product.total_stock < 10 %}text-red-500{% else %}text-slate-700{% endif %}">
+                                {{ product.total_stock }} Units
+                            </span>
+                            <div class="w-24 h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
+                                <div class="h-full bg-brand-blue" style="width: {{ product.stock_percentage }}%"></div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="px-8 py-5">
+                        {% if product.is_active %}
+                        <span class="flex items-center gap-1.5 text-emerald-600">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Active</span>
+                        </span>
+                        {% else %}
+                        <span class="flex items-center gap-1.5 text-slate-400">
+                            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Inactive</span>
+                        </span>
+                        {% endif %}
+                    </td>
+
+                    <td class="px-8 py-5 text-slate-500 text-xs font-medium">
+                        {{ product.created_at|date:"M d, Y" }}
+                    </td>
+
+                    <td class="px-8 py-5" onclick="event.stopPropagation();">
+                        <div class="flex items-center justify-center gap-2">
+
+                            <a href="{% url 'edit_product' product.id %}"
+                                class="p-2 text-slate-400 hover:text-brand-orange hover:bg-orange-50 rounded-xl transition-all">
+                                <span class="material-icons-outlined text-xl">edit</span>
+                            </a>
+                            {% if product.is_active %}
+                            <a href="{% url 'deactivate_product' product.id %}"
+                                onclick="return confirm('Deactivate this product?')"
+                                class="p-2 text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all">
+
+                                <span class="material-icons-outlined text-xl">toggle_on</span>
+
+                            </a>
+
+                            {% else %}
+
+                            <a href="{% url 'activate_product' product.id %}"
+                                onclick="return confirm('Activate this product?')"
+                                class="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-all">
+
+                                <span class="material-icons-outlined text-xl">toggle_off</span>
+
+                            </a>
+
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+
+                <tr id="variants-{{ product.id }}" class="hidden bg-slate-50/30">
+                    <td colspan="6" class="px-8 py-4">
+                        <div class="bg-white rounded-3xl border border-slate-100 shadow-inner overflow-hidden">
+                            <table class="w-full text-left border-collapse">
+                                <thead
+                                    class="bg-slate-50 text-[9px] uppercase font-black text-slate-400 tracking-widest">
+                                    <tr>
+                                        <th class="px-6 py-3">SKU</th>
+                                        <th class="px-6 py-3">Attributes</th>
+                                        <th class="px-6 py-3">Price</th>
+                                        <th class="px-6 py-3">Stock</th>
+                                        <th class="px-6 py-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50">
+
+                                    {% for variant in product.variants.all %}
+
+                                    <tr class="hover:bg-slate-50 transition-colors {% if variant.is_active %}bg-emerald-50{% else %}bg-red-50{% endif %}">
+
+                                        <td class="px-6 py-4 font-mono text-xs text-brand-blue font-bold">
+                                            {{ variant.sku_code }}
+                                        </td>
+
+                                        <td class="px-6 py-4">
+                                            <div class="flex gap-2 flex-wrap">
+
+                                                {% for bridge in variant.variant_attributes.all %}
+                                                <span
+                                                    class="px-2 py-1 bg-slate-100 text-slate-600 rounded text-[10px] font-bold">
+                                                    {{ bridge.option.attribute.name }}: {{ bridge.option.value }}
+                                                </span>
+                                                {% endfor %}
+
+                                            </div>
+                                        </td>
+
+                                        <td class="px-6 py-4 text-sm font-black text-slate-700">
+                                            ₹{{ variant.selling_price }}
+                                        </td>
+
+                                      <td class="px-6 py-4">
+
+{% if variant.stock_quantity <= 0 %}
+
+<span class="flex items-center gap-1 text-xs font-bold text-red-600">
+<span class="w-2 h-2 bg-red-500 rounded-full"></span>
+Out of Stock
+</span>
+
+{% elif variant.stock_quantity <= variant.low_stock_threshold %}
+
+<span class="flex items-center gap-1 text-xs font-bold text-amber-500">
+<span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+Low Stock ({{ variant.stock_quantity }})
+</span>
+
+{% else %}
+
+<span class="flex items-center gap-1 text-xs font-bold text-emerald-600">
+<span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+{{ variant.stock_quantity }} in stock
+</span>
+
+{% endif %}
+
+</td>
+
+                                        <td class="px-6 py-4 text-center">
+                                            <div class="flex justify-center gap-2">
+
+                                                <a href="#"
+                                                    class="p-2 text-slate-400 hover:text-brand-orange hover:bg-orange-50 rounded-lg transition">
+                                                    <span class="material-icons-outlined text-lg">edit</span>
+                                                </a>
+
+                                                {% if variant.is_active %}
+
+                                                <a href="{% url 'deactivate_variant' variant.id %}"
+                                                    onclick="return confirm('Deactivate this variant?')"
+                                                    class="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition">
+
+                                                    <span class="material-icons-outlined text-lg">toggle_on</span>
+
+                                                </a>
+
+                                                {% else %}
+
+                                                <a href="{% url 'activate_variant' variant.id %}"
+                                                    onclick="return confirm('Activate this variant?')"
+                                                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition">
+
+                                                    <span class="material-icons-outlined text-lg">toggle_off</span>
+
+                                                </a>
+
+                                                {% endif %}
+
+                                            </div>
+                                        </td>
+
+                                    </tr>
+
+                                    {% empty %}
+
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 text-center text-xs text-slate-400 italic">
+                                            No variants configured.
+                                        </td>
+                                    </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
                 {% endfor %}
+
+
             </tbody>
         </table>
     </div>
@@ -159,9 +274,11 @@
 
 <div id="stockModal" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
     <div onclick="closeStockModal()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
-    <div class="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 animate-in slide-in-from-bottom-4 duration-300">
+    <div
+        class="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 animate-in slide-in-from-bottom-4 duration-300">
         <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div
+                class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span class="material-icons-outlined text-3xl">inventory_2</span>
             </div>
             <h3 class="text-xl font-black text-slate-800">Update Stock</h3>
@@ -173,69 +290,81 @@
                 <span class="text-xs font-black uppercase text-slate-400 tracking-wider">Current Level</span>
                 <span id="currentStockDisplay" class="text-lg font-black text-slate-700">0 Units</span>
             </div>
-            
+
             <div class="flex items-center gap-4">
-                <button onclick="adjustStockStep(-1)" class="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors text-xl font-bold">-</button>
-                <input type="number" id="stockAdjustment" value="0" class="flex-1 h-12 bg-white border border-slate-200 rounded-xl text-center font-black text-lg outline-none focus:border-emerald-500 transition-colors">
-                <button onclick="adjustStockStep(1)" class="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors text-xl font-bold">+</button>
+                <button onclick="adjustStockStep(-1)"
+                    class="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors text-xl font-bold">-</button>
+                <input type="number" id="stockAdjustment" value="0"
+                    class="flex-1 h-12 bg-white border border-slate-200 rounded-xl text-center font-black text-lg outline-none focus:border-emerald-500 transition-colors">
+                <button onclick="adjustStockStep(1)"
+                    class="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors text-xl font-bold">+</button>
             </div>
         </div>
 
         <div class="flex gap-3">
-            <button onclick="closeStockModal()" class="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-bold text-sm hover:bg-slate-200 transition-all">Cancel</button>
-            <button onclick="saveStockUpdate()" class="flex-1 py-4 bg-emerald-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-emerald-100 hover:bg-emerald-600 transition-all">Update Stock</button>
+            <button onclick="closeStockModal()"
+                class="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-bold text-sm hover:bg-slate-200 transition-all">Cancel</button>
+            <button onclick="saveStockUpdate()"
+                class="flex-1 py-4 bg-emerald-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-emerald-100 hover:bg-emerald-600 transition-all">Update
+                Stock</button>
         </div>
     </div>
 </div>
 
 <div id="previewModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
     <div onclick="closePreview()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity"></div>
-    <div class="relative bg-white w-full max-w-5xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-        
+    <div
+        class="relative bg-white w-full max-w-5xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+
         <div class="flex flex-col md:flex-row max-h-[90vh] overflow-y-auto">
             <div class="md:w-1/2 bg-slate-50 flex flex-col border-r border-slate-100">
                 <div class="aspect-square w-full overflow-hidden bg-slate-100">
                     <img id="previewImg" src="" alt="Product" class="w-full h-full object-cover">
                 </div>
                 <div id="imageThumbs" class="p-6 flex gap-3 overflow-x-auto bg-white/50 backdrop-blur-sm no-scrollbar">
-                    </div>
+                </div>
             </div>
 
             <div class="md:w-1/2 p-8 md:p-12 flex flex-col">
                 <p id="previewBrand" class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3"></p>
                 <h2 id="previewName" class="text-3xl font-black text-slate-800 leading-tight mb-4"></h2>
-                
+
                 <div class="flex items-center gap-4 mb-8">
                     <span id="previewPrice" class="text-2xl font-black text-brand-blue"></span>
-                    <span id="previewStatus" class="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest"></span>
+                    <span id="previewStatus"
+                        class="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest"></span>
                 </div>
 
                 <div class="mb-8">
-                    <h3 class="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-3">About this item</h3>
+                    <h3 class="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-3">About this item
+                    </h3>
                     <p id="previewDesc" class="text-slate-500 text-sm leading-relaxed"></p>
                 </div>
 
                 <div class="border-t border-slate-100 pt-8 mb-10">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-[10px] font-black text-slate-800 uppercase tracking-widest">Available Variants</h3>
+                        <h3 class="text-[10px] font-black text-slate-800 uppercase tracking-widest">Available Variants
+                        </h3>
                         <span class="text-[10px] font-bold text-slate-400" id="variantCountDisplay"></span>
                     </div>
                     <div id="variantList" class="grid gap-3">
-                        </div>
+                    </div>
                 </div>
 
                 <div class="mt-auto flex gap-4">
-                    <a id="previewEditBtn" href="#" class="flex-1 py-4 bg-brand-blue text-white rounded-2xl font-bold text-center text-sm shadow-xl shadow-blue-100 hover:bg-blue-600 transition-all">Edit Details</a>
-<button onclick="closePreview()" 
-    class="px-8 py-4 
+                    <a id="previewEditBtn" href="#"
+                        class="flex-1 py-4 bg-brand-blue text-white rounded-2xl font-bold text-center text-sm shadow-xl shadow-blue-100 hover:bg-blue-600 transition-all">Edit
+                        Details</a>
+                    <button onclick="closePreview()" class="px-8 py-4 
            bg-gradient-to-r from-blue-500 to-indigo-600 
            text-white rounded-2xl 
            font-bold text-sm uppercase tracking-widest 
            shadow-md hover:shadow-xl 
            hover:from-indigo-600 hover:to-blue-500 
            transition-all duration-300 ease-in-out">
-    Close
-</button>                </div>
+                        Close
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -273,9 +402,9 @@
 
         const valEl = document.getElementById(`stock-val-${currentActiveProductId}`);
         const barEl = document.getElementById(`stock-bar-${currentActiveProductId}`);
-        
-        if(valEl) valEl.innerText = `${newTotal} Units`;
-        if(barEl) barEl.style.width = `${Math.min((newTotal / 150) * 100, 100)}%`;
+
+        if (valEl) valEl.innerText = `${newTotal} Units`;
+        if (barEl) barEl.style.width = `${Math.min((newTotal / 150) * 100, 100)}%`;
 
         closeStockModal();
     }
@@ -293,7 +422,7 @@
         document.getElementById('previewDesc').innerText = desc;
 
         mainImg.src = imgList[0];
-        thumbContainer.innerHTML = ''; 
+        thumbContainer.innerHTML = '';
 
         if (imgList.length > 1) {
             imgList.forEach((src, index) => {
@@ -315,7 +444,7 @@
         const variantList = document.getElementById('variantList');
         variantList.innerHTML = variants.length > 0 ? '' : '<p class="text-xs text-slate-400 italic py-4 text-center">Standard product.</p>';
         document.getElementById('variantCountDisplay').innerText = variants.length > 0 ? `${variants.length} Total` : 'No Variants';
-        
+
         variants.forEach(v => {
             const row = document.createElement('div');
             row.className = "flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-brand-blue/30 transition-colors";
@@ -333,130 +462,41 @@
     }
 
     function confirmDelete(id) {
-        if(confirm('Permanently delete this product?')) console.log("Deleted:", id);
+        if (confirm('Permanently delete this product?')) console.log("Deleted:", id);
     }
 
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePreview(); closeStockModal(); } });
+
+    function toggleVariants(rowId, rowElement) {
+
+        const row = document.getElementById(rowId)
+
+        const icon = rowElement.querySelector(".material-icons-outlined")
+
+        if (row.classList.contains("hidden")) {
+
+            row.classList.remove("hidden")
+
+            icon.style.transform = "rotate(180deg)"
+
+        } else {
+
+            row.classList.add("hidden")
+
+            icon.style.transform = "rotate(0deg)"
+
+        }
+    }
 </script>
 
 <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 </style>
 {% endblock %}
-
-
-
-
-
-<!-- {% for product in products %}
-<tr class="hover:bg-slate-50/80 transition-all group">
-
-    <!-- Product -->
-    <td class="px-8 py-5">
-        <div class="flex items-center gap-4">
-            <div class="w-14 h-14 bg-slate-100 rounded-2xl overflow-hidden border">
-                <img src="{{ product.image.url }}" 
-                     class="w-full h-full object-cover">
-            </div>
-            <div>
-                <p class="font-bold text-slate-800 group-hover:text-brand-blue transition-colors">
-                    {{ product.name }}
-                </p>
-                <p class="text-[10px] text-slate-400 font-bold uppercase mt-0.5">
-                    {{ product.category.name }}
-                </p>
-            </div>
-        </div>
-    </td>
-
-    <!-- SKU -->
-    <td class="px-8 py-5 text-sm font-mono font-bold text-slate-500 uppercase">
-        {{ product.sku }}
-    </td>
-
-    <!-- Price -->
-    <td class="px-8 py-5 font-black text-slate-800">
-        ₹{{ product.price }}
-    </td>
-
-    <!-- Stock -->
-    <td class="px-8 py-5">
-        <div class="flex flex-col">
-            <span class="text-sm font-bold {% if product.total_stock < 5 %}text-red-500{% else %}text-slate-700{% endif %}">
-                {{ product.total_stock }} Units
-            </span>
-            <div class="w-20 h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
-                <div class="h-full 
-                    {% if product.total_stock < 5 %}
-                        bg-red-500
-                    {% else %}
-                        bg-emerald-500
-                    {% endif %}"
-                    style="width: {{ product.stock_percentage|default:50 }}%">
-                </div>
-            </div>
-        </div>
-    </td>
-
-    <!-- Approval Status -->
-    <td class="px-8 py-5">
-        {% if product.approval_status == 'approved' %}
-        <span class="flex items-center gap-1.5 text-emerald-600">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[10px] font-black uppercase tracking-widest">
-                Approved
-            </span>
-        </span>
-
-        {% elif product.approval_status == 'pending' %}
-        <span class="flex items-center gap-1.5 text-amber-500 bg-amber-50 px-3 py-1 rounded-lg w-fit">
-            <span class="material-icons-outlined text-sm">hourglass_empty</span>
-            <span class="text-[10px] font-black uppercase tracking-widest">
-                Pending
-            </span>
-        </span>
-
-        {% elif product.approval_status == 'rejected' %}
-        <span class="flex items-center gap-1.5 text-rose-600 bg-rose-50 px-3 py-1 rounded-lg w-fit">
-            <span class="material-icons-outlined text-sm">report_problem</span>
-            <span class="text-[10px] font-black uppercase tracking-widest">
-                Rejected
-            </span>
-        </span>
-        {% endif %}
-    </td>
-
-    <!-- Actions -->
-    <td class="px-8 py-5">
-        <div class="flex items-center justify-center gap-2">
-
-            <!-- Inventory -->
-            <button onclick="openStockModal('{{ product.id }}', '{{ product.name }}', {{ product.total_stock }})"
-                class="p-2 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all">
-                <span class="material-icons-outlined text-xl">inventory_2</span>
-            </button>
-
-            <!-- View -->
-            <button onclick="openPreview('{{ product.name }}', '{{ product.brand }}', ['{{ product.image.url }}'], '{{ product.price }}', '{{ product.approval_status|title }}', '{{ product.description|escapejs }}', [])"
-                class="p-2 text-slate-400 hover:text-brand-blue hover:bg-blue-50 rounded-xl transition-all">
-                <span class="material-icons-outlined text-xl">visibility</span>
-            </button>
-
-            <!-- Edit -->
-            <a href="{% url 'edit_product' product.id %}"
-                class="p-2 text-slate-400 hover:text-brand-orange hover:bg-orange-50 rounded-xl transition-all">
-                <span class="material-icons-outlined text-xl">edit</span>
-            </a>
-
-            <!-- Delete -->
-            <button onclick="confirmDelete('{{ product.id }}')"
-                class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
-                <span class="material-icons-outlined text-xl">delete</span>
-            </button>
-
-        </div>
-    </td>
-
-</tr>
-{% endfor %} -->

@@ -13,6 +13,9 @@ class User(AbstractUser):
         return(
             self.is_seller and self.seller_profile.verification_status == "VERIFIED"
         )
+    @property
+    def is_admin_role(self):
+      return self.role == "ADMIN"
 
     public_id = models.UUIDField(
         default=uuid.uuid4,
@@ -111,6 +114,7 @@ class Notification(models.Model):
 class Category(models.Model):
 
     name = models.CharField(max_length=100, unique=True)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     slug = models.SlugField(max_length=150, unique=True, blank=True)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='categories/', blank=True, null=True)
@@ -139,6 +143,7 @@ class Category(models.Model):
 class SubCategory(models.Model):
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=150, unique=True, blank=True)
     description = models.TextField(blank=True)

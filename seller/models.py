@@ -63,6 +63,13 @@ class SellerProfile(models.Model):
 
 class Product(models.Model):
 
+    APPROVAL_STATUS = (
+    ("DRAFT", "Draft"),
+    ("PENDING", "Pending Review"),
+    ("APPROVED", "Approved"),
+    ("REJECTED", "Rejected"),
+)
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     seller = models.ForeignKey(
         SellerProfile, on_delete=models.CASCADE, related_name='products'
@@ -81,7 +88,7 @@ class Product(models.Model):
     is_cancellable = models.BooleanField(default=True)
     is_returnable = models.BooleanField(default=True)
     return_days = models.IntegerField(default=7)
-    approval_status = models.CharField(max_length=20, default="PENDING")
+    approval_status = models.CharField(max_length=20, default="DRAFT")
 
     class Meta:
         ordering = ['-created_at']
@@ -106,6 +113,43 @@ class Product(models.Model):
             self.slug = slug
         super().save(*args, **kwargs)
 
+class ProductGallery(models.Model):
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="gallery"
+    )
+
+    image = models.ImageField(upload_to="product_images/")
+
+    alt_text = models.CharField(max_length=255, blank=True)
+
+    is_primary = models.BooleanField(default=False)
+
+    display_order = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-is_primary', 'display_order']
+
+    def __str__(self):
+        return f"{'[Primary] ' if self.is_primary else ''}Image for {self.product.name}"
+
+    def save(self, *args, **kwargs):
+
+        # Ensure only one primary image per product
+        if self.is_primary:
+            ProductGallery.objects.filter(
+                product=self.product,
+                is_primary=True
+            ).exclude(pk=self.pk).update(is_primary=False)
+
+        super().save(*args, **kwargs)
+
 
 class ProductVariant(models.Model):
 
@@ -119,6 +163,7 @@ class ProductVariant(models.Model):
     )
     slug = models.SlugField(max_length=320, unique=True, blank=True)
     mrp = models.DecimalField(max_digits=10, decimal_places=2, help_text="Maximum Retail Price")
+    low_stock_threshold = models.IntegerField(default=5)
     selling_price = models.DecimalField(
         max_digits=10, decimal_places=2,
         help_text="Actual selling price; must be <= MRP"
@@ -172,7 +217,7 @@ class ProductImage(models.Model):
     variant = models.ForeignKey(
         ProductVariant, on_delete=models.CASCADE, related_name='images'
     )
-    image_url = models.URLField(help_text="CDN-hosted image URL")
+    image = models.ImageField(upload_to="variant_images/",null=True,blank=True)
     alt_text = models.CharField(max_length=255, blank=True, help_text="Alt text for accessibility")
     is_primary = models.BooleanField(default=False)
     display_order = models.IntegerField(default=0)
@@ -199,6 +244,11 @@ class ProductImage(models.Model):
 class Attribute(models.Model):
 
     name = models.CharField(max_length=100, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    display_order = models.IntegerField(default=0)
+
+    subcategories = models.ManyToManyField(SubCategory,related_name="attributes",blank=True)
+
     slug = models.SlugField(max_length=120, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -219,9 +269,8 @@ class Attribute(models.Model):
 
 class AttributeOption(models.Model):
  
-    attribute = models.ForeignKey(
-        Attribute, on_delete=models.CASCADE, related_name='options'
-    )
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='options')
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     value = models.CharField(max_length=100)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
     display_order = models.IntegerField(default=0)
