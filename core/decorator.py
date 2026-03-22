@@ -2,24 +2,29 @@ from functools import wraps
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from customer.models import Address
 from django.urls import reverse_lazy
 
 
 
-def _dashboard_for_user(user):
-
+def _dashboard_for_user(user, request):
 
     if user.is_admin_role:
         return reverse_lazy("admin_dashboard")
-
     if user.is_seller:
-           if user.is_verified_seller:
-               return reverse_lazy("seller_profile")
-          
-           return reverse_lazy("seller_profile")
+        return reverse_lazy("seller_profile")
+    if not (user.is_email_verified or user.is_phone_verified):
+        messages.warning(request, "Please verify your email or phone number to continue.")
+        return reverse_lazy("profile")
+    if not user.is_email_verified:
+        messages.info(request, "Verify your email for better account security.")
 
+    if not user.is_phone_verified:
+        messages.info(request, "Verify your phone number for better security.")
+    if not Address.objects.filter(user=user).exists():
+        messages.warning(request, "Please add your delivery address.")
+        return reverse_lazy("profile")
     return reverse_lazy("home")
-
 # ================================================
 # CUSTOMER REQUIRED DECORATOR
 # ================================================

@@ -36,7 +36,7 @@ def login_view(request):
                 return redirect("choose_verification")
 
             login(request, user)
-            return redirect(_dashboard_for_user(request.user))
+            return redirect(_dashboard_for_user(request.user,request))
 
         else:
             messages.error(request, "Invalid username or password")
