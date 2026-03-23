@@ -47,7 +47,7 @@ def customer_required(view_func=None, login_url=None):
 
             if user.is_admin_role :
                 messages.error(request, "You are not allowed to access customer actions.")
-                return redirect(_dashboard_for_user(user))
+                return redirect(_dashboard_for_user(user,request))
 
             return view_func(request, *args, **kwargs)
 
@@ -102,7 +102,7 @@ def verified_seller_required(view_func=None,login_url=None):
             if not user.is_seller:
                 return redirect("seller_registration")
             if not user.is_verified_seller:
-                return redirect(_dashboard_for_user(user))
+                return redirect(_dashboard_for_user(user,request))
             return view_func(request,*args, **kwargs)
         return wrapper
     if view_func:
@@ -132,7 +132,7 @@ def admin_required(view_func=None, login_url=None):
 
             if not user.is_admin_role:
                 messages.error(request, "You do not have permission to access this page.")
-                return redirect(_dashboard_for_user(user))
+                return redirect(_dashboard_for_user(user,request))
 
             return view_func(request, *args, **kwargs)
 
@@ -151,7 +151,7 @@ def admin_not_required(view_func):
 
         if request.user.is_authenticated and request.user.is_admin_role:
             messages.error(request, "Admin users cannot access this page.")
-            return redirect(_dashboard_for_user(request.user))
+            return redirect(_dashboard_for_user(request.user,request))
 
         return view_func(request, *args, **kwargs)
 
