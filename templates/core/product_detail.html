@@ -77,7 +77,7 @@
 
 
 
-                    <span id="price-mrp" class="text-gray-500 line-through">${{ default_variant.mrp }}</span>
+                    <span id="price-mrp" class="text-gray-500 line-through">₹{{ default_variant.mrp }}</span>
                     <span id="price-discount" class="text-green-700 font-bold">
                         {% widthratio default_variant.selling_price default_variant.mrp 100 %}% off</span>
                 </div>
@@ -142,10 +142,28 @@
                 </div>
 
                 <div class="flex items-center justify-between border-t border-gray-100 pt-8 mb-8">
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900">Ratings & Reviews</h3>
-                        <p class="text-xs text-gray-500 mt-1">Showing {{ review_count }} verified reviews</p>
-                    </div>
+                    <div class="flex items-center gap-4 mb-4">
+    <div class="flex items-center gap-1.5 bg-green-700 text-white px-3 py-1 rounded-md shadow-sm">
+        <span class="text-lg font-bold">{{ average_rating|default:"0.0" }}</span>
+        <span class="material-icons text-sm">star</span>
+    </div>
+    
+    <div class="flex flex-col">
+        <span class="text-sm font-bold text-gray-900">{{ review_count }} Ratings & {{ review_count }} Reviews</span>
+        <div class="flex items-center gap-1">
+            <div class="flex text-[#ff9f00]">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= average_rating|floatformat:0 %}
+                        <span class="material-icons text-xs">star</span>
+                    {% else %}
+                        <span class="material-icons text-xs text-gray-200">star</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">Verified Summary</span>
+        </div>
+    </div>
+</div>
                     {% if user.is_authenticated and not user_has_reviewed %}
                     <button onclick="window.location.href='{% url 'add_review' product.slug %}'" 
                         class="bg-white border border-blue-600 text-blue-600 px-4 py-2 rounded-sm font-bold text-xs uppercase hover:bg-blue-50 transition-colors flex items-center gap-2">

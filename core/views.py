@@ -9,7 +9,8 @@ from .models import *
 from seller.models import *
 from customer.models import * 
 from customer.models import WishlistItem
-from django.db.models import Avg, Prefetch,Min,Max
+from django.db.models import Avg, Prefetch,Min,Max,Value,Count,Case,When,Q
+from django.db.models.functions import Coalesce
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from django.db.models import Q
@@ -17,6 +18,8 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.utils.html import mark_safe
+import re
 from .decorator import _dashboard_for_user,admin_not_required
 # Create your views here.
 
@@ -346,11 +349,21 @@ def all_products(request):
     max_price = request.GET.get("max_price")
     sort_by = request.GET.get("sort", "newest")
     in_stock = request.GET.get("in_stock") == "1"
-
     products = Product.objects.filter(
         is_active=True,
         approval_status="APPROVED"
     )
+    if q:
+       pattern = re.compile(re.escape(q), re.IGNORECASE)
+       for product in products:
+            product.name = mark_safe(
+                pattern.sub(
+                    lambda m: f'<span class="bg-yellow-200 px-1 rounded">{m.group()}</span>',
+                    product.name
+                )
+            )
+
+
     if q:
         products = products.filter(
         Q(name__icontains=q) |
@@ -365,7 +378,8 @@ def all_products(request):
     
     products = products.annotate(
         min_selling_price=Min("variants__selling_price"),
-        min_mrp=Min("variants__mrp")
+        min_mrp=Min("variants__mrp"),
+        average_rating=Coalesce(Avg("reviews__rating", filter=Q(reviews__is_approved=True)), Value(0.0))
     )
 
     
@@ -422,9 +436,16 @@ def all_products(request):
         else:
             product.is_in_wishlist = False
 
-    paginator = Paginator(products, 2)
+
+    paginator = Paginator(products, 12)
     page_number = request.GET.get("page")
     products = paginator.get_page(page_number)
+    for product in products:
+        product.review_count = Review.objects.filter(
+            product=product,
+            is_approved=True
+        ).count()
+
 
     context = {
         "products": products,
@@ -434,6 +455,9 @@ def all_products(request):
         "min_price": min_price,
         "max_price": max_price,
         "in_stock": in_stock,
+        "search_query": q,
+        "is_search": bool(q),
+        "results_count": products.paginator.count if hasattr(products, "paginator") else len(products),
     }
 
     return render(request, "core/all_products.html", context)
@@ -484,7 +508,8 @@ def subcategory_view(request, category_slug):
     products = products.annotate(
         min_selling_price=Min("variants__selling_price"),
         min_mrp=Min("variants__mrp"),            
-        stock_quantity=Max("variants__stock_quantity")
+        stock_quantity=Max("variants__stock_quantity"),
+        average_rating=Coalesce(Avg("reviews__rating", filter=Q(reviews__is_approved=True)), Value(0.0))
     )
 
    
@@ -519,7 +544,12 @@ def subcategory_view(request, category_slug):
             ).exists()
         else:
             product.is_in_wishlist = False
-    paginator = Paginator(products, 1) 
+        # Calculate review count for approved reviews only
+        product.review_count = Review.objects.filter(
+            product=product,
+            is_approved=True
+        ).count()
+    paginator = Paginator(products, 12) 
     page_number = request.GET.get("page")
     products = paginator.get_page(page_number)
 
@@ -577,7 +607,8 @@ def product_detail(request, slug):
         default_variant.is_in_wishlist = False
 
     reviews = Review.objects.filter(
-        product=product
+        product=product,
+        is_approved=True
     ).select_related("user").order_by("-created_at")
 
     rating_data = reviews.aggregate(avg=Avg("rating"))

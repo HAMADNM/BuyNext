@@ -173,10 +173,14 @@
                                     </span>
                                 </button>
                             </a>
-                            <button
-                                class="w-full flex items-center gap-4 p-4 hover:bg-white/50 rounded-[1.5rem] font-bold text-sm text-gray-500">
-                                <span class="material-icons-outlined">confirmation_number</span> My Coupons
-                            </button>
+                            <a href="{% url 'my_reviews' %}">
+                                <button
+                                    class="w-full flex items-center justify-between p-4 hover:bg-white/50 rounded-[1.5rem] font-bold text-sm text-gray-500 group">
+                                    <div class="flex items-center gap-4">
+                                        <span class="material-icons-outlined">confirmation_number</span> My reviews
+                                    </div>
+                                </button>
+                            </a>
                             <div class="h-px bg-brand-primary/5 my-2 mx-4"></div>
                             <a href="/logout"
                                 class="w-full flex items-center gap-4 p-4 text-red-500 hover:bg-red-50 rounded-[1.5rem] font-bold text-sm transition-colors">

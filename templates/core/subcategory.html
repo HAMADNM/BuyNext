@@ -3,7 +3,7 @@
 {% block content %}
 <div class="bg-[#f1f3f6] min-h-screen font-sans text-slate-900">
 
-    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
+    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-20 z-40">
         <div class="container mx-auto">
             <div class="flex items-center justify-start gap-8 overflow-x-auto no-scrollbar px-4 py-3">
                 {% for cat in all_categories %}
@@ -160,17 +160,17 @@
                             <div class="flex items-center gap-2 mb-2">
                                 <div
                                     class="bg-green-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                    4.4 <span class="material-icons text-[10px]">star</span>
+                                    {{ product.average_rating|default:"0.0" }} <span class="material-icons text-[10px]">star</span>
                                 </div>
-                                <span class="text-xs text-slate-400 font-medium">(2,140)</span>
+                                <span class="text-xs text-slate-400 font-medium">({{ product.review_count }})</span>
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <span class="text-lg font-bold text-slate-900">${{ product.min_selling_price }}</span>
+                                <span class="text-lg font-bold text-slate-900">₹{{ product.min_selling_price }}</span>
                                 {% if product.min_mrp > product.min_selling_price %}
-                                <span class="text-xs text-slate-400 line-through">${{ product.min_mrp }}</span>
+                                <span class="text-xs text-slate-400 line-through">₹{{ product.min_mrp }}</span>
                                 <span class="text-[10px] font-bold text-green-600">Save 
-                                   ${{ product.min_mrp|add:product.min_selling_price }}</span>
+                                   ₹{{ product.min_mrp|add:product.min_selling_price }}</span>
                                 {% endif %}
                             </div>
 

@@ -88,6 +88,20 @@
                         </button>
                     </div>
                 </div>
+                {% if is_search %}
+<div class="bg-white border border-gray-200 rounded-sm shadow-sm p-4 mb-4">
+
+    <p class="text-sm text-gray-600">
+        Showing results for 
+        <span class="font-bold text-gray-900">"{{ search_query }}"</span>
+    </p>
+
+    <p class="text-xs text-gray-400 mt-1">
+        {{ results_count }} results found
+    </p>
+
+</div>
+{% endif %}
 
                 <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 bg-white border-l border-t border-gray-200">
                     {% for product in products %}
@@ -112,27 +126,27 @@
 
                         <div class="flex-grow">
                             <h3 class="text-sm font-medium text-gray-800 group-hover:text-blue-600 mb-1 line-clamp-2">
-                                {{ product.name }}
+                                {{ product.name|safe }}
                             </h3>
 
                             <div class="flex items-center gap-2 mb-2">
                                 <span
                                     class="bg-green-600 text-white text-[10px] px-1.5 py-0.5 rounded-sm flex items-center gap-0.5 font-bold">
-                                    4.4 <span class="material-icons text-[10px]">star</span>
+                             {{ product.average_rating|default:"0.0" }} <span class="material-icons text-[10px]">star</span>
                                 </span>
-                                <span class="text-xs text-gray-400 font-medium">(2,145)</span>
+                                <span class="text-xs text-gray-400 font-medium">({{ product.review_count }})</span>
                             </div>
 
                             <div class="flex flex-col mb-1">
                                 <div class="flex items-baseline gap-2">
-                                    <span class="text-lg font-bold text-gray-900">${{ product.min_selling_price  }}</span>
+                                    <span class="text-lg font-bold text-gray-900">₹{{ product.min_selling_price  }}</span>
                                        
 
 
 
 
                                     {% if product.min_mrp > product.min_selling_price %}
-                                    <span class="text-xs text-gray-400 line-through">${{ product.min_mrp }}</span>
+                                    <span class="text-xs text-gray-400 line-through">₹{{ product.min_mrp }}</span>
                                     {% endif %}
                                 </div>
                                 {% if product.min_mrp > product.min_selling_price %}

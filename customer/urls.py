@@ -31,4 +31,6 @@ urlpatterns = [
           path("order-item/return/<uuid:item_id>/", views.return_order_item, name="return_order_item"),
           path("review/add/<str:product_slug>/", views.add_review, name="add_review"),
           path("review/edit/<uuid:review_id>/", views.edit_review, name="edit_review"),
+          path("review/<uuid:review_id>/delete/", views.delete_review, name="delete_review"),
+          path("my-reviews/", views.my_reviews, name="my_reviews"),
 ]

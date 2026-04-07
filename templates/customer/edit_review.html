@@ -1,6 +1,18 @@
 {% extends "core/base.html" %}
 
 {% block content %}
+<style>
+    /* When a radio is checked, highlight itself and all following labels in the reverse-row */
+    #star-rating-container input:checked ~ label {
+        color: #facc15; /* yellow-400 */
+    }
+
+    /* Highlight stars on hover for better UX */
+    #star-rating-container label:hover ~ label,
+    #star-rating-container label:hover {
+        color: #fde047; /* yellow-300 */
+    }
+</style>
 <div class="bg-[#f1f3f6] min-h-screen py-12 font-sans text-slate-900">
     <div class="container mx-auto px-4 max-w-xl">
         
@@ -13,18 +25,23 @@
             <form method="POST" enctype="multipart/form-data" class="space-y-8">
                 {% csrf_token %}
 
-                <div>
-                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3">Update Rating</label>
-                    <div class="flex gap-2">
-                        {% for i in "12345" %}
-                        <label class="cursor-pointer">
-                            <input type="radio" name="rating" value="{{ forloop.counter }}" class="hidden peer" 
-                                   {% if review.rating == forloop.counter|add:"0" %}checked{% endif %}>
-                            <span class="material-icons text-slate-200 peer-checked:text-yellow-400 hover:text-yellow-200 transition-colors">star</span>
-                        </label>
-                        {% endfor %}
-                    </div>
-                </div>
+              <div>
+    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3">Update Rating</label>
+    <div class="flex flex-row-reverse justify-end gap-1" id="star-rating-container">
+        {% for i in "54321" %} <input type="radio" name="rating" id="star-{{ i }}" value="{{ i }}" class="hidden peer" 
+               {% if review.rating|add:"0" == i|add:"0" %}checked{% endif %}>
+        
+        <label for="star-{{ i }}" class="cursor-pointer text-slate-200 
+                      peer-checked:text-yellow-400 
+                      peer-hover:text-yellow-300 
+                      peer-hover:scale-110
+                      ~peer-checked:text-yellow-400
+                      transition-all duration-200">
+            <span class="material-icons text-3xl">star</span>
+        </label>
+        {% endfor %}
+    </div>
+</div>
 
                 <div class="space-y-4">
                     <div>
@@ -40,13 +57,27 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Add Photos (Max 5)</label>
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Current Photos</label>
+                    {% if review.images.all %}
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for img in review.images.all %}
+                        <div class="w-16 h-16 rounded-lg border border-slate-200 overflow-hidden bg-slate-100">
+                            <img src="{{ img.image.url }}" alt="Review photo" class="w-full h-full object-cover">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-xs text-slate-400 mb-4">No current photos attached.</div>
+                    {% endif %}
+
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Upload New Photos (Max 5)</label>
                     <div class="relative group">
                         <input type="file" name="images" id="imageInput" multiple accept="image/*" 
                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
                         <div class="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center group-hover:border-blue-400 transition-all">
                             <span class="material-icons text-slate-300 text-2xl mb-1">add_photo_alternate</span>
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Upload Photos</p>
+                            <p class="text-[10px] text-slate-400 mt-2">Selecting new files will replace existing photos.</p>
                         </div>
                     </div>
                     <div id="imagePreview" class="flex flex-wrap gap-2 mt-4"></div>

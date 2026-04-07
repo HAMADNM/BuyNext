@@ -11,6 +11,7 @@ from core.decorator import customer_required
 import razorpay
 from django.db import transaction
 from django.db.models import F
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -961,6 +962,37 @@ def add_review(request, product_slug):
     return render(request, "customer/add_review.html", context)
 
 @customer_required
+def my_reviews(request):
+    reviews_qs = (
+        Review.objects.filter(user=request.user)
+        .select_related("product")
+        .prefetch_related(
+            "images",           
+            "product__gallery"   
+        )
+        .order_by("-created_at")
+    )
+
+    paginator = Paginator(reviews_qs, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "reviews": page_obj.object_list,
+        "page_obj": page_obj,
+        "total_count": reviews_qs.count()
+    }
+    return render(request, "customer/my_reviews.html", context)
+
+@customer_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id, user=request.user)
+    if request.method == "POST":
+        review.delete()
+        messages.success(request, "Review deleted successfully.")
+    return redirect("my_reviews")
+
+@customer_required
 def edit_review(request, review_id):
     review = get_object_or_404(Review, id=review_id, user=request.user)
     product = review.product
@@ -987,15 +1019,15 @@ def edit_review(request, review_id):
         review.title = title
         review.comment = comment
         review.save()
-        review.images.all().delete()
 
-        for image in new_images[:5]:
-            try:
-                ReviewImage.objects.create(review=review, image=image)
-            except Exception as e:
-               
-                print(f"Error creating review image: {e}")
-                continue
+        if new_images:
+            review.images.all().delete()
+            for image in new_images[:5]:
+                try:
+                    ReviewImage.objects.create(review=review, image=image)
+                except Exception as e:
+                    print(f"Error creating review image: {e}")
+                    continue
         
         messages.success(request, "Your review has been updated successfully!")
         return redirect("product_details", slug=product.slug)

@@ -1,4 +1,5 @@
-from .models import Cart,CartItem,Wishlist,WishlistItem
+from django.db.models import Avg
+from .models import Cart,CartItem,Wishlist,WishlistItem,Review
 
 def cart_count(request):
     if request.user.is_authenticated:
@@ -8,8 +9,13 @@ def cart_count(request):
             return {"cart_count": count}
 
     return {"cart_count": 0}
+
 def wishlist_count(request):
     if request.user.is_authenticated:
         count=WishlistItem.objects.filter(wishlist__user=request.user).count()
         return {"wishlist_count" : count }
     return {"wishlist_count": 0}
+
+def average_rating(request):
+    avg_rating = Review.objects.aggregate(avg=Avg('rating'))['avg'] or 0
+    return {"average_rating": round(avg_rating, 1)}
