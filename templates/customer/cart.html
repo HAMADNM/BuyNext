@@ -3,7 +3,7 @@
 {% block content %}
 <div class="bg-[#f1f3f6] min-h-screen py-8 font-sans">
     <div class="container mx-auto px-4 max-w-7xl">
-        
+
         <div class="mb-6">
             <h1 class="text-xl font-bold text-slate-900 flex items-center gap-2">
                 My Cart <span class="text-sm font-medium text-slate-500">({{ cart_items|length }} Items)</span>
@@ -19,7 +19,8 @@
                 {% else %} bg-white text-blue-600 border-blue-100 {% endif %} 
                 opacity-0 translate-y-4 transition-all duration-300">
                 <span class="material-icons text-lg">
-                    {% if message.tags == 'success' %}check_circle{% elif message.tags == 'error' %}error{% else %}info{% endif %}
+                    {% if message.tags == 'success' %}check_circle{% elif message.tags == 'error' %}error{% else  %}info{% endif %}
+                  
                 </span>
                 <span>{{ message }}</span>
             </div>
@@ -32,35 +33,38 @@
                 {% for item in cart_items %}
                 <div class="bg-white rounded-lg p-6 border border-slate-200 flex flex-col sm:flex-row gap-6 shadow-sm relative transition-all hover:shadow-md"
                     id="item-row-{{ item.id }}">
-                    
-                    <div class="w-32 h-32 bg-white flex-shrink-0 flex items-center justify-center border border-slate-100 p-2">
+
+                    <div
+                        class="w-32 h-32 bg-white flex-shrink-0 flex items-center justify-center border border-slate-100 p-2">
                         {% with item.variant.images.first as v_img %}
-                            {% if v_img %}
-                            <img src="{{ v_img.image.url }}" class="w-full h-full object-contain">
-                            {% else %}
-                            <img src="{{ item.variant.product.primary_image.url }}" class="w-full h-full object-contain">
-                            {% endif %}
+                        {% if v_img %}
+                        <img src="{{ v_img.image.url }}" class="w-full h-full object-contain">
+                        {% else %}
+                        <img src="{{ item.variant.product.primary_image.url }}" class="w-full h-full object-contain">
+                        {% endif %}
                         {% endwith %}
                     </div>
 
                     <div class="flex-grow flex flex-col">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="text-base font-medium text-slate-900 line-clamp-1 hover:text-blue-600 cursor-pointer">
+                                <h3
+                                    class="text-base font-medium text-slate-900 line-clamp-1 hover:text-blue-600 cursor-pointer">
                                     {{ item.variant.product.name }}
                                 </h3>
                                 <p class="text-xs text-slate-500 mt-1 flex items-center gap-2">
                                     <span class="font-bold text-slate-400 uppercase tracking-tighter">Variant:</span>
                                     <span class="text-slate-700">
                                         {% for va in item.variant.variant_attributes.all %}
-                                            {{ va.option.value }}{% if not forloop.last %}, {% endif %}
+                                        {{ va.option.value }}{% if not forloop.last %}, {% endif %}
                                         {% empty %}
-                                            {{ item.variant.sku_code }}
+                                        {{ item.variant.sku_code }}
                                         {% endfor %}
                                     </span>
                                 </p>
                                 <p class="text-xs text-slate-500 mt-1">
-                                    Seller: <span class="text-blue-600 font-medium">{{ item.variant.product.seller.store_name }}</span>
+                                    Seller: <span class="text-blue-600 font-medium">
+                                     {{   item.variant.product.seller.store_name }}</span>
                                 </p>
                             </div>
                             <div class="text-right">
@@ -75,7 +79,8 @@
                                     {% csrf_token %}
                                     <input type="hidden" name="item_id" value="{{ item.id }}">
                                     <input type="hidden" name="action" value="decrease">
-                                    <button type="submit" class="w-8 h-8 bg-slate-50 hover:bg-slate-100 text-slate-600 border-r border-slate-300 font-bold">-</button>
+                                    <button type="submit"
+                                        class="w-8 h-8 bg-slate-50 hover:bg-slate-100 text-slate-600 border-r border-slate-300 font-bold">-</button>
                                 </form>
 
                                 <div class="w-10 text-center text-sm font-bold">{{ item.quantity }}</div>
@@ -84,18 +89,21 @@
                                     {% csrf_token %}
                                     <input type="hidden" name="item_id" value="{{ item.id }}">
                                     <input type="hidden" name="action" value="increase">
-                                    <button type="submit" class="w-8 h-8 bg-slate-50 hover:bg-slate-100 text-slate-600 border-l border-slate-300 font-bold">+</button>
+                                    <button type="submit"
+                                        class="w-8 h-8 bg-slate-50 hover:bg-slate-100 text-slate-600 border-l border-slate-300 font-bold">+</button>
                                 </form>
                             </div>
 
                             <form method="POST" action="{% url 'delete_cart_item' item.id %}" class="contents">
                                 {% csrf_token %}
-                                <button type="submit" class="text-xs font-bold text-slate-800 hover:text-blue-600 uppercase tracking-tight">
+                                <button type="submit"
+                                    class="text-xs font-bold text-slate-800 hover:text-blue-600 uppercase tracking-tight">
                                     Remove
                                 </button>
                             </form>
-                            
-                            <button class="text-xs font-bold text-slate-800 hover:text-blue-600 uppercase tracking-tight">
+
+                            <button
+                                class="text-xs font-bold text-slate-800 hover:text-blue-600 uppercase tracking-tight">
                                 Save For Later
                             </button>
                         </div>
@@ -103,17 +111,21 @@
                 </div>
                 {% empty %}
                 <div class="bg-white rounded-lg p-20 text-center border border-slate-200">
-                    <img src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png" class="w-32 mx-auto opacity-20 mb-6" alt="Empty Cart">
+                    <img src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png"
+                        class="w-32 mx-auto opacity-20 mb-6" alt="Empty Cart">
                     <p class="text-slate-900 text-lg font-bold">Your cart is empty!</p>
                     <p class="text-slate-500 text-sm mt-1">Add items to it now.</p>
-                    <a href="{% url 'home' %}" class="inline-block mt-6 px-10 py-3 bg-blue-600 text-white rounded font-bold text-sm uppercase shadow-lg hover:bg-blue-700 transition-all">Shop Now</a>
+                    <a href="{% url 'home' %}"
+                        class="inline-block mt-6 px-10 py-3 bg-blue-600 text-white rounded font-bold text-sm uppercase shadow-lg hover:bg-blue-700 transition-all">Shop
+                        Now</a>
                 </div>
                 {% endfor %}
 
                 <div class="bg-white border border-slate-200 p-4 rounded-lg flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <span class="material-icons text-slate-400">verified_user</span>
-                        <span class="text-xs font-bold text-slate-500">Safe and Secure Payments. 100% Authentic products.</span>
+                        <span class="text-xs font-bold text-slate-500">Safe and Secure Payments. 100% Authentic
+                            products.</span>
                     </div>
                 </div>
             </div>
@@ -129,7 +141,7 @@
                             <span class="text-sm text-slate-700">Price ({{ cart_items|length }} items)</span>
                             <span class="text-sm text-slate-900">₹{{ cart.total_price }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between items-center">
                             <span class="text-sm text-slate-700">Delivery Charges</span>
                             <span class="text-sm text-green-600 font-medium uppercase">Free</span>
@@ -137,7 +149,8 @@
 
                         <div class="pt-4 border-t border-dashed border-slate-200 flex justify-between items-center">
                             <span class="text-base font-bold text-slate-900">Total Amount</span>
-                            <span class="text-base font-bold text-slate-900" id="cart-total">₹{{ cart.total_price }}</span>
+                            <span class="text-base font-bold text-slate-900" id="cart-total">₹{{ cart.total_price      }}</span>
+                          
                         </div>
 
                         <div class="pt-2">
@@ -146,12 +159,13 @@
                     </div>
 
                     <div class="p-4 bg-slate-50 border-t border-slate-100">
-                        <button class="w-full bg-[#fb641b] text-white font-bold py-4 rounded shadow hover:bg-[#e65a16] transition-all uppercase text-sm">
+                        <a href="{% url 'checkout' %}?type=cart"
+                            class="block w-full text-center bg-[#fb641b] text-white font-bold py-4 rounded shadow hover:bg-[#e65a16] transition-all uppercase text-sm">
                             Place Order
-                        </button>
+                        </a>
                     </div>
                 </div>
-                
+
                 <p class="mt-4 flex items-center gap-2 text-xs text-slate-500 font-medium px-2">
                     <span class="material-icons text-sm">shield</span>
                     Safe and Secure Payments.

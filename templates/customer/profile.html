@@ -139,13 +139,16 @@
                             <span class="material-icons-outlined">person</span> <span
                                 class="whitespace-nowrap">Profile</span>
                         </button>
-                        <button
-                            class="flex-shrink-0 lg:w-full flex items-center gap-3 p-3 lg:p-4 hover:bg-white/50 rounded-2xl lg:rounded-[1.5rem] font-bold text-sm text-gray-500 transition-all">
-                            <span class="material-icons-outlined">shopping_bag</span> <span
-                                class="whitespace-nowrap">Orders</span>
-                        </button>
 
                         <div class="hidden lg:contents">
+                            <a href="{% url 'my_orders' %}">
+                                <button
+                                    class="w-full flex items-center justify-between p-4 hover:bg-white/50 rounded-[1.5rem] font-bold text-sm text-gray-500 group">
+                                    <div class="flex items-center gap-4">
+                                        <span class="material-icons-outlined">shopping_bag</span> My Orders
+                                    </div>
+                                </button>
+                            </a>
                             <a href="{% url 'view_wishlist' %}">
                                 <button
                                     class="w-full flex items-center justify-between p-4 hover:bg-white/50 rounded-[1.5rem] font-bold text-sm text-gray-500 group">

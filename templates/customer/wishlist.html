@@ -65,8 +65,8 @@
                                     {% csrf_token %}
                                     <button type="submit" {% if collection.is_default %}disabled{% endif %}
                                         class="p-1 rounded hover:bg-white {% if collection.is_default %} text-orange-500 {% else %} text-slate-300 hover:text-orange-500 {% endif %}">
-                                        <span class="material-icons text-sm">{% if collection.is_default %}push_pin{%
-                                            else %}outline_push_pin{% endif %}</span>
+                                        <span class="material-icons text-sm">{% if collection.is_default %}push_pin{%   else %}outline_push_pin{% endif %}</span>
+                                         
                                     </button>
                                 </form>
 

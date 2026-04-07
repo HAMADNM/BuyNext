@@ -1,11 +1,12 @@
 import os
+import uuid
 from django.shortcuts import render,redirect,get_object_or_404
 from core.models import *
 from .models import *
 from bnadmin.models import *
 from django.contrib import messages
 from django.db.models import Prefetch
-from django.contrib.auth import login
+from django.contrib.auth import login,authenticate
 from core.decorator import seller_profile_required,verified_seller_required
 from django.db.models import Sum, Count, Q, F, Avg
 from .models import SellerProfile, Product, ProductVariant, InventoryLog
@@ -36,75 +37,96 @@ def _is_video_file(upload):
      ext = os.path.splitext(upload.name or "")[1].lower()
      return ext in {".mp4", ".mov", ".webm", ".ogg", ".m4v"}
 
-# Create your views here.
 def user_seller_bridge(request):
     return render(request,"seller/user_seller_bridge.html")
+
+
 def seller_registration(request):
     if request.method == "POST":
-         store_name=request.POST.get("store_name")
-         gst_number=request.POST.get("gst_number")
-         description=request.POST.get("description")
-         logo=request.FILES.get("logo")
-         if SellerProfile.objects.filter(store_name=store_name).exists():
-               messages.error(request, "This store name is already registered. Please choose a unique brand name.")
-               return render(request,"seller/seller_registration.html",{"data":request.POST})
-         if SellerProfile.objects.filter(gst_number=gst_number).exists():
-               messages.error(request, "This GSTIN is already linked to an existing seller account. Please log in to your original account.")
-               return render(request,"seller/seller_registration.html",{"data":request.POST})    
-         if not  request.user.is_authenticated:
-              first_name=request.POST.get("first_name")
-              last_name=request.POST.get("last_name")
-              username=request.POST.get("username")
-              email = request.POST.get("email")
-              phone_no = request.POST.get("phone_display")
-              password = request.POST.get("password")
-              confirm_password = request.POST.get("confirm_password")
-              if username:
-                   final_username=username
-              elif first_name or last_name:
-                   final_username =(first_name+last_name).lower()
-              elif email:
-                   final_username = email.split("@")[0].lower()
 
-              else:
-                   final_username = "user"
-                 
-              if password != confirm_password:
-                    messages.error(request, "Passwords do not match")
-                    return render(request,"seller/seller_registration.html",{"data":request.POST})
-              if User.objects.filter(username=final_username).exists():
+        store_name = request.POST.get("store_name", "").strip()
+        gst_number = request.POST.get("gst_number", "").strip()
+        description = request.POST.get("description", "").strip()
+        logo = request.FILES.get("logo")
+
+        if SellerProfile.objects.filter(store_name__iexact=store_name).exists():
+            messages.error(request, "Store name already exists")
+            return render(request, "seller/seller_registration.html", {"data": request.POST})
+
+        if SellerProfile.objects.filter(gst_number=gst_number).exists():
+            messages.error(request, "GST already registered")
+            return render(request, "seller/seller_registration.html", {"data": request.POST})
+
+        if not request.user.is_authenticated:
+
+            phone_number = request.POST.get("phone_number", "").strip()
+            email = request.POST.get("email", "").strip().lower()
+            print(email)
+            print(phone_number)
+            password = request.POST.get("password")
+            confirm_password = request.POST.get("confirm_password")
+
+            first_name = request.POST.get("first_name", "").strip()
+            last_name = request.POST.get("last_name", "").strip()
+            username_input = request.POST.get("username", "").strip()
+
+            if password != confirm_password:
+                messages.error(request, "Passwords do not match")
+                return render(request, "seller/seller_registration.html", {"data": request.POST})
+
+            if User.objects.filter(phone_number=phone_number).exists():
+                messages.error(request, "Phone number already registered")
+                return render(request, "seller/seller_registration.html", {"data": request.POST})
+
+            if User.objects.filter(email__iexact=email).exists():
+                messages.error(request, "Email already registered")
+                return render(request, "seller/seller_registration.html", {"data": request.POST})
+
+            if username_input:
+                if User.objects.filter(username__iexact=username_input).exists():
                     messages.error(request, "Username already taken")
-                    return render(request,"seller/seller_registration.html",{"data":request.POST})
-              if User.objects.filter(email=email).exists():
-                    messages.error(request, "Email already registered")
-                    return render(request,"seller/seller_registration.html",{"data":request.POST})
-              if User.objects.filter( phone_number=phone_no).exists():
-                    messages.error(request, "phone number already registered")
-                    return render(request,"seller/seller_registration.html",{"data":request.POST})
-              user=User.objects.create_user(
-                    username=final_username,
-                    first_name=first_name,
-                    last_name=last_name,
-                    email=email,
-                    phone_number=phone_no,
-                    password=password
-                )
-              user.is_active=True
-              user.save()
-              login(request, user)
-         else:
-              user=request.user
-                
-         seller_profile = SellerProfile.objects.create(
-                user=user,
-                store_name=store_name,
-                gst_number = gst_number,
-                description=description,
-                logo=logo,
+                    return render(request, "seller/seller_registration.html", {"data": request.POST})
+                username = username_input
+            else:
+                username = f"{email.split('@')[0]}_{uuid.uuid4().hex[:5]}"
+
+            user = User.objects.create_user(
+                username=username,
+                phone_number=phone_number,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
             )
-         seller_profile.save()
-         return redirect('seller_profile')
-    return render(request,"seller/seller_registration.html",{"data":request.POST})
+
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)
+
+        else:
+            user = request.user
+
+        if hasattr(user, "seller_profile"):
+            messages.warning(request, "You already have a seller account")
+            return redirect("seller_dashboard")
+
+        SellerProfile.objects.create(
+            user=user,
+            store_name=store_name,
+            gst_number=gst_number,
+            description=description,
+            logo=logo,
+            verification_status="PENDING"
+        )
+        if not user.is_email_verified:
+            messages.warning(request, "Please verify your email")
+            request.session["verify_user"] = user.id
+            request.session["verify_source"] = "seller"
+            return redirect("email_verification")
+
+        return redirect("seller_dashboard")
+
+    return render(request, "seller/seller_registration.html", {"data": request.POST})
 
 
 @verified_seller_required
@@ -688,25 +710,62 @@ def reply_review(request, review_id):
 
 
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from seller.models import SellerProfile
+from core.models import User
+
 @seller_profile_required
 def seller_profile(request):
+
     profile = request.user.seller_profile
 
     if request.method == "POST":
-        profile.store_name = request.POST.get("store_name")
-        profile.description = request.POST.get("description")
+
+        store_name = request.POST.get("store_name")
+        description = request.POST.get("description")
+        email = request.POST.get("business_email")
+        phone = request.POST.get("business_phone")
+        if SellerProfile.objects.filter(store_name=store_name).exclude(user=request.user).exists():
+            messages.error(request, "Store name already taken")
+            return redirect("seller_profile")
+
+        profile.store_name = store_name
+        profile.description = description
 
         if request.FILES.get("logo"):
             if profile.logo:
-                   profile.logo.delete(save=False)
+                profile.logo.delete(save=False)
             profile.logo = request.FILES.get("logo")
 
         if request.FILES.get("banner"):
             if profile.banner:
-                  profile.banner.delete(save=False)
+                profile.banner.delete(save=False)
             profile.banner = request.FILES.get("banner")
 
+        if email and email != request.user.email:
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "Email already in use")
+                return redirect("seller_profile")
+
+            request.user.email = email
+            request.user.is_email_verified = False 
+            request.user.save()
+
+            messages.warning(request, "Please verify your new email")
+            profile.save()
+        if phone and phone != request.user.phone_number:
+            request.user.phone_number = phone
+            request.user.is_phone_verified = False
+            request.user.save()
+
+            messages.warning(request, "Please verify your new phone number")
+
         profile.save()
+
+        messages.success(request, "Profile updated successfully")
+
+        return redirect("seller_profile") 
 
     return render(request, "seller/sellerprofile.html", {
         "profile": profile

@@ -1,0 +1,38 @@
+<div class="p-6 flex flex-col sm:flex-row gap-6 relative group" id="item-{{ item.id }}">
+    <div class="w-24 h-24 flex-shrink-0 border border-slate-100 p-1">
+        <img src="{{ item.variant.images.first.image.url }}"
+            class="w-full h-full object-contain">
+    </div>
+
+    <div class="flex-grow">
+        <h3 class="text-sm font-bold text-slate-900">{{ item.variant.product.name }}</h3>
+        <p class="text-[11px] text-slate-500 mt-1 uppercase font-bold tracking-tighter">
+            Variant: {{ item.variant.sku_code }}
+        </p>
+
+        <div class="mt-4 flex items-center gap-6">
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center bg-slate-50 border border-slate-200 rounded p-1 w-fit">
+                    <button type="button" onclick="changeQty('{{ item.id }}', -1)"
+                        class="w-7 h-7 flex items-center justify-center bg-white border border-slate-200 text-slate-600 rounded font-bold hover:bg-slate-100">-</button>
+                    <input type="text" id="input-{{ item.id }}" value="{{ item.quantity }}"
+                        readonly
+                        class="w-10 text-center text-xs font-bold bg-transparent border-none focus:ring-0"
+                        data-max="3">
+                    <input type="hidden" name="quantity_{{ item.id }}"
+                        id="hidden-qty-{{ item.id }}" value="{{ item.quantity }}">
+                    <button type="button" id="plus-{{ item.id }}"
+                        onclick="changeQty('{{ item.id }}', 1)"
+                        class="w-7 h-7 flex items-center justify-center bg-white border border-slate-200 text-slate-600 rounded font-bold hover:bg-slate-100">+</button>
+                </div>
+                <span id="warn-{{ item.id }}"
+                    class="text-[10px] text-orange-600 font-bold hidden">Maximum 3 items allowed</span>
+            </div>
+
+            <p id="price-{{ item.id }}" data-price="{{ item.variant.selling_price }}"
+                class="text-base font-black text-slate-900">
+                ₹{{ item.subtotal }}
+            </p>
+        </div>
+    </div>
+</div>

@@ -15,6 +15,20 @@ urlpatterns = [
           path("wishlist/set-default/<uuid:collection_id>/",views.set_default_collection, name="set_default_collection"),
           path("wishlist/remove/wishlist-item/<uuid:item_id>/",views.remove_wishlist_item, name="remove_wishlist_item"),
           path("wishlist/remove/collection/<uuid:collection_id>/",views.remove_collection, name="remove_wishlist_collection"),
-
-
+          path("checkout/", views.checkout_view, name="checkout"),
+          path("select-address/", views.select_address, name="select_address"),
+          path("set-address/<uuid:id>/", views.set_address, name="set_address"),
+          path("address/add/", views.add_address, name="add_address"),
+          path("address/edit/<uuid:address_id>/", views.edit_address, name="edit_address"),
+          path("place-order/", views.place_order, name="place_order"),
+          path("order/success/<uuid:order_id>/",views.order_success,name="order_success"),
+          path("razorpay/<uuid:order_id>/", views.razorpay_payment, name="razorpay_payment"),
+          path("payment-success/<uuid:order_id>/", views.payment_success, name="payment_success"),
+          path("my-orders/", views.my_orders, name="my_orders"),
+          path("order/<uuid:order_id>/", views.order_details, name="order_details"),
+          path("order/<uuid:order_id>/track/", views.track_order_item, name="track_order_item"),
+          path("order-item/cancel/<uuid:item_id>/", views.cancel_order_item, name="cancel_order_item"),
+          path("order-item/return/<uuid:item_id>/", views.return_order_item, name="return_order_item"),
+          path("review/add/<str:product_slug>/", views.add_review, name="add_review"),
+          path("review/edit/<uuid:review_id>/", views.edit_review, name="edit_review"),
 ]

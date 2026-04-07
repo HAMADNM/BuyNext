@@ -13,9 +13,12 @@ class User(AbstractUser):
         return hasattr(self,"seller_profile")
     @property
     def is_verified_seller(self):
-        return(
-            self.is_seller and self.seller_profile.verification_status == "VERIFIED"
-        )
+        try:
+            return (
+                self.is_seller and self.seller_profile.verification_status == "VERIFIED"
+            )
+        except:
+            return False
     @property
     def is_admin_role(self):
       return self.role == "ADMIN"

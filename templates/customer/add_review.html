@@ -1,0 +1,102 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+    /* Glowing Star Logic */
+    .rating-group {
+        display: flex;
+        flex-direction: row-reverse; /* Allows the ~ selector to work 'backwards' */
+        justify-content: flex-end;
+    }
+
+    .rating-group input:checked ~ label span,
+    .rating-group label:hover ~ label span,
+    .rating-group label:hover span {
+        color: #facc15 !important; /* text-yellow-400 */
+        filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.4));
+        transform: scale(1.1);
+    }
+</style>
+
+<div class="bg-[#f1f3f6] min-h-screen py-12 font-sans text-slate-900">
+    <div class="container mx-auto px-4 max-w-xl">
+        
+        <div class="mb-8">
+            <a href="{% url 'product_details' product.slug %}" class="flex items-center gap-2 text-blue-600 text-[10px] font-black uppercase tracking-widest hover:underline mb-4">
+                <span class="material-icons text-xs">arrow_back</span> Back to Product
+            </a>
+            <h1 class="text-2xl font-black tracking-tight">Write a Review</h1>
+            <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Reviewing: {{ product.name }}</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3">Overall Rating</label>
+                    <div class="rating-group gap-2">
+                        {% for i in "54321" %}
+                        <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" class="hidden peer" required>
+                        <label for="star{{ i }}" class="cursor-pointer">
+                            <span class="material-icons text-slate-200 transition-all duration-200 text-3xl">star</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Headline</label>
+                    <input type="text" name="title" required placeholder="Summarize your experience"
+                           class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder:text-slate-300">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Written Review</label>
+                    <textarea name="comment" required rows="4" placeholder="What did you like or dislike?"
+                              class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder:text-slate-300"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Add Photos (Max 5)</label>
+                    <div class="relative group">
+                        <input type="file" name="images" id="imageInput" multiple accept="image/*" 
+                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                        <div class="border-2 border-dashed border-slate-200 rounded-2xl p-10 text-center group-hover:border-blue-400 group-hover:bg-blue-50/30 transition-all">
+                            <span class="material-icons text-slate-300 text-3xl mb-1">add_a_photo</span>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Click to upload photos</p>
+                        </div>
+                    </div>
+                    
+                    <div id="imagePreview" class="flex flex-wrap gap-2 mt-4"></div>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 text-white text-[11px] font-black uppercase py-4 rounded-xl hover:bg-blue-600 transition-all tracking-widest shadow-xl shadow-slate-200">
+                    Submit Review
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Preview logic for selected images
+    document.getElementById('imageInput').addEventListener('change', function() {
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+        
+        const files = Array.from(this.files).slice(0, 5);
+        
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const div = document.createElement('div');
+                div.className = "w-16 h-16 rounded-lg border border-slate-200 bg-cover bg-center shadow-sm ring-2 ring-white";
+                div.style.backgroundImage = `url(${e.target.result})`;
+                preview.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
+{% endblock %}

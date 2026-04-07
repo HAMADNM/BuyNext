@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from customer.models import Address
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 
 
 
@@ -11,24 +12,33 @@ def _dashboard_for_user(user, request):
 
     if user.is_admin_role:
         return reverse_lazy("admin_dashboard")
-    if user.is_seller:
-        return reverse_lazy("seller_profile")
-    if not (user.is_email_verified or user.is_phone_verified):
-        messages.warning(request, "Please verify your email or phone number to continue.")
-        return reverse_lazy("profile")
-    if not user.is_email_verified:
-        messages.info(request, "Verify your email for better account security.")
 
-    if not user.is_phone_verified:
-        messages.info(request, "Verify your phone number for better security.")
+    if user.is_seller:
+
+        if not (user.is_email_verified or user.is_phone_verified):
+            if request.path != reverse_lazy("seller_profile"):
+                messages.warning(request, "Please verify your email or phone number to continue.")
+                return reverse_lazy("seller_profile")
+            return None 
+
+        return reverse_lazy("seller_dashboard")
+
+    if not (user.is_email_verified or user.is_phone_verified):
+        if request.path != reverse_lazy("profile"):
+            messages.warning(request, "Please verify your email or phone number to continue.")
+            return reverse_lazy("profile")
+        return None
+
     if not Address.objects.filter(user=user).exists():
-        messages.warning(request, "Please add your delivery address.")
         return reverse_lazy("profile")
+
     return reverse_lazy("home")
 # ================================================
 # CUSTOMER REQUIRED DECORATOR
 # ================================================
 
+
+from django.http import JsonResponse  # ✅ ADD THIS
 
 def customer_required(view_func=None, login_url=None):
 
@@ -39,15 +49,19 @@ def customer_required(view_func=None, login_url=None):
         def wrapper(request, *args, **kwargs):
 
             user = request.user
-
             if not user.is_authenticated:
+
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        "status": "login_required",
+                        "redirect_url": f"{login_url}?next={request.get_full_path()}"
+                    }, status=401)
                 return redirect(
                     f"{login_url}?{REDIRECT_FIELD_NAME}={request.get_full_path()}"
                 )
-
-            if user.is_admin_role :
+            if user.is_admin_role:
                 messages.error(request, "You are not allowed to access customer actions.")
-                return redirect(_dashboard_for_user(user,request))
+                return redirect(_dashboard_for_user(user, request))
 
             return view_func(request, *args, **kwargs)
 
@@ -56,7 +70,6 @@ def customer_required(view_func=None, login_url=None):
     if view_func:
         return decorator(view_func)
     return decorator
-
 
 # ================================================
 # SELLER REQUIRED DECORATOR
@@ -102,7 +115,8 @@ def verified_seller_required(view_func=None,login_url=None):
             if not user.is_seller:
                 return redirect("seller_registration")
             if not user.is_verified_seller:
-                return redirect(_dashboard_for_user(user,request))
+                messages.warning(request, "Your seller account is under review.")
+                return redirect("seller_profile")
             return view_func(request,*args, **kwargs)
         return wrapper
     if view_func:

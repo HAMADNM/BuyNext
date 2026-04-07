@@ -1,0 +1,80 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="bg-[#f1f3f6] min-h-screen py-12 font-sans text-slate-900">
+    <div class="container mx-auto px-4 max-w-xl">
+        
+        <div class="mb-8">
+            <h1 class="text-2xl font-black tracking-tight">Edit Your Review</h1>
+            <p class="text-[10px] text-blue-600 font-black uppercase tracking-widest mt-1">{{ product.name }}</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+            <form method="POST" enctype="multipart/form-data" class="space-y-8">
+                {% csrf_token %}
+
+                <div>
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3">Update Rating</label>
+                    <div class="flex gap-2">
+                        {% for i in "12345" %}
+                        <label class="cursor-pointer">
+                            <input type="radio" name="rating" value="{{ forloop.counter }}" class="hidden peer" 
+                                   {% if review.rating == forloop.counter|add:"0" %}checked{% endif %}>
+                            <span class="material-icons text-slate-200 peer-checked:text-yellow-400 hover:text-yellow-200 transition-colors">star</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Headline</label>
+                        <input type="text" name="title" value="{{ review.title }}" required
+                               class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm outline-none focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Detailed Feedback</label>
+                        <textarea name="comment" rows="4" required
+                                  class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm outline-none focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all">{{ review.comment }}</textarea>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">Add Photos (Max 5)</label>
+                    <div class="relative group">
+                        <input type="file" name="images" id="imageInput" multiple accept="image/*" 
+                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                        <div class="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center group-hover:border-blue-400 transition-all">
+                            <span class="material-icons text-slate-300 text-2xl mb-1">add_photo_alternate</span>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Upload Photos</p>
+                        </div>
+                    </div>
+                    <div id="imagePreview" class="flex flex-wrap gap-2 mt-4"></div>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 text-white text-[11px] font-black uppercase py-4 rounded-xl hover:bg-blue-600 transition-all tracking-widest shadow-xl shadow-slate-200">
+                    Update Review
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Preview for selected files
+    document.getElementById('imageInput').addEventListener('change', function() {
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const div = document.createElement('div');
+                div.className = "w-14 h-14 rounded-lg border border-slate-200 bg-cover bg-center ring-2 ring-blue-50";
+                div.style.backgroundImage = `url(${e.target.result})`;
+                preview.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
+{% endblock %}

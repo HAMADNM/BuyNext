@@ -1,0 +1,113 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="bg-[#f1f3f6] min-h-screen py-8 font-sans">
+    <div class="container mx-auto px-4 max-w-5xl">
+
+        <div class="mb-6">
+            <h1 class="text-xl font-bold text-slate-900 uppercase tracking-tight">Order Status</h1>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6 items-start">
+
+            <div class="w-full lg:flex-grow space-y-4">
+
+                <div class="bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-6 py-3 bg-blue-600 flex justify-between items-center">
+                        <h2 class="text-white text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                            <span class="bg-white text-blue-600 w-5 h-5 rounded-sm flex items-center justify-center text-[10px]">
+                                <span class="material-icons text-[12px]">done</span>
+                            </span>
+                            Order Placed Successfully
+                        </h2>
+                    </div>
+
+                    <div class="p-8 text-center sm:text-left flex flex-col sm:flex-row items-center gap-6 border-b border-slate-100">
+                        <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="material-icons text-green-600 text-5xl">verified</span>
+                        </div>
+                        
+                        <div>
+                            <h2 class="text-xl font-black text-slate-900 mb-1">Thank you, {{ user.username|title }}!</h2>
+                            <p class="text-sm text-slate-500 leading-relaxed">
+                                Your order has been confirmed. We'll send you an update as soon as your items ship. 
+                                A confirmation has been sent to your registered email.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50/50">
+                        <div class="p-4 bg-white border border-slate-200 rounded">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Order ID</p>
+                            <p class="text-sm font-black text-slate-900">#{{ order.order_number }}</p>
+                        </div>
+                        <div class="p-4 bg-white border border-slate-200 rounded">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Payment Method</p>
+                            <p class="text-sm font-black text-slate-900 uppercase">{{ order.payment_method|title }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'all_products' %}" 
+                       class="flex-1 bg-[#fb641b] text-white font-black py-4 rounded shadow-lg text-center uppercase text-sm tracking-wide hover:bg-[#e65a17] transition-all">
+                        Continue Shopping
+                    </a>
+                    <a href="{% url 'my_orders' %}" 
+                       class="flex-1 bg-white border border-slate-200 text-slate-700 font-black py-4 rounded shadow-sm text-center uppercase text-sm tracking-wide hover:bg-slate-50 transition-all">
+                        View My Orders
+                    </a>
+                </div>
+            </div>
+
+            <aside class="w-full lg:w-[380px] sticky top-24">
+                <div class="bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100">
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400">Order Summary</h2>
+                    </div>
+                    
+                    <div class="p-6 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-600">Items Ordered</span>
+                            <span class="text-slate-900 font-bold">{{ order.items.count }}</span>
+                        </div>
+
+                        <div class="pt-4 border-t border-dashed border-slate-200 flex justify-between items-center">
+                            <span class="text-base font-black text-slate-900 uppercase">Total Paid</span>
+                            <span class="text-lg font-black text-slate-900">
+                                ₹{{ order.final_amount }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 border-t border-slate-100">
+                        <p class="flex items-center justify-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
+                            <span class="material-icons text-xs">verified_user</span>
+                            100% Genuine Products
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-6 bg-white rounded shadow-sm border border-slate-200 text-center">
+                    <p class="text-xs font-bold text-slate-600 mb-2">Need help with your order?</p>
+                    <a href="#" class="text-blue-600 text-xs font-black uppercase tracking-tighter hover:underline">
+                        Contact BuyNext Support
+                    </a>
+                </div>
+            </aside>
+            
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Smooth entrance animation for the card */
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}

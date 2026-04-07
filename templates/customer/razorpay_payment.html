@@ -1,0 +1,61 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="bg-[#f1f3f6] min-h-screen flex flex-col items-center justify-center font-sans">
+    <div class="bg-white p-10 rounded shadow-sm border border-slate-200 text-center max-w-sm">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        
+        <h2 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">Secure Payment</h2>
+        <p class="text-sm text-slate-500 mb-6">Please do not refresh the page or click the back button while we initialize your payment.</p>
+        
+        <div class="flex items-center justify-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
+            <span class="material-icons text-xs">verified_user</span>
+            BuyNext Secure Checkout
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{ razorpay_key }}",
+        "amount": "{{ amount }}",
+        "currency": "INR",
+        "name": "BuyNext",
+        "description": "Payment for Order #{{ order.order_number }}",
+        "image": "https://your-logo-url.com/logo.png", // Optional: Add your logo here
+        "order_id": "{{ razorpay_order_id }}",
+        "handler": function (response) {
+            // Redirect to your success view
+window.location.href = `/payment-success/{{ order.id }}/?payment_id=${response.razorpay_payment_id}&order_id=${response.razorpay_order_id}&signature=${response.razorpay_signature}`;      },
+        "prefill": {
+            "name": "{{ order.user.username }}",
+            "email": "{{ order.user.email }}",
+           "contact": "{{ order.shipping_address_snapshot.phone }}"
+        },
+        "theme": {
+            "color": "#2874f0" // Changed to match your Blue-600 theme
+        },
+        "modal": {
+            "ondismiss": function(){
+                // If user closes the popup, send them back to checkout or cart
+                window.location.href = "{% url 'checkout' %}";
+            }
+        }
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.on('payment.failed', function (response){
+    alert("Payment failed. Please try again.");
+    window.location.href = "{% url 'checkout' %}";
+});
+    
+    // Automatically open the checkout on page load
+window.onload = function(){
+    setTimeout(() => {
+        rzp.open();
+    }, 500);
+};
+
+</script>
+{% endblock %}

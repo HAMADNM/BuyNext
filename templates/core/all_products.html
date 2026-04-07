@@ -102,10 +102,11 @@
 
                             <button onclick="event.stopPropagation(); toggleWishlistGrid(event, this)"
                                 class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white border border-slate-100 rounded-full flex items-center justify-center shadow-sm z-10 hover:bg-slate-50 transition-all {% if product.is_in_wishlist %}text-red-500{% else %}text-slate-300{% endif %}"
-                                {% if product.default_variant %}data-variant-id="{{ product.default_variant.id }}" 
-                               {% endif %}>
-                                <span class="material-icons text-sm">{% if product.is_in_wishlist %}favorite
-                                    {% else %}favorite_border{% endif %}</span>
+                                {% if product.default_variant %}data-variant-id="{{ product.default_variant.id }}" {% endif %}>
+                              
+
+                                <span class="material-icons text-sm">{% if product.is_in_wishlist %}favorite {% else %}favorite_border{% endif %}</span>
+                                   
                             </button>
                         </div>
 
@@ -124,8 +125,10 @@
 
                             <div class="flex flex-col mb-1">
                                 <div class="flex items-baseline gap-2">
-                                    <span class="text-lg font-bold text-gray-900">${{ product.min_selling_price }}</span>
+                                    <span class="text-lg font-bold text-gray-900">${{ product.min_selling_price  }}</span>
                                        
+
+
 
 
                                     {% if product.min_mrp > product.min_selling_price %}
@@ -138,17 +141,35 @@
                             </div>
 
                             <div class="text-[11px] text-gray-500 uppercase tracking-tight">
-                                Seller: <span class="text-gray-700 font-semibold underline">{{ product.seller.store_name   }}</span>
-                                  
+                                Seller: <span class="text-gray-700 font-semibold underline">{{ product.seller.store_name     }}</span>
+                               
+
+
 
 
                             </div>
                         </div>
                     </a>
                     {% empty %}
+
+                    {% if request.GET.q or request.GET.categories or request.GET.min_price or request.GET.max_price or request.GET.in_stock %}
+                  
+
                     <div class="col-span-full py-20 text-center">
-                        <p class="text-gray-400 font-medium">No products found matching your filters.</p>
+                        <p class="text-gray-400 font-medium">
+                            No products found matching your search or filters.
+                        </p>
                     </div>
+
+                    {% else %}
+
+                    <div class="col-span-full py-20 text-center">
+                        <p class="text-gray-400 font-medium">
+                            No products available.
+                        </p>
+                    </div>
+
+                    {% endif %}
                     {% endfor %}
                 </div>
 
@@ -217,17 +238,44 @@
                 "X-Requested-With": "XMLHttpRequest"
             }
         })
-            .then(response => response.json())
+            .then(response => {
+
+                const contentType = response.headers.get("content-type");
+
+                if (!contentType || !contentType.includes("application/json")) {
+                    // 🔥 Not JSON → redirect to login
+                    window.location.href = "/login/";
+                    return;
+                }
+
+                return response.json();
+            })
             .then(data => {
+
+                // 🔥 VERY IMPORTANT FIX
+                if (data.status === "login_required") {
+                    window.location.href = data.redirect_url;
+                    return;
+                }
+
                 if (data.status === "added") {
                     icon.textContent = 'favorite';
                     button.classList.remove('text-slate-300');
                     button.classList.add('text-red-500');
+
+                    showWishlistToastGrid("Added to wishlist ❤️");
+
                 } else if (data.status === "removed") {
                     icon.textContent = 'favorite_border';
                     button.classList.remove('text-red-500');
+                    button.classList.add('text-slate-300');
+
                     showWishlistToastGrid("Removed from your wishlist");
+
+                } else {
+                    showWishlistToastGrid("Something went wrong");
                 }
+
             })
             .finally(() => { button.disabled = false; });
     }

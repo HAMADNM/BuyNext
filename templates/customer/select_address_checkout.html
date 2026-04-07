@@ -1,0 +1,66 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+    <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+        <h2 class="text-sm font-black uppercase tracking-widest text-slate-700 flex items-center gap-2">
+            <span class="material-icons text-blue-600 text-lg">location_on</span>
+            Select Delivery Address
+        </h2>
+        <a href="{% url 'add_address' %}" class="text-blue-600 text-[11px] font-black uppercase tracking-tighter hover:underline">
+            + Add New Address
+        </a>
+    </div>
+
+    <div class="p-6 space-y-4">
+        {% for address in addresses %}
+        <div class="group border border-slate-200 rounded-lg p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all hover:border-blue-300 hover:bg-blue-50/30">
+            
+            <div class="space-y-1">
+                <div class="flex items-center gap-3">
+                    <p class="font-black text-slate-900 text-sm tracking-tight">{{ address.full_name }}</p>
+                    {% if address.is_default %}
+                    <span class="bg-slate-200 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-tighter">Default</span>
+                    {% endif %}
+                </div>
+                
+                <p class="text-xs text-slate-500 leading-relaxed max-w-md">
+                    <span class="font-medium text-slate-700">{{ address.house_info }}</span>, 
+                    {{ address.locality }}, {{ address.city }}, {{ address.state }} - 
+                    <span class="font-bold text-slate-900">{{ address.pincode }}</span>
+                </p>
+                
+                <p class="text-[11px] font-bold text-slate-400 mt-2">
+                    Phone: <span class="text-slate-700">{{ address.phone_number }}</span>
+                </p>
+            </div>
+
+            <div class="flex flex-row sm:flex-col gap-2 w-full sm:w-auto">
+                <a href="{% url 'set_address' address.id %}"
+                   class="flex-1 text-center bg-[#fb641b] text-white px-6 py-2.5 text-[11px] font-black rounded uppercase tracking-widest shadow-md hover:bg-[#e65a16] transition-all">
+                    Deliver Here
+                </a>
+                
+                <a href="{% url 'edit_address' address.id %}"
+                   class="text-center text-slate-400 hover:text-blue-600 text-[10px] font-bold uppercase tracking-tighter transition-colors">
+                    Edit
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-10">
+            <span class="material-icons text-slate-200 text-5xl mb-3">home_work</span>
+            <p class="text-slate-500 text-sm font-bold">No saved addresses found.</p>
+            <a href="{% url 'add_address' %}" class="inline-block mt-4 text-blue-600 text-xs font-black uppercase border-b-2 border-blue-600 pb-1">
+                Create your first address
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <span class="material-icons text-slate-400 text-xs">shield</span>
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Your data is encrypted and secure</span>
+    </div>
+</div>
+{% endblock %}

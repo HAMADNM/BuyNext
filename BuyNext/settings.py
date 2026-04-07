@@ -110,7 +110,7 @@ TEMPLATES = [
 ]
 
 
-load_dotenv()
+load_dotenv(dotenv_path=BASE_DIR / ".env", override=True)
 DEBUG = os.getenv("DEBUG")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -125,6 +125,9 @@ DEFAULT_FROM_EMAIL = "noreply@buynext.com"
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
+
 
 
 WSGI_APPLICATION = 'BuyNext.wsgi.application'

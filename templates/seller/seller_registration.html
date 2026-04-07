@@ -184,7 +184,7 @@
 
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-700 ml-1">Buisness phone Number</label>
-                           <input id="phone" type="text" name="phone_display" placeholder="enter your phone number" 
+                           <input id="phone" type="text" name="phone_number" placeholder="enter your phone number" 
             {% if not request.user.is_authenticated %} required {% endif %}
             value="{% if request.user.is_authenticated %}{{ request.user.phone_number }}{% else %}{{ data.phone_display }}{% endif %}"
             {% if request.user.is_authenticated %} readonly {% endif %}

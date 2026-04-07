@@ -12,15 +12,19 @@ from customer.models import WishlistItem
 from django.db.models import Avg, Prefetch,Min,Max
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
+from django.db.models import Q
+from django.urls import reverse
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from .decorator import _dashboard_for_user,customer_required,admin_not_required
+from .decorator import _dashboard_for_user,admin_not_required
 # Create your views here.
 
 def login_view(request):
     if request.method == "POST":
         username_or_email = request.POST.get("username_or_email")
         password = request.POST.get("password")
+
         try:
             user_obj = User.objects.get(email=username_or_email)
             username = user_obj.username
@@ -30,48 +34,65 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+
             if not (user.is_email_verified or user.is_phone_verified):
-                messages.error(request, "Please verify your email or phone before login.")
+                messages.error(request, "Please verify your account first.")
                 request.session["verify_user"] = user.id
+                request.session["verify_source"] = "user" 
                 return redirect("choose_verification")
 
-            login(request, user)
-            return redirect(_dashboard_for_user(request.user,request))
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+            url = _dashboard_for_user(request.user, request)
+            if url:
+                return redirect(url)
+
+            return redirect("home")
 
         else:
-            messages.error(request, "Invalid username or password")
+            messages.error(request, "Invalid credentials")
 
     return render(request, "core/login.html")
+
+
 def register_view(request):
-    if request.method=="POST":
-        username=request.POST.get("username")
+    if request.method == "POST":
+        username = request.POST.get("username")
         email = request.POST.get("email")
         phone_no = request.POST.get("full_phone")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
+
         if password != confirm_password:
             messages.error(request, "Passwords do not match")
             return render(request, "core/register.html")
+
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already taken")
             return render(request, "core/register.html")
+
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email already registered")
             return render(request, "core/register.html")
-        if User.objects.filter( phone_number=phone_no).exists():
-            messages.error(request, "phone number already registered")
+
+        if User.objects.filter(phone_number=phone_no).exists():
+            messages.error(request, "Phone number already registered")
             return render(request, "core/register.html")
-        user=User.objects.create_user(
+
+        user = User.objects.create_user(
             username=username,
             email=email,
-             phone_number=phone_no,
+            phone_number=phone_no,
             password=password
         )
-        user.is_active=True
         user.save()
-        request.session["verify_user"]=user.id
+
+        request.session["verify_user"] = user.id
+        request.session["verify_source"] = "user" 
+
         return redirect("choose_verification")
-    return render(request,"core/register.html")
+
+    return render(request, "core/register.html")
 def choose_verification(request):
     user_id = request.session.get("verify_user")
 
@@ -96,35 +117,30 @@ def email_verification(request):
     user_id = request.session.get("verify_user")
 
     if user_id:
-        user = User.objects.get(id=user_id)
+        user = get_object_or_404(User, id=user_id)
     else:
         if request.user.is_authenticated:
             user = request.user
         else:
             return redirect("login")
 
-    last_otp = OTPVerification.objects.filter(user=user).last()
-
-    if last_otp and timezone.now() < last_otp.created_at + timedelta(seconds=30):
-        messages.info(request, "Please wait before requesting another OTP")
-        return redirect("verify_otp")
-
     otp = str(random.randint(100000, 999999))
 
     OTPVerification.objects.filter(user=user).delete()
 
-    OTPVerification.objects.create(
-        user=user,
-        otp=otp,
-        method="email"
-    )
+    OTPVerification.objects.create(user=user, otp=otp, method="email")
 
-    send_mail(
-        "BuyNext Verification OTP",
-        f"Your OTP is {otp}",
-        "noreply@buynext.com",
-        [user.email]
-    )
+    try:
+        send_mail(
+            "BuyNext Verification OTP",
+            f"Your OTP is {otp}",
+            settings.EMAIL_HOST_USER,
+            [user.email]
+        )
+    except Exception as e:
+        print("EMAIL ERROR:", e)
+        messages.error(request, "Failed to send email")
+        return redirect("verify_otp")
 
     messages.success(request, "OTP sent to your email")
 
@@ -134,7 +150,7 @@ def phone_verification(request):
 
     user_id = request.session.get("verify_user")
     if user_id:
-        user = User.objects.get(id=user_id)
+        user = get_object_or_404(User, id=user_id)
     else:
         if request.user.is_authenticated:
             user = request.user
@@ -226,10 +242,7 @@ def verify_otp(request):
 
         otp = request.POST.get("otp")
 
-        record = OTPVerification.objects.filter(
-            user=user,
-            otp=otp
-        ).last()
+        record = OTPVerification.objects.filter(user=user, otp=otp).last()
 
         if not record:
             messages.error(request, "Invalid OTP")
@@ -237,23 +250,36 @@ def verify_otp(request):
 
         if record.is_expired():
             record.delete()
-            messages.error(request, "OTP expired. Request new OTP.")
+            messages.error(request, "OTP expired")
             return redirect("choose_verification")
+
         if record.method == "email":
             user.is_email_verified = True
-
-        elif record.method == "phone":
+        else:
             user.is_phone_verified = True
 
         user.save()
         record.delete()
-        if request.session.get("verify_user"):
-            request.session.pop("verify_user", None)
-            messages.success(request, "Account verified. Please login.")
-            return redirect("login")
-        else:
-            messages.success(request, "Verification successful.")
+
+        verify_source = request.session.get("verify_source")
+
+        request.session.pop("verify_user", None)
+        request.session.pop("verify_source", None)
+
+        messages.success(request, "Verification successful.")
+
+        if verify_source == "seller":
+            return redirect("seller_profile")
+
+        elif verify_source == "user":
             return redirect("profile")
+
+        if request.user.is_authenticated:
+            if request.user.is_seller:
+                return redirect("seller_profile")
+            return redirect("profile")
+
+        return redirect("login")
 
     return render(request, "core/verify_otp.html")
 
@@ -279,13 +305,40 @@ def logout_view(request):
     return redirect("/")
 
 
-from django.shortcuts import render
-from django.db.models import Min
-from django.core.paginator import Paginator
+@admin_not_required
+def search_suggestions(request):
+    query = request.GET.get("q", "").strip()
+
+    if not query:
+        return JsonResponse({"results": []})
+
+    products = Product.objects.filter(
+        is_active=True,
+        approval_status="APPROVED"
+    ).filter(
+        Q(name__icontains=query) |
+        Q(subcategory__name__icontains=query) |
+        Q(seller__store_name__icontains=query)
+    ).select_related("subcategory", "seller").prefetch_related("gallery")[:6]
+
+    results = []
+
+    for product in products:
+        img = product.gallery.filter(is_primary=True).first()
+
+        results.append({
+            "name": product.name,
+            "url": f"{reverse('all_products')}?q={product.name}",
+            "image_url": img.image.url if img else "",
+            "category": product.subcategory.name if product.subcategory else ""
+        })
+
+    return JsonResponse({"results": results})
+
 
 @admin_not_required
 def all_products(request):
-
+    q = request.GET.get("q","").strip()
     categories = Category.objects.filter(is_active=True).order_by("display_order")
 
     selected_ids = request.GET.getlist("categories")
@@ -298,7 +351,13 @@ def all_products(request):
         is_active=True,
         approval_status="APPROVED"
     )
-
+    if q:
+        products = products.filter(
+        Q(name__icontains=q) |
+        Q(description__icontains=q) |
+        Q(subcategory__name__icontains=q) |
+        Q(seller__store_name__icontains=q)
+    ).distinct()
    
     if selected_ids:
         products = products.filter(subcategory__category__id__in=selected_ids)
@@ -527,6 +586,13 @@ def product_detail(request, slug):
 
     review_count = reviews.count()
 
+    # Check if current user has reviewed this product
+    user_has_reviewed = False
+    user_review = None
+    if request.user.is_authenticated:
+        user_review = reviews.filter(user=request.user).first()
+        user_has_reviewed = user_review is not None
+
     context = {
         "product": product,
         "variants": variants,
@@ -535,6 +601,8 @@ def product_detail(request, slug):
         "reviews": reviews,
         "average_rating": average_rating,
         "review_count": review_count,
+        "user_has_reviewed": user_has_reviewed,
+        "user_review": user_review,
     }
 
     return render(request, "core/product_detail.html", context)

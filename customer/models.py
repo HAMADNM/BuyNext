@@ -1,7 +1,8 @@
 import uuid
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from core.models import User, Address
+from core.models import *
+from seller.models import *
 from seller.models import Product, ProductVariant, SellerProfile
 
 
@@ -133,10 +134,63 @@ class Review(models.Model):
     def __str__(self):
         return f"{self.user.username} → {self.product.name} ({self.rating}★)"
 
+class ReviewImage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    review = models.ForeignKey(
+        "customer.Review",
+        on_delete=models.CASCADE,
+        related_name="images"
+    )
+
+    image = models.ImageField(upload_to="review_images/")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image for {self.review.id}"
+
 
 class Order(models.Model):
   
-    ORDER_STATUS = (
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    order_number = models.CharField(max_length=100, unique=True, blank=True)
+
+    shipping_address = models.ForeignKey(
+        Address, on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    shipping_address_snapshot = models.JSONField()
+
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    final_amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    payment_method = models.CharField(max_length=50, blank=True)
+    is_paid = models.BooleanField(default=False)
+    razorpay_order_id = models.CharField(max_length=255, blank=True, null=True)
+    payment_id = models.CharField(max_length=255, blank=True, null=True)
+    payment_signature = models.CharField(max_length=255, blank=True, null=True)
+
+    note = models.TextField(blank=True)
+
+    ordered_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.order_number} — {self.user.username}"
+
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            self.order_number = f"ORD-{uuid.uuid4().hex[:8].upper()}"
+        super().save(*args, **kwargs)
+
+    
+
+
+class OrderItem(models.Model):
+     
+    ITEM_STATUS = (
         ('PLACED', 'Placed'),
         ('CONFIRMED', 'Confirmed'),
         ('PROCESSING', 'Processing'),
@@ -146,106 +200,56 @@ class Order(models.Model):
         ('CANCELLED', 'Cancelled'),
         ('RETURN_REQUESTED', 'Return Requested'),
         ('RETURNED', 'Returned'),
-        ('REFUNDED', 'Refunded'),
-    )
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-    order_number = models.CharField(
-        max_length=100, unique=True,
-        help_text="Human-readable ID e.g. ORD-2024-00123"
-    )
-
-    # Address snapshot — stored as JSON to preserve address even if user edits it later
-    shipping_address = models.JSONField(
-        help_text="Snapshot of delivery address at time of order"
-    )
-
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    final_amount = models.DecimalField(
-        max_digits=10, decimal_places=2,
-        help_text="total_amount - discount_amount"
-    )
-
-    coupon_code = models.CharField(max_length=50, blank=True)
-    order_status = models.CharField(
-        max_length=30, choices=ORDER_STATUS, default='PLACED', db_index=True
-    )
-    payment_method = models.CharField(max_length=50, blank=True)
-    is_paid = models.BooleanField(default=False)
-    note = models.TextField(blank=True, help_text="Customer note / special instructions")
-
-    ordered_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-ordered_at']
-        indexes = [
-            models.Index(fields=['user', 'order_status']),
-            models.Index(fields=['order_number']),
-            models.Index(fields=['order_status', '-ordered_at']),
-            models.Index(fields=['is_paid']),
-        ]
-
-    def __str__(self):
-        return f"{self.order_number} — {self.user.username} ({self.order_status})"
-
-    def save(self, *args, **kwargs):
-        # Auto-generate order number if not set
-        if not self.order_number:
-            from django.utils import timezone
-            year = timezone.now().year
-            last = Order.objects.filter(
-                ordered_at__year=year
-            ).order_by('-ordered_at').first()
-            seq = 1
-            if last and last.order_number:
-                try:
-                    seq = int(last.order_number.split('-')[-1]) + 1
-                except (ValueError, IndexError):
-                    seq = 1
-            self.order_number = f"ORD-{year}-{seq:05d}"
-        super().save(*args, **kwargs)
-
-
-class OrderItem(models.Model):
- 
-    ITEM_STATUS = (
-        ('ACTIVE', 'Active'),
-        ('CANCELLED', 'Cancelled'),
-        ('RETURN_REQUESTED', 'Return Requested'),
-        ('RETURNED', 'Returned'),
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     variant = models.ForeignKey(
-        ProductVariant, on_delete=models.SET_NULL, null=True, related_name='order_items'
+        "seller.ProductVariant",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='order_items'
     )
+
     seller = models.ForeignKey(
-        SellerProfile, on_delete=models.SET_NULL, null=True, related_name='order_items'
+        "seller.SellerProfile",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='order_items'
     )
-    quantity = models.IntegerField(validators=[MinValueValidator(1)])
+
+    quantity = models.IntegerField(
+        validators=[MinValueValidator(1)]
+    )
+
     price_at_purchase = models.DecimalField(
-        max_digits=10, decimal_places=2,
-        help_text="Locked selling_price at checkout; never changes after order placed"
+        max_digits=10,
+        decimal_places=2,
+        help_text="Price locked at purchase time"
     )
+
     item_status = models.CharField(
-        max_length=20, choices=ITEM_STATUS, default='ACTIVE', db_index=True
+        max_length=30,
+        choices=ITEM_STATUS,
+        default='PLACED',
+        db_index=True
     )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         indexes = [
             models.Index(fields=['order', 'item_status']),
             models.Index(fields=['seller', 'item_status']),
-            models.Index(fields=['variant']),
         ]
 
     def __str__(self):
-        sku = self.variant.sku_code if self.variant else 'N/A'
-        return f"{self.quantity}x {sku} in {self.order.order_number}"
+        return f"{self.quantity}x {self.variant} ({self.item_status})"
 
     @property
     def subtotal(self):
         return self.price_at_purchase * self.quantity
+    @property
+    def display_status(self):
+        return self.item_status.replace("_", " ").title()

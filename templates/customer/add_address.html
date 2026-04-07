@@ -1,0 +1,151 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="bg-[#f1f3f6] min-h-screen py-8 font-sans">
+    <div class="container mx-auto px-4 max-w-3xl">
+        
+        <div class="flex items-center gap-4 mb-6">
+            <a href="{% url 'select_address' %}" class="w-9 h-9 flex items-center justify-center rounded bg-white shadow-sm border border-slate-200 text-slate-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">
+                <span class="material-icons text-sm">arrow_back</span>
+            </a>
+            <h1 class="text-xl font-bold text-slate-900 uppercase tracking-tight">Add New Address</h1>
+        </div>
+
+        <div class="bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-6 py-3 bg-blue-600">
+                <h2 class="text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                    <span class="material-icons text-sm">location_on</span>
+                    Shipping Information
+                </h2>
+            </div>
+            
+            <form action="{% url 'save_address' %}?next=checkout" method="POST" class="p-6 sm:p-8 space-y-5">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-bold uppercase text-slate-500 ml-1 tracking-wide">Full Name</label>
+                        <input type="text" name="full_name" required placeholder="Enter your full name"
+                            class="w-full bg-white border border-slate-200 rounded px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-bold uppercase text-slate-500 ml-1 tracking-wide">Phone Number</label>
+                        <input type="text" name="phone_number" required placeholder="10-digit mobile number"
+                            class="w-full bg-white border border-slate-200 rounded px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-1 relative">
+                        <label class="text-[11px] font-bold uppercase text-slate-500 ml-1 tracking-wide">Pincode</label>
+                        <input type="text" name="pincode" id="pincode" required maxlength="6" placeholder="6-digit pincode"
+                            class="w-full bg-white border border-slate-200 rounded px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all">
+                        <div id="pincode-loader" class="hidden absolute right-3 bottom-2.5">
+                            <div class="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-bold uppercase text-slate-500 ml-1 tracking-wide">Locality</label>
+                        <input type="text" name="locality" id="locality" required placeholder="Colony / Street / Area"
+                            class="w-full bg-white border border-slate-200 rounded px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[11px] font-bold uppercase text-slate-500 ml-1 tracking-wide">Address (House No, Building, Area)</label>
+                    <textarea name="house_info" required rows="3" placeholder="Apartment Name, House Number, etc."
+                        class="w-full bg-white border border-slate-200 rounded px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all resize-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-bold uppercase text-slate-500 ml-1 tracking-wide">City / District</label>
+                        <input type="text" name="city" id="city" required readonly class="w-full bg-slate-50 border border-slate-200 rounded px-4 py-2.5 text-sm cursor-not-allowed text-slate-500 font-medium">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-bold uppercase text-slate-500 ml-1 tracking-wide">State</label>
+                        <input type="text" name="state" id="state" required readonly class="w-full bg-slate-50 border border-slate-200 rounded px-4 py-2.5 text-sm cursor-not-allowed text-slate-500 font-medium">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-bold uppercase text-slate-500 ml-1 tracking-wide">Country</label>
+                        <input type="text" name="country" id="country" readonly class="w-full bg-slate-50 border border-slate-200 rounded px-4 py-2.5 text-sm cursor-not-allowed text-slate-500 font-medium">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-bold uppercase text-slate-500 ml-1 tracking-wide">Landmark (Optional)</label>
+                        <input type="text" name="landmark" placeholder="e.g. Near School, Hospital"
+                            class="w-full bg-white border border-slate-200 rounded px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold uppercase text-slate-500 tracking-wider">Address Type</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="radio" name="address_type" value="Home" checked class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                                <span class="text-sm font-medium text-slate-700 group-hover:text-blue-600 transition-colors">Home</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="radio" name="address_type" value="Work" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                                <span class="text-sm font-medium text-slate-700 group-hover:text-blue-600 transition-colors">Work</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="radio" name="address_type" value="Other" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                                <span class="text-sm font-medium text-slate-700 group-hover:text-blue-600 transition-colors">Other</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <div class="relative">
+                            <input type="checkbox" name="is_default" class="sr-only peer">
+                            <div class="w-9 h-5 bg-slate-200 rounded-full peer-checked:bg-blue-600 transition-all"></div>
+                            <div class="absolute left-1 top-1 w-3 h-3 bg-white rounded-full peer-checked:translate-x-4 transition-all shadow-sm"></div>
+                        </div>
+                        <span class="text-[11px] font-bold uppercase text-slate-500 tracking-wide">Set as Default</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full bg-[#fb641b] text-white font-bold py-3.5 rounded shadow-md hover:bg-[#e65a16] transition-all uppercase tracking-widest text-xs">
+                    Save and Deliver Here
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const pincodeInput = document.getElementById('pincode');
+    const loader = document.getElementById('pincode-loader');
+
+    pincodeInput.addEventListener('keyup', function() {
+        const pincode = this.value;
+        if (pincode.length === 6) {
+            loader.classList.remove('hidden');
+            fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+                .then(res => res.json())
+                .then(data => {
+                    loader.classList.add('hidden');
+                    if (data[0].Status === "Success") {
+                        const details = data[0].PostOffice[0];
+                        document.getElementById('city').value = details.District;
+                        document.getElementById('state').value = details.State;
+                        document.getElementById('locality').value = details.Name;
+                        document.getElementById('country').value = "India";
+                    } else {
+                        alert("Invalid Pincode! Please check again.");
+                        document.getElementById('city').value = "";
+                        document.getElementById('state').value = "";
+                    }
+                })
+                .catch(err => {
+                    loader.classList.add('hidden');
+                    console.error("Pincode API Error:", err);
+                });
+        }
+    });
+</script>
+{% endblock %}

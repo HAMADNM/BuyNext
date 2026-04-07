@@ -1,0 +1,269 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="bg-[#f1f3f6] min-h-screen py-8 font-sans text-slate-900">
+    <div class="container mx-auto px-4 max-w-5xl">
+
+        <div class="mb-6 flex items-center justify-between">
+            <a href="{% url 'my_orders' %}" class="flex items-center gap-2 text-blue-600 text-xs font-black uppercase tracking-widest hover:underline">
+                <span class="material-icons text-sm">arrow_back</span>
+                Back to My Orders
+            </a>
+            <div class="hidden md:block">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Order ID: #{{ order.order_number }}</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-6 rounded shadow-sm border border-slate-200">
+                <h2 class="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-4">Shipping Address</h2>
+                <div class="space-y-1">
+                    <p class="text-sm font-bold text-slate-900">{{ order.address.full_name }}</p>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        {{ order.address.house_info }}, {{ order.address.locality }},<br>
+                        {{ order.address.city }}, {{ order.address.state }} - <b>{{ order.address.pincode }}</b>
+                    </p>
+                    <p class="text-xs text-slate-700 font-bold mt-2">Phone: {{ order.address.phone_number }}</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded shadow-sm border border-slate-200">
+                <h2 class="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-4">Payment Method</h2>
+                <div class="flex items-center gap-3">
+                    <span class="material-icons text-slate-400">payments</span>
+                    <div>
+                        <p class="text-sm font-bold uppercase">{{ order.display_payment_method }}</p>
+                        <p class="text-[10px] font-black {% if order.payment_status == 'PAID' %}text-green-600{% else %}text-orange-600{% endif %} uppercase">
+                            {{ order.payment_status }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded shadow-sm border border-slate-200 flex flex-col justify-between">
+                <h2 class="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-4">Order Actions</h2>
+                <div class="space-y-2">
+                    <button class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-black uppercase py-2.5 rounded hover:bg-slate-100 flex items-center justify-center gap-2 transition-colors">
+                        <span class="material-icons text-xs">download</span> Invoice
+                    </button>
+                    <button class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-black uppercase py-2.5 rounded hover:bg-slate-100 flex items-center justify-center gap-2 transition-colors">
+                        <span class="material-icons text-xs">help_outline</span> Need Help?
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6 items-start">
+            <div class="w-full lg:flex-grow space-y-4">
+                {% for item in order.items.all %}
+                <div class="bg-white rounded shadow-sm border border-slate-200 overflow-hidden hover:border-slate-300 transition-colors">
+                    
+                    <div class="px-6 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                        <span class="text-[11px] font-black uppercase tracking-widest 
+                            {% if item.item_status == 'CANCELLED' or item.item_status == 'RETURNED' %}text-red-600{% elif item.item_status == 'DELIVERED' %}text-green-600{% else %}text-blue-600{% endif %}">
+                            Status: {{ item.display_status }}
+                        </span>
+                        {% if item.item_status == 'DELIVERED' %}
+                            <p class="text-[10px] font-bold text-slate-500 uppercase">Delivered on {{ item.updated_at|date:"d M Y" }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="p-6">
+                        <div class="flex flex-col md:flex-row gap-6 mb-8">
+                            <div class="w-24 h-24 md:w-28 md:h-28 flex-shrink-0 border border-slate-100 p-2 rounded bg-white">
+                                <img src="{{ item.variant.images.first.image.url }}" class="w-full h-full object-contain" alt="{{ item.variant.product.name }}">
+                            </div>
+
+                            <div class="flex-grow space-y-1">
+                                <h3 class="text-sm font-black text-slate-900 leading-tight">{{ item.variant.product.name }}</h3>
+                                <p class="text-[10px] text-slate-400 uppercase font-bold">SKU: {{ item.variant.sku_code }}</p>
+                                <p class="text-xs text-slate-600">Seller: <span class="text-blue-600 font-bold hover:underline cursor-pointer">{{ item.seller.business_name }}</span></p>
+                                <div class="mt-4 flex items-baseline gap-3">
+                                    <span class="text-lg font-black text-slate-900">₹{{ item.price_at_purchase }}</span>
+                                    <span class="text-xs text-slate-400 font-bold uppercase tracking-tighter">Qty: {{ item.quantity }}</span>
+                                </div>
+                            </div>
+
+                            <div class="w-full md:w-52 space-y-2">
+                                {% if item.item_status != 'CANCELLED' %}
+                                <a href="{% url 'track_order_item' order.id %}" class="w-full bg-blue-600 text-white text-[10px] font-black uppercase py-3 rounded shadow-sm hover:bg-blue-700 transition-all block text-center">
+                                    Track Order
+                                </a>
+                                {% endif %}
+
+                                {% if item.item_status == 'PLACED' or item.item_status == 'CONFIRMED' %}
+                                    {% if item.variant.product.is_cancellable %}
+                                        <button type="button" data-url="{% url 'cancel_order_item' item.id %}" data-product-name="{{ item.variant.product.name }}" onclick="openCancelModal(this)"
+                                            class="w-full bg-white border border-red-100 text-red-500 text-[10px] font-black uppercase py-3 rounded hover:bg-red-50 transition-colors">
+                                            Cancel Item
+                                        </button>
+                                    {% else %}
+                                        <p class="text-[9px] text-center text-slate-400 font-bold uppercase italic">Non-Cancellable</p>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if item.item_status == 'DELIVERED' %}
+                                    {% if item.variant.product.is_returnable %}
+                                        <form method="POST" action="{% url 'return_order_item' item.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" onclick="return confirm('Request return for this item?')" 
+                                                class="w-full bg-white border border-slate-200 text-slate-700 text-[10px] font-black uppercase py-3 rounded hover:bg-slate-50 transition-colors">
+                                                Return Item
+                                            </button>
+                                        </form>
+                                        <p class="text-[9px] text-center text-slate-400 font-bold uppercase mt-1">Returnable within {{ item.variant.product.return_days }} days</p>
+                                    {% endif %}
+                                {% elif item.item_status == 'RETURN_REQUESTED' %}
+                                    <div class="p-3 bg-orange-50 border border-orange-100 rounded text-center">
+                                        <p class="text-[10px] text-orange-700 font-black uppercase">Return Requested – Processing</p>
+                                    </div>
+                                {% elif item.item_status == 'RETURNED' %}
+                                    <div class="p-3 bg-green-50 border border-green-100 rounded text-center">
+                                        <p class="text-[10px] text-green-700 font-black uppercase">Item Returned – Refund Processing</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 mb-8">
+    <div class="flex items-center gap-2 px-4 py-2 rounded-full border 
+        {% if item.item_status == 'CANCELLED' or item.item_status == 'RETURNED' %}
+            bg-red-50 border-red-100 text-red-700
+        {% elif item.item_status == 'DELIVERED' %}
+            bg-green-50 border-green-100 text-green-700
+        {% elif item.item_status == 'SHIPPED' %}
+            bg-blue-50 border-blue-100 text-blue-700
+        {% else %}
+            bg-slate-50 border-slate-200 text-slate-700
+        {% endif %}">
+        
+        <span class="material-icons text-base">
+            {% if item.item_status == 'DELIVERED' %}check_circle
+            {% elif item.item_status == 'SHIPPED' %}local_shipping
+            {% elif item.item_status == 'CANCELLED' %}cancel
+            {% else %}inventory_2{% endif %}
+        </span>
+        <span class="text-[11px] font-black uppercase tracking-widest">
+            {{ item.display_status }}
+        </span>
+    </div>
+    
+    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-tight">
+        {% if item.item_status == 'PLACED' %}
+            We've received your order and are preparing it.
+        {% elif item.item_status == 'SHIPPED' %}
+            Your package is on its way to you.
+        {% elif item.item_status == 'DELIVERED' %}
+            Package was handed over successfully.
+        {% endif %}
+    </p>
+</div>
+
+                        {% if item.item_status == 'DELIVERED' %}
+                        <div class="mt-6 pt-6 border-t border-slate-100">
+                            {% if item.user_review %}
+                                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div class="flex gap-1 text-yellow-400">
+                                            {% for i in "12345" %}
+                                                <span class="material-icons text-sm">{% if forloop.counter <= item.user_review.rating %}star{% else %}star_outline{% endif %}</span>
+                                            {% endfor %}
+                                        </div>
+                                        <a href="{% url 'edit_review' item.user_review.id %}" class="text-blue-600 text-[10px] font-black uppercase hover:underline transition-all">Edit Review</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 leading-relaxed font-medium italic">"{{ item.user_review.text }}"</p>
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase mt-3">Reviewed on {{ item.user_review.created_at|date:"d M Y" }}</p>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'add_review' item.variant.product.slug %}" class="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3 rounded shadow-md hover:bg-blue-700 transition-all text-[11px] font-black uppercase tracking-widest">
+                                    <span class="material-icons text-base">rate_review</span>
+                                    Write a Product Review
+                                </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <aside class="w-full lg:w-[320px] sticky top-24">
+                <div class="bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
+                        <h2 class="text-xs font-black uppercase tracking-widest text-slate-400">Order Summary</h2>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Items Total</span>
+                            <span class="text-slate-900 font-bold">₹{{ order.total_amount }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Shipping</span>
+                            <span class="text-green-600 font-bold uppercase text-xs">Free</span>
+                        </div>
+                        {% if order.discount_amount > 0 %}
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Coupon Discount</span>
+                            <span class="text-green-600 font-bold">-₹{{ order.discount_amount }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="pt-4 border-t border-dashed border-slate-200 flex justify-between items-center">
+                            <span class="text-base font-black text-slate-900 uppercase">Total</span>
+                            <span class="text-lg font-black text-slate-900">₹{{ order.final_amount }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-5 bg-white rounded shadow-sm border border-slate-200">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Support</p>
+                    <a href="#" class="flex items-center justify-between text-xs font-bold text-slate-700 hover:text-blue-600 group transition-colors">
+                        Contact Customer Care
+                        <span class="material-icons text-sm group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </a>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+
+<div id="cancelModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/70 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in duration-200">
+        <div class="px-6 py-5 border-b border-slate-100">
+            <h3 class="text-sm font-black uppercase tracking-widest text-slate-900">Confirm Cancellation</h3>
+        </div>
+        <div class="p-6 space-y-4">
+            <p id="cancelModalMessage" class="text-sm text-slate-700 leading-relaxed"></p>
+            <form id="cancelOrderForm" method="POST" class="space-y-4">
+                {% csrf_token %}
+                <button type="submit" class="w-full bg-red-600 text-white text-[10px] font-black uppercase py-3 rounded hover:bg-red-700 transition-all shadow-lg shadow-red-100">
+                    Yes, Cancel This Item
+                </button>
+            </form>
+            <button type="button" onclick="closeCancelModal()" class="w-full bg-slate-100 text-slate-700 text-[10px] font-black uppercase py-3 rounded hover:bg-slate-200 transition-all">
+                No, Keep Item
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openCancelModal(button) {
+        const url = button.getAttribute('data-url');
+        const name = button.getAttribute('data-product-name');
+        document.getElementById('cancelModalMessage').textContent = `Are you sure you want to cancel "${name}"? This action cannot be undone.`;
+        document.getElementById('cancelOrderForm').action = url;
+        document.getElementById('cancelModal').classList.remove('hidden');
+        document.getElementById('cancelModal').classList.add('flex');
+    }
+
+    function closeCancelModal() {
+        document.getElementById('cancelModal').classList.add('hidden');
+        document.getElementById('cancelModal').classList.remove('flex');
+    }
+
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('cancelModal');
+        if (e.target === modal) closeCancelModal();
+    });
+</script>
+{% endblock %}
