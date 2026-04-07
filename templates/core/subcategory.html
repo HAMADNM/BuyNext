@@ -170,7 +170,7 @@
                                 {% if product.min_mrp > product.min_selling_price %}
                                 <span class="text-xs text-slate-400 line-through">₹{{ product.min_mrp }}</span>
                                 <span class="text-[10px] font-bold text-green-600">Save 
-                                   ₹{{ product.min_mrp|add:product.min_selling_price }}</span>
+                                   ₹{{product.save_price }}</span>
                                 {% endif %}
                             </div>
 

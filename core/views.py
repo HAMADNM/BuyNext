@@ -377,10 +377,14 @@ def all_products(request):
 
     
     products = products.annotate(
-        min_selling_price=Min("variants__selling_price"),
-        min_mrp=Min("variants__mrp"),
-        average_rating=Coalesce(Avg("reviews__rating", filter=Q(reviews__is_approved=True)), Value(0.0))
-    )
+    min_selling_price=Min("variants__selling_price"),
+    min_mrp=Min("variants__mrp"),
+    average_rating=Coalesce(
+        Avg("reviews__rating", filter=Q(reviews__is_approved=True)),
+        Value(0.0)
+    ),
+    save_price=Min("variants__mrp") - Min("variants__selling_price")
+)
 
     
     if min_price:
@@ -421,12 +425,11 @@ def all_products(request):
        
         img = product.gallery.filter(is_primary=True).first()
         product.primary_image = img.image if img else None
-
        
         variant = product.variants.first()
-
         product.variant_id = variant.id if variant else None
         product.stock_quantity = variant.stock_quantity if variant else 0
+
 
         if request.user.is_authenticated and variant:
             product.is_in_wishlist = WishlistItem.objects.filter(
@@ -436,7 +439,7 @@ def all_products(request):
         else:
             product.is_in_wishlist = False
 
-
+   
     paginator = Paginator(products, 12)
     page_number = request.GET.get("page")
     products = paginator.get_page(page_number)
@@ -510,7 +513,7 @@ def subcategory_view(request, category_slug):
         min_mrp=Min("variants__mrp"),            
         stock_quantity=Max("variants__stock_quantity"),
         average_rating=Coalesce(Avg("reviews__rating", filter=Q(reviews__is_approved=True)), Value(0.0))
-    )
+    ,save_price=Min("variants__mrp") - Min("variants__selling_price"))
 
    
     if sort == "price_low_high":
