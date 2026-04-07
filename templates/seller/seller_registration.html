@@ -281,37 +281,25 @@
                         </div>
                     </div>
 
-                    <div class="space-y-4 pt-4">
+                <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 group transition-all hover:bg-brand-sand/10">
+                        <div class="relative flex items-center h-5">
+                            <input id="terms_agreement" name="terms_agreement" type="checkbox" required
+                                class="w-5 h-5 text-brand-olive border-gray-300 rounded focus:ring-brand-olive cursor-pointer">
+                        </div>
+                        <label for="terms_agreement" class="text-xs font-medium text-gray-600 leading-normal cursor-pointer select-none">
+                            I have read and agree to the 
+                            <a href="#" class="text-brand-olive font-bold underline decoration-brand-olive/30 hover:decoration-brand-olive">Seller Terms</a> 
+                            and 
+                            <a href="#" class="text-brand-olive font-bold underline decoration-brand-olive/30 hover:decoration-brand-olive">Privacy Policy</a>. 
+                            I understand that my account requires admin approval.
+                        </label>
+                    </div>
+
+                    <div class="space-y-4 pt-2">
                         <button type="submit"
-                            class="w-full bg-brand-olive text-white py-4 rounded-xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-brand-olive/20 hover:bg-black transition-all">
+                            class="w-full bg-brand-olive text-white py-4 rounded-xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-brand-olive/20 hover:bg-black transition-all active:scale-[0.98]">
                             Launch My Store
                         </button>
-
-                        <div class="relative py-4 flex items-center justify-center">
-                            <span class="absolute inset-x-0 h-px bg-gray-100"></span>
-                            <span
-                                class="relative bg-white px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Or
-                                fast-track with</span>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <button type="button"
-                                class="flex items-center justify-center gap-2 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
-                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-4 h-4"
-                                    alt="Google"> Google
-                            </button>
-                            <button type="button"
-                                class="flex items-center justify-center gap-2 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
-                                <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" class="w-4 h-4"
-                                    alt="Facebook"> Facebook
-                            </button>
-                        </div>
-
-                        <p class="text-center text-[10px] text-gray-400 mt-6 leading-relaxed">
-                            By creating an account, you agree to our <a href="#"
-                                class="text-brand-olive font-bold underline">Seller Terms</a> and <a href="#"
-                                class="text-brand-olive font-bold underline">Privacy Policy</a>.
-                        </p>
                     </div>
             </form>
         </div>
