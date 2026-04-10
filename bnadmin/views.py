@@ -78,7 +78,10 @@ def admin_dashboard(request):
     )
     total_orders = Order.objects.count()
     total_products = Product.objects.count()
-    total_sellers = SellerProfile.objects.count()
+    total_sellers = SellerProfile.objects.filter(
+        verification_status="VERIFIED",
+        user__is_active=True,
+    ).count()
 
     def _pct(value, total):
         return round((value / total) * 100, 1) if total else 0
@@ -91,20 +94,36 @@ def admin_dashboard(request):
     seller_verified = SellerProfile.objects.filter(verification_status="VERIFIED").count()
     seller_pending = SellerProfile.objects.filter(verification_status="PENDING").count()
     seller_rejected = SellerProfile.objects.filter(verification_status="REJECTED").count()
+    seller_total_requests = seller_verified + seller_pending + seller_rejected
 
-    order_in_progress = Order.objects.filter(
-        order_status__in=[
-            "PLACED",
-            "CONFIRMED",
-            "PROCESSING",
-            "SHIPPED",
-            "OUT_FOR_DELIVERY",
-        ]
-    ).count()
-    order_delivered = Order.objects.filter(order_status="DELIVERED").count()
-    order_exception = Order.objects.filter(
-        order_status__in=["CANCELLED", "RETURN_REQUESTED", "RETURNED", "REFUNDED"]
-    ).count()
+    order_in_progress = (
+        OrderItem.objects.filter(
+            item_status__in=[
+                "PLACED",
+                "CONFIRMED",
+                "PROCESSING",
+                "SHIPPED",
+                "OUT_FOR_DELIVERY",
+            ]
+        )
+        .values("order_id")
+        .distinct()
+        .count()
+    )
+    order_delivered = (
+        OrderItem.objects.filter(item_status="DELIVERED")
+        .values("order_id")
+        .distinct()
+        .count()
+    )
+    order_exception = (
+        OrderItem.objects.filter(
+            item_status__in=["CANCELLED", "RETURN_REQUESTED", "RETURNED", "REFUNDED"]
+        )
+        .values("order_id")
+        .distinct()
+        .count()
+    )
 
     context = {
         "total_sellers": total_sellers,
@@ -124,9 +143,10 @@ def admin_dashboard(request):
         "seller_verified": seller_verified,
         "seller_pending": seller_pending,
         "seller_rejected": seller_rejected,
-        "seller_verified_pct": _pct(seller_verified, total_sellers),
-        "seller_pending_pct": _pct(seller_pending, total_sellers),
-        "seller_rejected_pct": _pct(seller_rejected, total_sellers),
+        "seller_total_requests": seller_total_requests,
+        "seller_verified_pct": _pct(seller_verified, seller_total_requests),
+        "seller_pending_pct": _pct(seller_pending, seller_total_requests),
+        "seller_rejected_pct": _pct(seller_rejected, seller_total_requests),
         "order_in_progress": order_in_progress,
         "order_delivered": order_delivered,
         "order_exception": order_exception,
@@ -157,11 +177,7 @@ def user_management(request):
         users = users.filter(is_active=False)
 
     users = users.order_by("-date_joined")
-    return render(
-        request,
-        "bnadmin/usermanagement.html",
-        {"users": users, "q": query, "selected_status": status},
-    )
+    return render(request, "bnadmin/usermanagement.html", {"users": users, "q": query, "selected_status": status})
 
 
 @admin_required
@@ -194,7 +210,14 @@ def edit_user(request, user_id):
 @admin_required
 def delete_user(request, user_id):
     user = get_object_or_404(User, id=user_id, role="CUSTOMER")
-    user.delete()
+    if user.is_active:
+        user.is_active = False
+        message = "Customer deactivated successfully"
+    else:
+        user.is_active = True
+        message = "Customer activated successfully"
+    user.save(update_fields=["is_active"])
+    messages.success(request, message)
     return redirect("usermanagement")
 
 
@@ -209,20 +232,22 @@ def customer_orders(request, user_id):
 
     order_stats = {
         "total": orders.count(),
-        "delivered": orders.filter(order_status="DELIVERED").count(),
-        "cancelled": orders.filter(order_status="CANCELLED").count(),
+        "delivered": OrderItem.objects.filter(
+            order__in=orders, item_status="DELIVERED"
+        )
+        .values("order_id")
+        .distinct()
+        .count(),
+        "cancelled": OrderItem.objects.filter(
+            order__in=orders, item_status="CANCELLED"
+        )
+        .values("order_id")
+        .distinct()
+        .count(),
         "revenue": orders.aggregate(total=Sum("final_amount"))["total"] or 0,
     }
 
-    return render(
-        request,
-        "bnadmin/customer_orders.html",
-        {
-            "customer": customer,
-            "orders": orders,
-            "order_stats": order_stats,
-        },
-    )
+    return render(request, "bnadmin/customer_orders.html", {"customer": customer, "orders": orders, "order_stats": order_stats})
 
 
 @admin_required
@@ -263,20 +288,7 @@ def seller_management(request):
         "rejected": SellerProfile.objects.filter(verification_status="REJECTED").count(),
     }
 
-    return render(
-        request,
-        "bnadmin/sellermanagement.html",
-        {
-            "pending_sellers": pending_sellers,
-            "verified_sellers": verified_sellers,
-            "seller_stats": seller_stats,
-            "q": query,
-            "selected_status": status,
-            "default_tab": "verification"
-            if status in {"PENDING", "REJECTED"}
-            else "seller",
-        },
-    )
+    return render(request, "bnadmin/sellermanagement.html", {"pending_sellers": pending_sellers, "verified_sellers": verified_sellers, "seller_stats": seller_stats, "q": query, "selected_status": status, "default_tab": "verification" if status in {"PENDING", "REJECTED"} else "seller"})
 
 
 @admin_required
@@ -295,7 +307,17 @@ def verify_seller(request, seller_id):
 @admin_required
 def reject_seller(request, seller_id):
     seller = get_object_or_404(SellerProfile, id=seller_id)
+    if request.method != "POST":
+        messages.error(request, "Please provide a rejection reason.")
+        return redirect("seller_management")
+
+    reason = request.POST.get("rejection_reason", "").strip()
+    if not reason:
+        messages.error(request, "Rejection reason is required.")
+        return redirect("seller_management")
+
     seller.verification_status = "REJECTED"
+    seller.rejection_reason = reason
     seller.save()
     SellerProfile.objects.filter(pk=seller.pk).update(verified_at=seller.updated_at)
     seller.user.is_verified = False
@@ -358,22 +380,20 @@ def seller_product_report(request, seller_id):
         "units": order_items.aggregate(total=Sum("quantity"))["total"] or 0,
     }
 
-    return render(
-        request,
-        "bnadmin/seller_product_report.html",
-        {
-            "seller": seller,
-            "products": products,
-            "report_stats": report_stats,
-        },
-    )
+    return render(request, "bnadmin/seller_product_report.html", {"seller": seller, "products": products, "report_stats": report_stats})
 
 
 @admin_required
 def delete_seller(request, seller_id):
     seller = get_object_or_404(SellerProfile, id=seller_id)
-    seller.user.delete()
-    messages.success(request, "Seller deleted successfully")
+    if seller.user.is_active:
+        seller.user.is_active = False
+        message = "Seller deactivated successfully"
+    else:
+        seller.user.is_active = True
+        message = "Seller activated successfully"
+    seller.user.save(update_fields=["is_active"])
+    messages.success(request, message)
     return redirect("seller_management")
 
 
@@ -402,26 +422,25 @@ def order_management(request):
             pass
         orders = orders.filter(order_filter)
     if status:
-        orders = orders.filter(order_status=status)
+        orders = orders.filter(items__item_status=status).distinct()
 
     order_stats = {
         "total": Order.objects.count(),
-        "delivered": Order.objects.filter(order_status="DELIVERED").count(),
-        "cancelled": Order.objects.filter(order_status="CANCELLED").count(),
-        "revenue": Order.objects.filter(is_paid=True).aggregate(total=Sum("final_amount"))["total"] or 0,
+        "delivered": OrderItem.objects.filter(item_status="DELIVERED")
+        .values("order_id")
+        .distinct()
+        .count(),
+        "cancelled": OrderItem.objects.filter(item_status="CANCELLED")
+        .values("order_id")
+        .distinct()
+        .count(),
+        "revenue": Order.objects.filter(is_paid=True).aggregate(total=Sum("final_amount"))[
+            "total"
+        ]
+        or 0,
     }
 
-    return render(
-        request,
-        "bnadmin/orders.html",
-        {
-            "orders": orders,
-            "order_stats": order_stats,
-            "q": query,
-            "selected_status": status,
-            "status_choices": Order.ORDER_STATUS,
-        },
-    )
+    return render(request, "bnadmin/orders.html", {"orders": orders, "order_stats": order_stats, "q": query, "selected_status": status, "status_choices": OrderItem.ITEM_STATUS})
 
 
 @admin_required
@@ -436,16 +455,7 @@ def order_detail(request, order_id):
     order_items = order.items.all()
     total_units = order_items.aggregate(total=Sum("quantity"))["total"] or 0
     seller_count = order_items.values("seller_id").distinct().count()
-    return render(
-        request,
-        "bnadmin/order_detail.html",
-        {
-            "order": order,
-            "order_items": order_items,
-            "total_units": total_units,
-            "seller_count": seller_count,
-        },
-    )
+    return render(request, "bnadmin/order_detail.html", {"order": order, "order_items": order_items, "total_units": total_units, "seller_count": seller_count})
 
 
 @admin_required
@@ -502,22 +512,7 @@ def product_verification(request):
         "name",
     )
 
-    return render(
-        request,
-        "bnadmin/bbb_productverification.html",
-        {
-            "pending_products": pending_products,
-            "all_products": approved_products,
-            "product_stats": product_stats,
-            "subcategories": subcategories,
-            "q": query,
-            "selected_status": status,
-            "selected_subcategory": subcategory_id,
-            "default_tab": "verification"
-            if status == "PENDING"
-            else "all",
-        },
-    )
+    return render(request, "bnadmin/bbb_productverification.html", {"pending_products": pending_products, "all_products": approved_products, "product_stats": product_stats, "subcategories": subcategories, "q": query, "selected_status": status, "selected_subcategory": subcategory_id, "default_tab": "verification" if status == "PENDING" else "all"})
 
 
 @admin_required
@@ -687,7 +682,14 @@ def edit_product_admin(request, product_id):
 @admin_required
 def delete_product_admin(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    product.delete()
+    if product.is_active:
+        product.is_active = False
+        message = "Product deactivated successfully"
+    else:
+        product.is_active = True
+        message = "Product activated successfully"
+    product.save(update_fields=["is_active"])
+    messages.success(request, message)
     return redirect("product_verification")
 
 
@@ -811,11 +813,7 @@ def catalogue_management(request):
             | Q(subcategories__attributes__options__value__icontains=query)
         ).distinct()
 
-    return render(
-        request,
-        "bnadmin/cataloguemanagement.html",
-        {"categories": categories, "q": query, "selected_status": status},
-    )
+    return render(request, "bnadmin/cataloguemanagement.html", {"categories": categories, "q": query, "selected_status": status})
 
 
 @admin_required
@@ -931,11 +929,7 @@ def edit_subcategory(request, subcategory_id):
         messages.success(request, "SubCategory updated successfully.")
         return redirect("catalogue_management")
 
-    return render(
-        request,
-        "bnadmin/edit_subcategory.html",
-        {"subcategory": subcategory, "category": category},
-    )
+    return render(request, "bnadmin/edit_subcategory.html", {"subcategory": subcategory, "category": category})
 
 
 @admin_required
@@ -984,11 +978,7 @@ def edit_attribute(request, attribute_id):
         attribute.subcategories.set(subcategory_ids)
         messages.success(request, "Attribute updated successfully.")
         return redirect("catalogue_management")
-    return render(
-        request,
-        "bnadmin/edit_attribute.html",
-        {"attribute": attribute, "subcategories": subcategories},
-    )
+    return render(request, "bnadmin/edit_attribute.html", {"attribute": attribute, "subcategories": subcategories})
 
 
 @admin_required
@@ -1026,14 +1016,7 @@ def add_attributeoptions(request):
         )
         messages.success(request, "Attribute option added successfully.")
         return redirect("catalogue_management")
-    return render(
-        request,
-        "bnadmin/addattributeoptions.html",
-        {
-            "attributes": attributes,
-            "selected_attribute_id": selected_attribute_id,
-        },
-    )
+    return render(request, "bnadmin/addattributeoptions.html", {"attributes": attributes, "selected_attribute_id": selected_attribute_id})
 
 
 @admin_required
