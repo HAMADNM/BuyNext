@@ -18,26 +18,55 @@
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                     colors: {
+                        "primary": "#5F7534",
+                        "primary-dark": "#4B5E29",
+                        "brand-bg": "#FAF9EE",
+                        "brand-primary": "#556B2F",
+                        "brand-accent": "#DCCFC0",
+                        "brand-muted": "#EEEEEE",
+                        "text-main": "#1A1C19",
+                        "brandBlue": "#2874F0",
+                        "brandOrange": "#F97316",
                         brand: {
-                            blue: '#2563eb',
-                            orange: '#f97316',
-                            olive: '#556B2F',
-                            cream: '#FAF9EE',
+                            blue: "#2563eb",
+                            orange: "#f97316",
+                            olive: "#556B2F",
+                            cream: "#FAF9EE",
                         }
                     }
                 }
             }
         }
     </script>
+    <script>
+        (function () {
+            try {
+                const stored = localStorage.getItem('seller_sidebar_collapsed');
+                const collapsed = stored === '1';
+                if (collapsed) {
+                    document.documentElement.classList.add('sidebar-collapsed');
+                    document.documentElement.style.setProperty('--seller-sidebar-width', '5rem');
+                } else {
+                    document.documentElement.style.setProperty('--seller-sidebar-width', '18rem');
+                }
+            } catch (e) {
+                document.documentElement.style.setProperty('--seller-sidebar-width', '18rem');
+            }
+        })();
+    </script>
 
     <style>
+        :root {
+            --seller-sidebar-width: 18rem;
+        }
+
         .active-link {
-            background: #f97316;
-            color: white !important;
+            background: #ffffff;
+            color: #5F7534 !important;
         }
 
         .active-link span {
-            color: white !important;
+            color: #5F7534 !important;
         }
 
         .custom-scrollbar::-webkit-scrollbar {
@@ -45,25 +74,78 @@
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #d6cbb8;
             border-radius: 10px;
+        }
+
+        html,
+        body {
+            scrollbar-gutter: stable;
+        }
+
+        body {
+            overflow-y: scroll;
+        }
+
+        #seller-sidebar {
+            width: var(--seller-sidebar-width);
+            transition: width 0.08s linear, transform 0.08s linear;
+            will-change: width, transform;
+        }
+
+        #seller-main {
+            transition: margin-left 0.08s linear;
+            will-change: margin-left;
+        }
+
+        #sidebarNav .nav-link {
+            transition-property: background-color, color;
+            transition-duration: 150ms;
+            transition-timing-function: ease;
+        }
+
+        #sidebarNav .material-icons-outlined {
+            width: 1.5rem;
+            display: inline-flex;
+            justify-content: center;
+        }
+
+        #sidebarNav {
+            overflow-y: scroll;
+            scrollbar-gutter: stable;
+        }
+
+        html.sidebar-collapsed #seller-brand-group,
+        html.sidebar-collapsed .sidebar-text {
+            display: none;
+        }
+
+        html.sidebar-collapsed #seller-sidebar-header {
+            justify-content: center;
+        }
+
+        @media (min-width: 1024px) {
+            #seller-main {
+                margin-left: var(--seller-sidebar-width);
+            }
         }
     </style>
 </head>
 
-<body class="bg-[#F4F7FE] font-sans text-slate-800">
+<body class="bg-brand-bg font-sans text-text-main">
 
     <!-- Sidebar -->
-    <aside class="fixed inset-y-0 left-0 w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-50">
+    <aside id="seller-sidebar" class="fixed inset-y-0 left-0 bg-[#4b5e29] text-white border-r border-primary/15 hidden lg:flex flex-col z-50">
 
-        <div class="p-8 flex flex-col">
+        <div class="p-6 flex flex-col">
 
             <!-- Logo Row -->
-            <div class="flex items-center gap-3">
+            <div id="seller-sidebar-header" class="flex items-center justify-between px-2">
 
                 <!-- Shopping Bag Icon -->
-                <div class="w-10 h-10 rounded-xl bg-brand-cream shadow-md flex items-center justify-center">
-                    <span class="material-icons-outlined text-brand-blue text-xl">
+                <div id="seller-brand-group" class="flex items-center gap-3 shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-white/95 shadow-md flex items-center justify-center">
+                    <span class="material-icons-outlined text-primary text-xl">
                         shopping_bag
                     </span>
                 </div>
@@ -73,15 +155,19 @@
 
                     <!-- BuyNext -->
                     <span class="text-2xl font-extrabold tracking-tight">
-                        <span class="text-blue-600">Buy</span><span class="text-orange-500">Next</span>
+                        <span class="text-[#e4efd1]">Buy</span><span class="text-orange-300">Next</span>
                     </span>
 
                     <!-- Seller Hub (Closer + Noticeable) -->
-                    <span class="text-xs font-bold text-brand-orange tracking-widest uppercase mt-1">
+                    <span class="text-xs font-bold text-white/70 tracking-widest uppercase mt-1">
                         Seller Hub
                     </span>
 
                 </div>
+                </div>
+                <button id="toggle-seller-sidebar" class="flex items-center justify-center w-10 h-10 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all shrink-0" type="button" aria-label="Toggle sidebar">
+                    <span class="material-icons-outlined text-2xl">menu_open</span>
+                </button>
 
             </div>
 
@@ -91,71 +177,66 @@
         <nav id="sidebarNav" class="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
 
             <a href="{% url 'seller_dashboard' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_dashboard' %}active-link{% endif %}">
-                <span class="material-icons-outlined">dashboard</span> Dashboard
+                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_dashboard' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-2xl shrink-0">dashboard</span> <span class="sidebar-text whitespace-nowrap">Dashboard</span>
             </a>
 
             <a href="{% url 'seller_product' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_product' %}active-link{% endif %}">
-                <span class="material-icons-outlined">inventory_2</span> Products
+                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_product' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-2xl shrink-0">inventory_2</span> <span class="sidebar-text whitespace-nowrap">Products</span>
             </a>
 
             <a href="{% url 'add_product' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'add_product' %}active-link{% endif %}">
-                <span class="material-icons-outlined">add_box</span> Add Product
+                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'add_product' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-2xl shrink-0">add_box</span> <span class="sidebar-text whitespace-nowrap">Add Product</span>
             </a>
-            <a href="{% url 'product_status' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl 
-          text-slate-500 hover:bg-orange-100 hover:text-brand-orange 
-          transition-all font-semibold 
-          {% if request.resolver_match.url_name == 'product_status' %}active-link{% endif %}">
-                <span class="material-icons-outlined">inventory</span>
-                <span>Product Status</span>
+            <a href="{% url 'product_status' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'product_status' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-2xl shrink-0">inventory</span>
+                <span class="sidebar-text whitespace-nowrap">Product Status</span>
             </a>
 
             <a href="{% url 'seller_orders' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_orders' %}active-link{% endif %}">
-                <span class="material-icons-outlined">receipt_long</span> Orders
+                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_orders' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-2xl shrink-0">receipt_long</span> <span class="sidebar-text whitespace-nowrap">Orders</span>
             </a>
-            <a href="{% url 'seller_reviews' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 
-          hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold 
-          {% if request.resolver_match.url_name == 'seller_reviews' %}active-link{% endif %}">
-                <span class="material-icons-outlined">rate_review</span> Customer Reviews
+            <a href="{% url 'seller_reviews' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_reviews' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-2xl shrink-0">rate_review</span> <span class="sidebar-text whitespace-nowrap">Customer Reviews</span>
             </a>
 
             <a href="{% url 'offer_discount' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'offer_discount' %}active-link{% endif %}">
-                <span class="material-icons-outlined">local_offer</span> Offers & Discounts
+                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'offer_discount' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-2xl shrink-0">local_offer</span> <span class="sidebar-text whitespace-nowrap">Offers & Discounts</span>
             </a>
 
             <a href="{% url 'seller_inventory' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_inventory' %}active-link{% endif %}">
-                <span class="material-icons-outlined">warehouse</span> Inventory
+                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_inventory' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-2xl shrink-0">warehouse</span> <span class="sidebar-text whitespace-nowrap">Inventory</span>
             </a>
 
             <a href="{% url 'seller_earnings' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_earnings' %}active-link{% endif %}">
-                <span class="material-icons-outlined">payments</span> Earnings
+                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_earnings' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-2xl shrink-0">payments</span> <span class="sidebar-text whitespace-nowrap">Earnings</span>
             </a>
 
-            <div class="pt-4 border-t border-slate-100 mt-4">
+            <div class="pt-4 border-t border-white/10 mt-4">
                 <a href="{% url 'seller_profile' %}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_profile' %}active-link{% endif %}">
-                    <span class="material-icons-outlined">storefront</span> Store Profile
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_profile' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                    <span class="material-icons-outlined text-2xl shrink-0">storefront</span> <span class="sidebar-text whitespace-nowrap">Store Profile</span>
                 </a>
 
                 <a href="{% url 'seller_settings' %}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-orange-100 hover:text-brand-orange transition-all font-semibold {% if request.resolver_match.url_name == 'seller_settings' %}active-link{% endif %}">
-                    <span class="material-icons-outlined">settings</span> Settings
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_settings' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
+                    <span class="material-icons-outlined text-2xl shrink-0">settings</span> <span class="sidebar-text whitespace-nowrap">Settings</span>
                 </a>
             </div>
         </nav>
 
         <!-- Logout -->
-        <div class="p-4 border-t border-slate-100">
+        <div class="p-4 border-t border-white/10">
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit"
-                    class="w-full flex items-center gap-3 px-4 py-3 text-red-500 font-bold hover:bg-red-50 rounded-xl transition-all">
+                    class="w-full flex items-center gap-3 px-4 py-3 text-white/80 font-bold hover:bg-white/15 hover:text-white rounded-lg transition-all">
                     <span class="material-icons-outlined">logout</span> Logout
                 </button>
             </form>
@@ -164,49 +245,49 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="lg:ml-72 min-h-screen">
+    <main id="seller-main" class="min-h-screen">
 
         <header
-            class="h-20 bg-white/80 backdrop-blur-md sticky top-0 z-40 px-8 flex items-center justify-between border-b border-slate-100">
+            class="h-20 bg-white/70 backdrop-blur-md sticky top-0 z-40 px-8 flex items-center justify-between border-b border-brand-accent/60">
             <div class="flex flex-col">
                 <h2 class="text-xl font-extrabold text-slate-800">
                     {% block header_title %}Dashboard{% endblock %}
                 </h2>
 
-                <p class="text-sm text-slate-500 mt-1">
+                <p class="text-sm text-slate-600 mt-1">
                     Welcome back,
-                    <span class="font-bold text-brand-orange">
+                    <span class="font-bold text-brand-primary">
                         {{ user.seller_profile.store_name }}
-                    </span> 👋
+                    </span>
                 </p>
             </div>
 
             <div class="flex items-center gap-6">
 
                 <!-- Notification -->
-                <button class="p-2 bg-slate-100 rounded-full text-slate-500 relative">
+                <button class="p-2 bg-brand-muted rounded-full text-slate-500 relative">
                     <span class="material-icons-outlined">notifications</span>
-                    <span class="absolute top-0 right-0 w-2 h-2 bg-brand-orange rounded-full"></span>
+                    <span class="absolute top-0 right-0 w-2 h-2 bg-brandOrange rounded-full"></span>
                 </button>
 
                 <!-- Go Back Button -->
                 <a href="{% url 'home' %}"
-                    class="flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-brand-orange rounded-xl text-sm font-bold transition-all shadow-md hover:bg-brand-orange/10 hover:border-brand-blue hover:scale-105">
+                    class="flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-brand-primary rounded-xl text-sm font-bold transition-all shadow-md hover:bg-brand-muted hover:border-brand-primary hover:scale-105">
                     <span class="material-icons-outlined text-base">arrow_back</span>
                     Go Back to
                     <span class="font-extrabold">
-                        <span class="text-brand-blue">Buy</span>
-                        <span class="text-brand-orange">Next</span>
+                        <span class="text-brandBlue">Buy</span>
+                        <span class="text-brandOrange">Next</span>
                     </span>
                 </a>
 
                 <!-- Account Section -->
-                <div class="flex items-center gap-3 border-l pl-6 border-slate-200">
+                <div class="flex items-center gap-3 border-l pl-6 border-brand-accent/60">
                     <div class="text-right">
                         <p class="text-sm font-bold leading-none">
                             {{ user.seller_profile.store_name }}
                         </p>
-                        <p class="text-[10px] text-brand-blue font-bold uppercase">
+                        <p class="text-[10px] text-brand-primary font-bold uppercase">
                             Seller ID: #{{ user.id|truncatechars:6 }}
                         </p>
                     </div>
@@ -235,19 +316,30 @@
 
     <!-- Active Sidebar Script -->
     <script>
-        const links = document.querySelectorAll('#sidebarNav a');
+        const toggleBtn = document.getElementById('toggle-seller-sidebar');
+        const root = document.documentElement;
+        const storageKey = 'seller_sidebar_collapsed';
 
-        links.forEach(link => {
-            link.addEventListener('click', function () {
+        const applyCollapsedState = (collapsed) => {
+            root.classList.toggle('sidebar-collapsed', collapsed);
+            root.style.setProperty('--seller-sidebar-width', collapsed ? '5rem' : '18rem');
+        };
 
-                links.forEach(l => l.classList.remove('active-link'));
-
-                this.classList.add('active-link');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                const collapsed = !root.classList.contains('sidebar-collapsed');
+                applyCollapsedState(collapsed);
+                try {
+                    localStorage.setItem(storageKey, collapsed ? '1' : '0');
+                } catch (e) {
+                    // ignore storage errors
+                }
             });
-        });
+        }
     </script>
     {% block extra_js %}{% endblock %}
 
 </body>
 
 </html>
+

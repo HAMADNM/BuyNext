@@ -37,11 +37,12 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            is_admin_user = user.is_superuser or user.is_staff or getattr(user, "is_admin_role", False)
 
-            if not (user.is_email_verified or user.is_phone_verified):
+            if not is_admin_user and not (user.is_email_verified or user.is_phone_verified):
                 messages.error(request, "Please verify your account first.")
                 request.session["verify_user"] = user.id
-                request.session["verify_source"] = "user" 
+                request.session["verify_source"] = "user"
                 return redirect("choose_verification")
 
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
@@ -177,7 +178,13 @@ def phone_verification(request):
     )
 
     phone = user.phone_number
+    if not phone or not str(phone).strip():
+        messages.error(request, "Please add a phone number to your profile before verifying.")
+        if request.user.is_authenticated:
+            return redirect("profile")
+        return redirect("choose_verification")
 
+    phone = str(phone).strip()
     if not phone.startswith("+"):
         phone = f"+91{phone}"
 
@@ -602,12 +609,13 @@ def product_detail(request, slug):
     if not default_variant:
         default_variant = variants.first()
 
-    if request.user.is_authenticated:
-          default_variant.is_in_wishlist = default_variant.wishlist_items.filter(
-        wishlist__user=request.user
-    ).exists()
-    else:
-        default_variant.is_in_wishlist = False
+    if default_variant:
+        if request.user.is_authenticated:
+            default_variant.is_in_wishlist = default_variant.wishlist_items.filter(
+                wishlist__user=request.user
+            ).exists()
+        else:
+            default_variant.is_in_wishlist = False
 
     reviews = Review.objects.filter(
         product=product,

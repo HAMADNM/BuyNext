@@ -21,6 +21,9 @@ def _dashboard_for_user(user, request):
                 return reverse_lazy("seller_profile")
             return None 
 
+        if not user.is_verified_seller:
+            return reverse_lazy("seller_profile")
+
         return reverse_lazy("seller_dashboard")
 
     if not (user.is_email_verified or user.is_phone_verified):
