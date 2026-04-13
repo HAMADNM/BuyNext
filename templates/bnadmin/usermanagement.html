@@ -112,6 +112,25 @@ background:#f9eeee;
 background:#f4dddd;
 }
 
+.action-deactivate{
+color:#b54242;
+background:#f9eeee;
+}
+
+.action-deactivate:hover{
+background:#f4dddd;
+}
+
+.action-activate{
+color:#3f5620;
+background:#e7efda;
+}
+
+.action-activate:hover{
+background:var(--bn-sage);
+color:#fff;
+}
+
 .action-orders{
 color:#3f5620;
 background:#e7efda;
@@ -224,10 +243,17 @@ Edit
 <span class="material-symbols-outlined text-[18px]">receipt_long</span>
 Orders
 </a>
-<a href="{% url 'delete_user' user.id %}" class="action-btn action-delete">
-<span class="material-symbols-outlined text-[18px]">delete</span>
-Delete
+{% if user.is_active %}
+<a href="{% url 'delete_user' user.id %}" class="action-btn action-deactivate">
+<span class="material-symbols-outlined text-[18px]">toggle_off</span>
+Deactivate
 </a>
+{% else %}
+<a href="{% url 'delete_user' user.id %}" class="action-btn action-activate">
+<span class="material-symbols-outlined text-[18px]">toggle_on</span>
+Activate
+</a>
+{% endif %}
 </div>
 </td>
 </tr>

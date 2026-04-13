@@ -6,6 +6,15 @@ from django.utils.text import slugify
 from core.models import User, SubCategory 
 
 
+def generate_unique_sku(variant):
+    brand = ""
+    if getattr(variant, "product", None) and getattr(variant.product, "brand", None):
+        brand = variant.product.brand
+    prefix = "".join(ch for ch in brand if ch.isalnum()).upper()[:3] or "BRD"
+    suffix = "".join(random.choices(string.digits, k=6))
+    return f"{prefix}-{suffix}"
+
+
 class SellerProfile(models.Model):
  
     VERIFICATION_STATUS = (

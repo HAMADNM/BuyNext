@@ -108,7 +108,7 @@ def seller_registration(request):
 
         if hasattr(user, "seller_profile"):
             messages.warning(request, "You already have a seller account")
-            return redirect("seller_dashboard")
+            return redirect("seller_profile")
 
         SellerProfile.objects.create(
             user=user,
@@ -124,7 +124,7 @@ def seller_registration(request):
             request.session["verify_source"] = "seller"
             return redirect("email_verification")
 
-        return redirect("seller_dashboard")
+        return redirect("seller_profile")
 
     return render(request, "seller/seller_registration.html", {"data": request.POST})
 
@@ -306,26 +306,30 @@ def edit_product(request, product_id):
         images = request.FILES.getlist("product_images")
 
         if images:
-
-           
             ProductGallery.objects.filter(product=product).delete()
 
-            primary_index = int(request.POST.get("primary_image_index") or 0)
+            try:
+                primary_index = int(request.POST.get("primary_image_index") or 0)
+            except (TypeError, ValueError):
+                primary_index = 0
+
+            if primary_index < 0 or primary_index >= len(images):
+                primary_index = 0
 
             for index, image in enumerate(images):
                 if _is_video_file(image):
                     ProductGallery.objects.create(
                         product=product,
                         video=image,
-                        is_primary=(not has_primary and index == primary_index),
-                        display_order=existing_count + index,
+                        is_primary=(index == primary_index),
+                        display_order=index,
                     )
                 else:
                     ProductGallery.objects.create(
                         product=product,
                         image=image,
-                        is_primary=(not has_primary and index == primary_index),
-                        display_order=existing_count + index,
+                        is_primary=(index == primary_index),
+                        display_order=index,
                     )
 
         if not ProductGallery.objects.filter(product=product, is_primary=True).exists():
@@ -534,7 +538,7 @@ def seller_order(request):
 
     seller = request.user.seller_profile
 
-    order_items = OrderItem.objects.filter(
+    order_items = CustomerOrderItem.objects.filter(
         variant__product__seller=seller
     ).select_related(
         "order",
@@ -560,28 +564,28 @@ def seller_order(request):
     ]
 
     if status == "active":
-        order_items = order_items.filter(order__order_status__in=active_statuses)
+        order_items = order_items.filter(item_status__in=active_statuses)
 
     elif status == "returns":
-        order_items = order_items.filter(order__order_status="RETURN_REQUESTED")
+        order_items = order_items.filter(item_status="RETURN_REQUESTED")
 
     elif status == "cancelled":
-        order_items = order_items.filter(order__order_status="CANCELLED")
+        order_items = order_items.filter(item_status="CANCELLED")
 
 
-    active_orders = OrderItem.objects.filter(
+    active_orders = CustomerOrderItem.objects.filter(
         variant__product__seller=seller,
-        order__order_status__in=active_statuses
+        item_status__in=active_statuses
     ).values("order_id").distinct().count()
 
 
-    returns_pending = OrderItem.objects.filter(
+    returns_pending = CustomerOrderItem.objects.filter(
         variant__product__seller=seller,
-        order__order_status="RETURN_REQUESTED"
+        item_status="RETURN_REQUESTED"
     ).values("order_id").distinct().count()
 
 
-    total_revenue = OrderItem.objects.filter(
+    total_revenue = CustomerOrderItem.objects.filter(
         variant__product__seller=seller
     ).aggregate(
         total=Sum(F("price_at_purchase") * F("quantity"))
@@ -813,20 +817,18 @@ def update_order_status(request, order_id):
         seller = request.user.seller_profile
 
      
-        has_items = OrderItem.objects.filter(
+        has_items = CustomerOrderItem.objects.filter(
             order=order,
             variant__product__seller=seller
-        ).exists()
+        )
 
-        if not has_items:
+        if not has_items.exists():
             return JsonResponse({
                 "success": False,
                 "error": "Not authorized for this order"
             })
 
-       
-        order.order_status = status_map[status]
-        order.save(update_fields=["order_status"])
+        has_items.update(item_status=status_map[status])
 
         return JsonResponse({
             "success": True,

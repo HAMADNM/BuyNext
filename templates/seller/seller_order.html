@@ -105,28 +105,28 @@
                     <td class="px-8 py-5 text-sm font-black text-slate-600">x{{ item.quantity }}</td>
                     <td class="px-8 py-5 text-sm font-black text-brand-blue">${{ item.price_at_purchase }}</td>
                     <td class="px-8 py-5">
-                        {% if item.order.order_status == "PLACED" %}
+                        {% if item.item_status == "PLACED" %}
                         <span class="px-3 py-1 bg-yellow-50 text-yellow-600 rounded-lg text-[10px] font-black uppercase">Placed</span>
-                        {% elif item.order.order_status == "PROCESSING" %}
+                        {% elif item.item_status == "PROCESSING" %}
                         <span class="px-3 py-1 bg-blue-50 text-brand-blue rounded-lg text-[10px] font-black uppercase">Processing</span>
-                        {% elif item.order.order_status == "SHIPPED" %}
+                        {% elif item.item_status == "SHIPPED" %}
                         <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase">Shipped</span>
-                        {% elif item.order.order_status == "OUT_FOR_DELIVERY" %}
+                        {% elif item.item_status == "OUT_FOR_DELIVERY" %}
                         <span class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase">Out for Delivery</span>
-                        {% elif item.order.order_status == "DELIVERED" %}
+                        {% elif item.item_status == "DELIVERED" %}
                         <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black uppercase">Delivered</span>
-                        {% elif item.order.order_status == "CANCELLED" %}
+                        {% elif item.item_status == "CANCELLED" %}
                         <span class="px-3 py-1 bg-red-50 text-red-500 rounded-lg text-[10px] font-black uppercase">Cancelled</span>
-                        {% elif item.order.order_status == "RETURN_REQUESTED" %}
+                        {% elif item.item_status == "RETURN_REQUESTED" %}
                         <span class="px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-black uppercase">Return Requested</span>
                         {% else %}
-                        <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black uppercase">{{ item.order.order_status|title }}</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black uppercase">{{ item.display_status }}</span>
                         {% endif %}
                     </td>
 
 <td class="px-8 py-5 text-center">
 <button 
-onclick="openOrderDetails('{{ item.order.order_number }}','{{ item.order.user.username }}','{{ item.order.order_status|lower }}')"
+onclick="openOrderDetails('{{ item.order.order_number }}','{{ item.order.user.username }}','{{ item.item_status|lower }}')"
 class="w-10 h-10 bg-slate-50 text-slate-400 hover:bg-brand-blue hover:text-white rounded-xl transition-all">
 <span class="material-icons-outlined text-xl">visibility</span>
 </button>

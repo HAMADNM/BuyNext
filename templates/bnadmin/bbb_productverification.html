@@ -465,13 +465,23 @@ background:var(--bn-sage);
 color:#fff;
 }
 
-.bn-product-btn.delete{
+.bn-product-btn.deactivate{
 color:#b54242;
 background:#f9eeee;
 }
 
-.bn-product-btn.delete:hover{
+.bn-product-btn.deactivate:hover{
 background:#b54242;
+color:#fff;
+}
+
+.bn-product-btn.activate{
+color:#3f5620;
+background:#e7efda;
+}
+
+.bn-product-btn.activate:hover{
+background:var(--bn-sage);
 color:#fff;
 }
 
@@ -614,10 +624,17 @@ Verification Queue ({{ product_stats.pending }})
                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                     View
                 </a>
-                <a href="{% url 'delete_product_admin' product.id %}" class="bn-product-btn delete">
-                    <span class="material-symbols-outlined text-[18px]">delete</span>
-                    Delete
+                {% if product.is_active %}
+                <a href="{% url 'delete_product_admin' product.id %}" class="bn-product-btn deactivate">
+                    <span class="material-symbols-outlined text-[18px]">toggle_off</span>
+                    Deactivate
                 </a>
+                {% else %}
+                <a href="{% url 'delete_product_admin' product.id %}" class="bn-product-btn activate">
+                    <span class="material-symbols-outlined text-[18px]">toggle_on</span>
+                    Activate
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>
