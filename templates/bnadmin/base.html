@@ -5,7 +5,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>{% block title %}BuyNext Admin{% endblock %}</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%235F7534'/%3E%3Cpath d='M21 24h22l-2 23H23l-2-23Z' fill='white'/%3E%3Cpath d='M26 24a6 6 0 0 1 12 0' fill='none' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='45' cy='19' r='6' fill='%23F97316'/%3E%3C/svg%3E"/>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23556B2F'/%3E%3Cpath d='M21 24h22l-2 23H23l-2-23Z' fill='white'/%3E%3Cpath d='M26 24a6 6 0 0 1 12 0' fill='none' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='45' cy='19' r='6' fill='%23F97316'/%3E%3C/svg%3E"/>
 
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -22,13 +22,13 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#5F7534",
-                        "primary-dark": "#4B5E29",
-                        "brand-blue": "#5F7534",
+                        "primary": "#5D6A3A",
+                        "primary-dark": "#4E5A31",
+                        "brand-blue": "#2874F0",
                         "brand-orange": "#F97316",
-                        "background-cream": "#FFFFFF",
-                        "accent-tan": "#DDD4C6",
-                        "text-main": "#27311D",
+                        "background-cream": "#F8F4EC",
+                        "accent-tan": "#E6E0D1",
+                        "text-main": "#2B2E25",
                         "text-muted": "#6D7463",
                         "navbar": "#FFFFFF"
                     },
@@ -51,8 +51,7 @@
     <script>
         (function () {
             try {
-                const stored = localStorage.getItem('bnadmin_sidebar_collapsed');
-                const collapsed = stored === null ? true : stored === '1';
+                const collapsed = false;
                 if (collapsed) {
                     document.documentElement.classList.add('sidebar-collapsed');
                     document.documentElement.style.setProperty('--sidebar-width', '5rem');
@@ -69,12 +68,12 @@
         @layer base {
             :root {
                 --sidebar-width: 16rem;
-                --bn-scrollbar: #5b7032;
-                --bn-scrollbar-hover: #4b5e29;
-                --bn-scrollbar-track: #d8decb;
+                --bn-scrollbar: #DCCFC0;
+                --bn-scrollbar-hover: #DCCFC0;
+                --bn-scrollbar-track: #FAF9EE;
             }
             body {
-                @apply bg-background-cream text-text-main font-display antialiased overflow-x-hidden;
+                @apply bg-white text-text-main font-display antialiased overflow-x-hidden;
             }
             body::before {
                 content: "";
@@ -82,8 +81,8 @@
                 inset: 0;
                 pointer-events: none;
                 background:
-                    radial-gradient(900px 260px at 8% -8%, rgba(95, 117, 52, 0.10), transparent 70%),
-                    radial-gradient(880px 240px at 96% -10%, rgba(249, 115, 22, 0.08), transparent 74%);
+                    radial-gradient(900px 260px at 8% -8%, rgba(62, 85, 114, 0.10), transparent 70%),
+                    radial-gradient(880px 240px at 96% -10%, rgba(197, 122, 52, 0.10), transparent 74%);
                 z-index: -1;
             }
             .material-symbols-outlined {
@@ -142,11 +141,145 @@
         }
 
         #main-content table thead tr {
-            background: #4b5e29;
+            background: #1B5FCC;
         }
 
         #main-content table thead tr th {
             color: #ffffff;
+        }
+
+        #main-content .text-brand-orange {
+            color: #F97316 !important;
+        }
+
+        #main-content .bg-brand-orange {
+            background-color: #F97316 !important;
+        }
+
+        #main-content .text-brand-blue {
+            color: #1B5FCC !important;
+        }
+
+        #main-content .bg-brand-blue {
+            background-color: #1B5FCC !important;
+            border: 1px solid #F97316 !important;
+            box-shadow: 0 10px 18px rgba(249, 115, 22, 0.25);
+        }
+
+        #main-content .border-brand-blue {
+            border-color: #1B5FCC !important;
+        }
+
+        #main-content {
+            --bn-blue: #1B5FCC;
+            --bn-orange: #F97316;
+            --bn-blue-ink: #153A86;
+            --bn-sage: #1B5FCC;
+            --bn-sage-dark: #F97316;
+            --bn-olive-ink: #153A86;
+            --bn-mint: #EAF1FE;
+        }
+
+        #main-content .text-primary {
+            color: var(--bn-blue) !important;
+        }
+
+        #main-content .bg-primary {
+            background-color: var(--bn-blue) !important;
+            border: 1px solid var(--bn-orange) !important;
+            box-shadow: 0 10px 18px rgba(249, 115, 22, 0.25);
+        }
+
+        #main-content .border-primary {
+            border-color: var(--bn-blue) !important;
+        }
+
+        #main-content .text-primary-dark {
+            color: var(--bn-orange) !important;
+        }
+
+        #main-content .bg-primary-dark {
+            background-color: var(--bn-orange) !important;
+        }
+
+        #main-content .border-primary-dark {
+            border-color: var(--bn-orange) !important;
+        }
+
+        #main-content [class*="bg-[#556B2F]"],
+        #main-content [class*="bg-[#4F5A2F]"],
+        #main-content [class*="bg-[#43502A]"],
+        #main-content [class*="bg-[#3f5620]"],
+        #main-content [class*="bg-[#2f3a22]"],
+        #main-content [class*="bg-[#5f7534]"],
+        #main-content [class*="bg-[#7aa85c]"] {
+            background-color: var(--bn-blue) !important;
+        }
+
+        #main-content [class*="text-[#556B2F]"],
+        #main-content [class*="text-[#4F5A2F]"],
+        #main-content [class*="text-[#43502A]"],
+        #main-content [class*="text-[#3f5620]"],
+        #main-content [class*="text-[#2f3a22]"],
+        #main-content [class*="text-[#5f7534]"],
+        #main-content [class*="text-[#7aa85c]"],
+        #main-content [class*="text-[#36412a]"],
+        #main-content [class*="text-[#303a22]"] {
+            color: var(--bn-blue-ink) !important;
+        }
+
+        #main-content [class*="border-[#556B2F]"],
+        #main-content [class*="border-[#4F5A2F]"],
+        #main-content [class*="border-[#43502A]"],
+        #main-content [class*="border-[#3f5620]"],
+        #main-content [class*="border-[#2f3a22]"],
+        #main-content [class*="border-[#5f7534]"],
+        #main-content [class*="border-[#7aa85c]"] {
+            border-color: var(--bn-blue) !important;
+        }
+
+        #main-content [class*="text-green"],
+        #main-content [class*="text-emerald"],
+        #main-content [class*="text-lime"] {
+            color: var(--bn-blue) !important;
+        }
+
+        #main-content [class*="bg-green"],
+        #main-content [class*="bg-emerald"],
+        #main-content [class*="bg-lime"] {
+            background-color: var(--bn-blue) !important;
+        }
+
+        #main-content [class*="border-green"],
+        #main-content [class*="border-emerald"],
+        #main-content [class*="border-lime"] {
+            border-color: var(--bn-blue) !important;
+        }
+
+        #main-content [style*="#556B2F"],
+        #main-content [style*="#4F5A2F"],
+        #main-content [style*="#43502A"],
+        #main-content [style*="#3f5620"],
+        #main-content [style*="#2f3a22"],
+        #main-content [style*="#5f7534"],
+        #main-content [style*="#7aa85c"],
+        #main-content [style*="#6c873d"],
+        #main-content [style*="#3f5221"] {
+            color: var(--bn-blue) !important;
+            border-color: var(--bn-blue) !important;
+            background-color: var(--bn-blue) !important;
+        }
+
+        #main-content table {
+            background: #F8F4EC;
+        }
+
+        #main-content table tbody tr {
+            background: #F8F4EC;
+        }
+
+        #main-content table tbody td {
+            background: #F8F4EC;
         }
 
         #main-content :is(input[type="text"], input[type="number"], input[type="email"], input[type="search"], textarea, select) {
@@ -156,8 +289,8 @@
         }
 
         #main-content :is(input[type="text"], input[type="number"], input[type="email"], input[type="search"], textarea, select):focus {
-            border-color: rgb(95 117 52 / 0.45);
-            box-shadow: 0 0 0 4px rgba(95, 117, 52, 0.10);
+            border-color: rgb(85 107 47 / 0.45);
+            box-shadow: 0 0 0 4px rgba(85, 107, 47, 0.10);
             background-color: #fff;
         }
 
@@ -262,66 +395,113 @@
         }
     </style>
 {% block extra_css %}{% endblock %}
+<style>
+    /* Force all bnadmin main content greens to blue/orange (no sidebar impact) */
+    #main-content {
+        --bn-sage: #3E5572 !important;
+        --bn-sage-dark: #C57A34 !important;
+    }
+    #main-content .is-green,
+    #main-content .is-verified,
+    #main-content .status-verified,
+    #main-content .action-activate,
+    #main-content .action-verify,
+    #main-content .action-edit {
+        color: #3E5572 !important;
+        border-color: #3E5572 !important;
+        background: rgba(62, 85, 114, 0.14) !important;
+    }
+    #main-content .is-amber,
+    #main-content .status-pending,
+    #main-content .action-report {
+        color: #C57A34 !important;
+        border-color: #C57A34 !important;
+        background: rgba(197, 122, 52, 0.14) !important;
+    }
+    #main-content [class*="bg-[#556B2F]"],
+    #main-content [class*="bg-[#4F5A2F]"],
+    #main-content [class*="bg-[#43502A]"],
+    #main-content [class*="text-[#556B2F]"],
+    #main-content [class*="text-[#4F5A2F]"],
+    #main-content [class*="text-[#43502A]"],
+    #main-content [class*="border-[#556B2F]"],
+    #main-content [class*="border-[#4F5A2F]"],
+    #main-content [class*="border-[#43502A]"] {
+        background-color: #3E5572 !important;
+        color: #3E5572 !important;
+        border-color: #3E5572 !important;
+    }
+    #main-content [style*="#556B2F"],
+    #main-content [style*="#4F5A2F"],
+    #main-content [style*="#43502A"],
+    #main-content [style*="#3f5620"],
+    #main-content [style*="#2f3a22"],
+    #main-content [style*="#7aa85c"] {
+        color: #3E5572 !important;
+        border-color: #3E5572 !important;
+        background-color: #3E5572 !important;
+    }
+</style>
 {% block extrahead %}{% endblock %}
 </head>
 <body class="min-h-screen flex flex-col">
 
 <div id="sidebar-overlay"></div>
 
-<aside id="main-sidebar" class="fixed top-0 left-0 z-50 h-screen border-r border-primary/15 bg-[#4b5e29] text-white flex flex-col overflow-x-hidden -translate-x-full lg:translate-x-0">
+<aside id="main-sidebar" class="fixed top-0 left-0 z-50 h-screen border-r border-accent-tan/60 bg-background-cream text-text-main flex flex-col overflow-x-hidden -translate-x-full lg:translate-x-0">
     <div class="flex flex-col h-full px-3 lg:px-4 space-y-2">
-        <div class="h-20 flex items-center justify-between px-4 border-b border-white/10 shrink-0" id="sidebar-header">
+        <div class="h-20 flex items-center justify-between px-4 border-b border-accent-tan/60 shrink-0" id="sidebar-header">
             <div id="sidebar-brand-group" class="flex items-center gap-3 shrink-0">
                 <div class="w-10 h-10 rounded-xl bg-white/95 shadow-md flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-primary text-xl">shopping_bag</span>
                 </div>
                 <span class="text-lg font-extrabold tracking-tight sidebar-text whitespace-nowrap">
-                    <span class="text-[#e4efd1]">Buy</span><span class="text-orange-300">Next</span>
+                    <span class="text-brand-blue">Buy</span><span class="text-brand-orange">Next</span>
                 </span>
             </div>
-            <button id="toggle-sidebar" class="flex items-center justify-center w-10 h-10 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all shrink-0">
+            <button id="toggle-sidebar" class="flex items-center justify-center w-10 h-10 rounded-lg text-text-muted hover:bg-accent-tan/50 hover:text-text-main transition-all shrink-0">
                 <span class="material-symbols-outlined text-2xl">menu_open</span>
             </button>
         </div>
 
         <nav class="flex-1 space-y-1 mt-4 overflow-y-auto custom-scrollbar">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'admin_dashboard' %}bg-white text-primary{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all shadow-sm nav-link leading-none"
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'admin_dashboard' %}bg-[#F97316] text-white{% else %}text-text-muted hover:bg-[#F97316] hover:text-white{% endif %} font-medium transition-all shadow-sm nav-link leading-none"
                href="{% url 'admin_dashboard' %}" title="Overview">
                 <span class="material-symbols-outlined text-2xl shrink-0">dashboard</span>
                 <span class="sidebar-text whitespace-nowrap">Overview</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'usermanagement' or request.resolver_match.url_name == 'edit_user' or request.resolver_match.url_name == 'delete_user' or request.resolver_match.url_name == 'customer_orders' %}bg-white text-primary{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'usermanagement' or request.resolver_match.url_name == 'edit_user' or request.resolver_match.url_name == 'delete_user' or request.resolver_match.url_name == 'customer_orders' %}bg-[#F97316] text-white{% else %}text-text-muted hover:bg-[#F97316] hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
                href="{% url 'usermanagement' %}" title="Customers">
                 <span class="material-symbols-outlined text-2xl shrink-0">group</span>
                 <span class="sidebar-text whitespace-nowrap">Customers</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_management' or request.resolver_match.url_name == 'verify_seller' or request.resolver_match.url_name == 'reject_seller' or request.resolver_match.url_name == 'edit_seller' or request.resolver_match.url_name == 'delete_seller' or request.resolver_match.url_name == 'seller_product_report' %}bg-white text-primary{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_management' or request.resolver_match.url_name == 'verify_seller' or request.resolver_match.url_name == 'reject_seller' or request.resolver_match.url_name == 'edit_seller' or request.resolver_match.url_name == 'delete_seller' or request.resolver_match.url_name == 'seller_product_report' %}bg-[#F97316] text-white{% else %}text-text-muted hover:bg-[#F97316] hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
                href="{% url 'seller_management' %}" title="Seller Management">
                 <span class="material-symbols-outlined text-2xl shrink-0">store</span>
                 <span class="sidebar-text whitespace-nowrap">Seller Management</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'product_verification' or request.resolver_match.url_name == 'admin_product_preview' or request.resolver_match.url_name == 'edit_product_admin' or request.resolver_match.url_name == 'delete_product_admin' or request.resolver_match.url_name == 'approve_product' or request.resolver_match.url_name == 'reject_product' %}bg-white text-primary{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'product_verification' or request.resolver_match.url_name == 'admin_product_preview' or request.resolver_match.url_name == 'edit_product_admin' or request.resolver_match.url_name == 'delete_product_admin' or request.resolver_match.url_name == 'approve_product' or request.resolver_match.url_name == 'reject_product' %}bg-[#F97316] text-white{% else %}text-text-muted hover:bg-[#F97316] hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
                href="{% url 'product_verification' %}" title="Products">
                 <span class="material-symbols-outlined text-2xl shrink-0">inventory_2</span>
                 <span class="sidebar-text whitespace-nowrap">Products</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'order_management' or request.resolver_match.url_name == 'order_detail' %}bg-white text-primary{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'order_management' or request.resolver_match.url_name == 'order_detail' %}bg-[#F97316] text-white{% else %}text-text-muted hover:bg-[#F97316] hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
                href="{% url 'order_management' %}" title="Orders">
                 <span class="material-symbols-outlined text-2xl shrink-0">receipt_long</span>
                 <span class="sidebar-text whitespace-nowrap">Orders</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'catalogue_management' or request.resolver_match.url_name == 'add_category' or request.resolver_match.url_name == 'edit_category' or request.resolver_match.url_name == 'add_subcategory' or request.resolver_match.url_name == 'edit_subcategory' or request.resolver_match.url_name == 'add_attribute' or request.resolver_match.url_name == 'edit_attribute' or request.resolver_match.url_name == 'add_attributeoptions' %}bg-white text-primary{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'catalogue_management' or request.resolver_match.url_name == 'add_category' or request.resolver_match.url_name == 'edit_category' or request.resolver_match.url_name == 'add_subcategory' or request.resolver_match.url_name == 'edit_subcategory' or request.resolver_match.url_name == 'add_attribute' or request.resolver_match.url_name == 'edit_attribute' or request.resolver_match.url_name == 'add_attributeoptions' %}bg-[#F97316] text-white{% else %}text-text-muted hover:bg-[#F97316] hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
                href="{% url 'catalogue_management' %}" title="Catalogue">
                 <span class="material-symbols-outlined text-2xl shrink-0">category</span>
                 <span class="sidebar-text whitespace-nowrap">Catalogue</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium transition-all nav-link leading-none"
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-muted hover:bg-[#F97316] hover:text-white font-medium transition-all nav-link leading-none"
                href="{% url 'logout' %}" title="Logout">
                 <span class="material-symbols-outlined text-2xl shrink-0">logout</span>
                 <span class="sidebar-text whitespace-nowrap">Logout</span>
@@ -341,7 +521,7 @@
                     <span class="material-symbols-outlined text-primary text-xl">shopping_bag</span>
                 </div>
                 <span class="text-lg font-extrabold tracking-tight whitespace-nowrap">
-                    <span class="text-primary">Buy</span><span class="text-orange-500">Next</span>
+                    <span class="text-brand-blue">Buy</span><span class="text-brand-orange">Next</span>
                 </span>
             </div>
         </div>
@@ -371,17 +551,10 @@
     </div>
 </main>
 
-<footer id="main-footer" class="bg-background-cream border-t border-primary/10 py-6">
-    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-[11px] text-text-muted uppercase tracking-widest font-bold gap-4">
-        <span>&copy; {% now "Y" %} BuyNext Admin Console - Internal Use Only</span>
-    </div>
-</footer>
-
 <script>
     const sidebar = document.getElementById('main-sidebar');
     const toggleBtn = document.getElementById('toggle-sidebar');
     const openMobileBtn = document.getElementById('open-mobile-menu');
-    const storageKey = 'bnadmin_sidebar_collapsed';
     const toggleIcon = document.getElementById('sidebar-toggle-icon');
     const sidebarToggleIcon = toggleBtn ? toggleBtn.querySelector('.material-symbols-outlined') : null;
 
@@ -389,11 +562,6 @@
         document.body.classList.toggle('sidebar-collapsed', collapsed);
         document.documentElement.classList.toggle('sidebar-collapsed', collapsed);
         document.documentElement.style.setProperty('--sidebar-width', collapsed ? '5rem' : '16rem');
-        try {
-            localStorage.setItem(storageKey, collapsed ? '1' : '0');
-        } catch (e) {
-            // ignore storage errors
-        }
         if (toggleIcon) {
             toggleIcon.textContent = 'menu';
         }
@@ -402,18 +570,8 @@
         }
     };
 
-    const getStoredCollapsedState = () => {
-        try {
-            return localStorage.getItem(storageKey);
-        } catch (e) {
-            return null;
-        }
-    };
-
     const setDesktopState = () => {
-        const stored = getStoredCollapsedState();
-        const collapsed = stored === null ? true : stored === '1';
-        applyCollapsedState(collapsed);
+        applyCollapsedState(false);
     };
 
     if (toggleBtn) {
@@ -462,3 +620,6 @@
 {% block extra_js %}{% endblock %}
 </body>
 </html>
+
+
+

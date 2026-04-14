@@ -71,7 +71,22 @@ def admin_dashboard(request):
                     break
         product.preview_image_url = image_url
         recent_products.append(product)
-    recent_customers = User.objects.filter(role="CUSTOMER").order_by("-date_joined")[:5]
+    recent_customers = (
+        User.objects.filter(role="CUSTOMER")
+        .prefetch_related("addresses")
+        .order_by("-date_joined")[:5]
+    )
+    for customer in recent_customers:
+        display_phone = customer.phone_number
+        if not display_phone:
+            default_address = next(
+                (addr for addr in customer.addresses.all() if addr.is_default), None
+            )
+            if not default_address:
+                default_address = next(iter(customer.addresses.all()), None)
+            if default_address:
+                display_phone = default_address.phone_number
+        customer.display_phone = display_phone
     annual_revenue = (
         Order.objects.filter(is_paid=True).aggregate(total=Sum("final_amount"))["total"]
         or 0

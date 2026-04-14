@@ -6,18 +6,20 @@
 {% block extra_css %}
 <style>
     :root{
-        --bn-cream:#ffffff;
-        --bn-sage:#5f7534;
-        --bn-sage-dark:#4b5e29;
-        --bn-text:#27311d;
-        --bn-muted:#6f7662;
-        --bn-line:#e3dccd;
-        --bn-soft:#ebe5d7;
+        --bn-cream:#FAF9EE;
+        --bn-sage:#1B5FCC;
+        --bn-sage-dark:#F97316;
+        --bn-text:#1A1C19;
+        --bn-muted:#6D7463;
+        --bn-line:#DCCFC0;
+        --bn-soft:#EEEEEE;
         --bn-amber:#f59e0b;
         --bn-amber-deep:#d97706;
-        --bn-olive-ink:#2f3a22;
-        --bn-mint:#ecf2e6;
+        --bn-olive-ink:#1F3D7A;
+        --bn-mint:#EAF1FE;
         --bn-ivory:#f8f6ef;
+        --bn-blue:#1B5FCC;
+        --bn-orange:#F97316;
     }
 
     .bn-dashboard-shell {
@@ -50,7 +52,7 @@
     .bn-premium-card {
         position: relative;
         border: 1px solid rgba(207, 199, 184, 0.92);
-        background: #4b5e29;
+        background: #1B5FCC;
         color: #ffffff;
         box-shadow: 0 16px 36px rgba(39, 49, 29, 0.28);
     }
@@ -60,7 +62,8 @@
     }
 
     .bn-hero-card {
-        background: #4b5e29;
+        background: #1B5FCC;
+        border: 1px solid rgba(62, 85, 114, 0.45);
     }
 
     .bn-hero-card h2 {
@@ -76,9 +79,10 @@
     }
 
     .bn-date-chip {
-        border: 1px solid rgba(95, 117, 52, 0.18);
+        border: 1px solid rgba(85, 107, 47, 0.18);
         background: rgba(255, 255, 255, 0.9);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+        color: var(--bn-blue);
     }
 
     .bn-kpi-grid {
@@ -104,7 +108,7 @@
     .bn-stat-link:focus-visible {
         outline: none;
         box-shadow:
-            0 0 0 4px rgba(95, 117, 52, 0.14),
+            0 0 0 4px rgba(85, 107, 47, 0.14),
             0 22px 42px -28px rgba(15, 23, 42, 0.36),
             inset 0 1px 0 rgba(255, 255, 255, 0.94);
     }
@@ -126,12 +130,55 @@
     .bn-stat-icon {
         position: relative;
         background: #ffffff !important;
-        color: #4b5e29 !important;
+        color: #1B5FCC !important;
         box-shadow: 0 10px 18px -12px rgba(0, 0, 0, 0.35);
+    }
+
+    .bn-kpi-grid article:nth-child(1) {
+        background: #1B5FCC;
+    }
+
+    .bn-kpi-grid article:nth-child(2) {
+        background: #1B5FCC;
+    }
+
+    .bn-kpi-grid article:nth-child(3) {
+        background: #1B5FCC;
+    }
+
+    .bn-kpi-grid article:nth-child(4) {
+        background: #F97316;
+    }
+
+    .bn-kpi-grid article:nth-child(1) .bn-stat-icon {
+        color: #1B5FCC !important;
+    }
+
+    .bn-kpi-grid article:nth-child(2) .bn-stat-icon {
+        color: #1B5FCC !important;
+    }
+
+    .bn-kpi-grid article:nth-child(3) .bn-stat-icon {
+        color: #1B5FCC !important;
+    }
+
+    .bn-kpi-grid article:nth-child(4) .bn-stat-icon {
+        color: #F97316 !important;
     }
 
     .bn-stat-icon::after {
         content: none;
+    }
+
+    .bn-stat-card.is-orange {
+        background: #F97316;
+        border-color: rgba(255, 255, 255, 0.25);
+        color: #ffffff;
+    }
+
+    .bn-stat-card.is-orange .bn-stat-icon {
+        background: #ffffff !important;
+        color: #F97316 !important;
     }
 
     .bn-stat-topline {
@@ -218,11 +265,11 @@
     }
 
     .bn-kpi-grid article:nth-child(2) .bn-kpi-accent {
-        background: rgba(255, 255, 255, 0.55);
+        background: rgba(62, 85, 114, 0.75);
     }
 
     .bn-kpi-grid article:nth-child(3) .bn-kpi-accent {
-        background: rgba(255, 255, 255, 0.5);
+        background: rgba(197, 122, 52, 0.78);
     }
 
     .bn-kpi-grid article:nth-child(4) .bn-kpi-accent {
@@ -242,18 +289,26 @@
     }
 
     .bn-kpi-grid article:nth-child(2) .bn-stat-dot {
-        background: #ffffff;
-        box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12);
+        background: var(--bn-blue);
+        box-shadow: 0 0 0 6px rgba(62, 85, 114, 0.18);
     }
 
     .bn-kpi-grid article:nth-child(3) .bn-stat-dot {
-        background: #ffffff;
-        box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12);
+        background: var(--bn-orange);
+        box-shadow: 0 0 0 6px rgba(197, 122, 52, 0.18);
     }
 
     .bn-kpi-grid article:nth-child(4) .bn-stat-dot {
         background: #ffffff;
         box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12);
+    }
+
+    .bn-kpi-grid article:nth-child(2) .bn-stat-icon {
+        color: var(--bn-blue) !important;
+    }
+
+    .bn-kpi-grid article:nth-child(3) .bn-stat-icon {
+        color: var(--bn-orange) !important;
     }
 
     .bn-table-card {
@@ -263,12 +318,12 @@
     }
 
     .bn-panel-head {
-        padding: 1rem 1.4rem;
+        padding: 0.95rem 1.4rem;
         background: #ffffff;
         color: #1f2a16;
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
         border-bottom: 1px solid #eee8da;
     }
@@ -280,6 +335,33 @@
     .bn-panel-head a,
     .bn-panel-head a:visited {
         color: #1f2a16;
+    }
+
+    .bn-panel-head.is-blue {
+        background: linear-gradient(90deg, #1B5FCC 0%, #2A6FE2 100%);
+        color: #ffffff;
+        border-bottom: 1px solid rgba(27, 95, 204, 0.6);
+        box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .bn-panel-head.is-blue h3 {
+        color: #ffffff !important;
+    }
+
+    .bn-panel-head.is-blue a,
+    .bn-panel-head.is-blue a:visited {
+        color: #ffffff !important;
+    }
+
+    .bn-panel-head.is-blue .bn-inline-action {
+        border-color: rgba(255, 255, 255, 0.75);
+        background: #ffffff;
+        color: #1B5FCC !important;
+        box-shadow: 0 6px 14px rgba(15, 35, 90, 0.18);
+    }
+
+    .bn-panel-head.is-blue .bn-inline-action:hover {
+        background: #f2f6ff;
     }
 
     .bn-inline-action {
@@ -316,12 +398,12 @@
         font-size: 11px;
         font-weight: 800;
         letter-spacing: 0.08em;
-        color: #ffffff;
+        color: #2a364a !important;
         text-transform: uppercase;
     }
 
     .bn-table thead tr {
-        background: #4b5e29 !important;
+        background: #EEF4FF !important;
         border-bottom: none;
     }
 
@@ -330,12 +412,16 @@
         background: #ffffff;
     }
 
+    .bn-table tbody tr:nth-child(even) {
+        background: #fbfcff;
+    }
+
     .bn-table tbody tr:hover {
-        background: #fcfbf7;
+        background: #f4f8ff;
     }
 
     .bn-table tbody td {
-        border-top: 1px solid #eee8da;
+        border-top: 1px solid #eef1f7;
         padding: 1rem 1.5rem;
         vertical-align: middle;
         color: #1f2a16;
@@ -427,7 +513,7 @@
     .bn-status-pill {
         border: 1px solid #e3dccd;
         background: #f4efe3;
-        color: #2f3a22;
+        color: #2B3443;
         box-shadow: none;
     }
 
@@ -435,7 +521,7 @@
     .bn-status-pill.is-verified {
         border-color: #cfdcb7;
         background: #e7efda;
-        color: #3f5620;
+        color: #F97316;
     }
 
     .bn-status-pill.is-rejected {
@@ -512,7 +598,7 @@
         width: var(--shell-size);
         height: var(--shell-size);
         border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%, #6c873d, #3f5221);
+        background: radial-gradient(circle at 30% 30%, #f59e0b, #c2410c);
         display: grid;
         place-items: center;
         box-shadow: 0 26px 46px rgba(39, 49, 29, 0.32);
@@ -533,7 +619,7 @@
         width: var(--pie-size);
         height: var(--pie-size);
         border-radius: 50%;
-        background: conic-gradient(#e9e2d4 0 100%);
+        background: conic-gradient(#edf2f7 0 100%);
         box-shadow: 0 16px 30px rgba(39, 49, 29, 0.28);
     }
 
@@ -561,6 +647,18 @@
             );
     }
 
+    .bn-pie-3d.is-brand {
+        --color-a: #1d4ed8;
+        --color-b: #3b82f6;
+        --color-c: #93c5fd;
+    }
+
+    .bn-pie-3d.is-brand-blue {
+        --color-a: #1d4ed8;
+        --color-b: #3b82f6;
+        --color-c: #93c5fd;
+    }
+
     .bn-pie-3d::after {
         content: "";
         position: absolute;
@@ -583,11 +681,11 @@
     }
 
     .bn-pie-3d.is-empty {
-        background: conic-gradient(#e9e2d4 0 100%);
+        background: conic-gradient(#1d4ed8 0 100%);
     }
 
     .bn-pie-3d.is-empty::before {
-        background: #fdfbf6;
+        background: #fbfbf8;
     }
 
     .bn-pie-center {
@@ -613,7 +711,7 @@
     .bn-pie-value {
         font-size: 1.45rem;
         font-weight: 900;
-        color: #2f3a22;
+        color: #2B3443;
         letter-spacing: -0.03em;
     }
 
@@ -632,26 +730,26 @@
         gap: 0.5rem;
         padding: 0.4rem 0.6rem;
         border-radius: 0.55rem;
-        background: #ffffff;
+        background: #f9fbff;
         font-size: 0.7rem;
         font-weight: 900;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        box-shadow: 0 10px 18px rgba(39, 49, 29, 0.18);
+        box-shadow: 0 12px 20px rgba(30, 41, 59, 0.18);
     }
 
     .bn-pie-callout small {
         display: block;
         font-size: 0.52rem;
         letter-spacing: 0.18em;
-        color: #6f7662;
+        color: #64748b;
         font-weight: 800;
     }
 
     .bn-pie-callout span {
         font-size: 0.92rem;
         letter-spacing: 0.02em;
-        color: #1f2a16;
+        color: #0f172a;
     }
 
     .bn-pie-callout::before {
@@ -676,11 +774,15 @@
         );
     }
 
-    .bn-pie-callout.is-green { color: #7aa85c; border: 2px solid #7aa85c; }
-    .bn-pie-callout.is-amber { color: #f59e0b; border: 2px solid #f59e0b; }
-    .bn-pie-callout.is-red { color: #d26b67; border: 2px solid #d26b67; }
-    .bn-pie-callout.is-sand { color: #bda98a; border: 2px solid #bda98a; }
-    .bn-pie-callout.is-teal { color: #3fa3a1; border: 2px solid #3fa3a1; }
+    .bn-pie-callout.is-green { color: #1d4ed8; border: 2px solid #1d4ed8; }
+    .bn-pie-callout.is-amber { color: #d97706; border: 2px solid #d97706; }
+    .bn-pie-callout.is-red { color: #dc2626; border: 2px solid #dc2626; }
+    .bn-pie-callout.is-sand { color: #9a8f7a; border: 2px solid #9a8f7a; }
+    .bn-pie-callout.is-teal { color: #0f766e; border: 2px solid #0f766e; }
+    .bn-pie-callout.is-blue { color: #1d4ed8; border: 2px solid #1d4ed8; }
+    .bn-pie-callout.is-blue-2 { color: #2563eb; border: 2px solid #2563eb; }
+    .bn-pie-callout.is-blue-3 { color: #3b82f6; border: 2px solid #3b82f6; }
+    .bn-pie-callout.is-orange { color: #f97316; border: 2px solid #f97316; }
 
     .bn-callout-top-left { top: -1.6rem; left: -1.6rem; }
     .bn-callout-top-left::before { right: -0.4rem; top: 50%; transform: translateY(-50%); }
@@ -868,7 +970,7 @@
             <div class="p-5 md:p-6">
             <div class="bn-stat-copy">
                 <div class="bn-stat-topline">
-                    <div class="bn-stat-icon w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                    <div class="bn-stat-icon w-12 h-12 rounded-2xl bg-brand-orange/15 text-brand-orange flex items-center justify-center">
                         <span class="material-icons-outlined">storefront</span>
                     </div>
                     <span class="bn-stat-label">Total</span>
@@ -912,7 +1014,7 @@
             <div class="p-5 md:p-6">
             <div class="bn-stat-copy">
                 <div class="bn-stat-topline">
-                    <div class="bn-stat-icon w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                    <div class="bn-stat-icon w-12 h-12 rounded-2xlbg-brand-orange/15 text-brand-orange flex items-center justify-center">
                         <span class="material-icons-outlined">payments</span>
                     </div>
                     <span class="bn-stat-label">Revenue</span>
@@ -934,7 +1036,7 @@
             <div class="p-5 md:p-6">
             <div class="bn-stat-copy">
                 <div class="bn-stat-topline">
-                    <div class="bn-stat-icon w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    <div class="bn-stat-icon w-12 h-12 rounded-2xl bg-brand-orange/15 text-brand-orange flex items-center justify-center">
                         <span class="material-icons-outlined">shopping_bag</span>
                     </div>
                     <span class="bn-stat-label">Active</span>
@@ -962,27 +1064,27 @@
                 <div class="bn-pie-body">
                     <div class="bn-pie-shell">
                         <div
-                            class="bn-pie-3d is-three {% if not total_orders %}is-empty{% endif %}"
-                            style="--a: {{ order_in_progress_pct }}; --b: {{ order_delivered_pct }}; --c: {{ order_exception_pct }}; --color-a: #3fa3a1; --color-b: #7aa85c; --color-c: #d26b67;">
+                            class="bn-pie-3d is-three is-brand-blue {% if not total_orders %}is-empty{% endif %}"
+                            style="--a: {{ order_in_progress_pct }}; --b: {{ order_delivered_pct }}; --c: {{ order_exception_pct }};">
                             <div class="bn-pie-center">
                                 <span class="bn-pie-title">Orders</span>
                                 <span class="bn-pie-value">{{ total_orders|default_if_none:0 }}</span>
                                 <span class="bn-pie-sub">Total</span>
                             </div>
                         </div>
-                        <div class="bn-pie-callout is-teal bn-callout-top-left">
+                        <div class="bn-pie-callout is-blue bn-callout-top-left">
                             <div>
                                 <small>In Progress</small>
                                 <span>{{ order_in_progress_pct }}%</span>
                             </div>
                         </div>
-                        <div class="bn-pie-callout is-green bn-callout-top-right">
+                        <div class="bn-pie-callout is-orange bn-callout-top-right">
                             <div>
                                 <small>Delivered</small>
                                 <span>{{ order_delivered_pct }}%</span>
                             </div>
                         </div>
-                        <div class="bn-pie-callout is-red bn-callout-bottom">
+                        <div class="bn-pie-callout is-blue-3 bn-callout-bottom">
                             <div>
                                 <small>Cancel/Return</small>
                                 <span>{{ order_exception_pct }}%</span>
@@ -1000,27 +1102,27 @@
                 <div class="bn-pie-body">
                     <div class="bn-pie-shell">
                         <div
-                            class="bn-pie-3d is-three {% if not product_visible_total %}is-empty{% endif %}"
-                            style="--a: {{ product_approved_pct }}; --b: {{ product_pending_pct }}; --c: {{ product_rejected_pct }}; --color-a: #7aa85c; --color-b: #f59e0b; --color-c: #d26b67;">
+                            class="bn-pie-3d is-three is-brand-blue {% if not product_visible_total %}is-empty{% endif %}"
+                            style="--a: {{ product_approved_pct }}; --b: {{ product_pending_pct }}; --c: {{ product_rejected_pct }};">
                             <div class="bn-pie-center">
                                 <span class="bn-pie-title">Products</span>
                                 <span class="bn-pie-value">{{ product_visible_total|default_if_none:0 }}</span>
                                 <span class="bn-pie-sub">Total</span>
                             </div>
                         </div>
-                        <div class="bn-pie-callout is-green bn-callout-top-left">
+                        <div class="bn-pie-callout is-blue bn-callout-top-left">
                             <div>
                                 <small>Approved</small>
                                 <span>{{ product_approved_pct }}%</span>
                             </div>
                         </div>
-                        <div class="bn-pie-callout is-amber bn-callout-top-right">
+                        <div class="bn-pie-callout is-orange bn-callout-top-right">
                             <div>
                                 <small>Pending</small>
                                 <span>{{ product_pending_pct }}%</span>
                             </div>
                         </div>
-                        <div class="bn-pie-callout is-red bn-callout-right">
+                        <div class="bn-pie-callout is-blue-3 bn-callout-right">
                             <div>
                                 <small>Rejected</small>
                                 <span>{{ product_rejected_pct }}%</span>
@@ -1038,27 +1140,27 @@
                 <div class="bn-pie-body">
                     <div class="bn-pie-shell">
                         <div
-                            class="bn-pie-3d is-three {% if not seller_total_requests %}is-empty{% endif %}"
-                            style="--a: {{ seller_verified_pct }}; --b: {{ seller_pending_pct }}; --c: {{ seller_rejected_pct }}; --color-a: #7aa85c; --color-b: #f59e0b; --color-c: #d26b67;">
+                            class="bn-pie-3d is-three is-brand-blue {% if not seller_total_requests %}is-empty{% endif %}"
+                            style="--a: {{ seller_verified_pct }}; --b: {{ seller_pending_pct }}; --c: {{ seller_rejected_pct }};">
                             <div class="bn-pie-center">
                                 <span class="bn-pie-title">Sellers</span>
                                 <span class="bn-pie-value">{{ seller_total_requests|default_if_none:0 }}</span>
                                 <span class="bn-pie-sub">Total</span>
                             </div>
                         </div>
-                        <div class="bn-pie-callout is-green bn-callout-top-left">
+                        <div class="bn-pie-callout is-blue bn-callout-top-left">
                             <div>
                                 <small>Verified</small>
                                 <span>{{ seller_verified_pct }}%</span>
                             </div>
                         </div>
-                        <div class="bn-pie-callout is-amber bn-callout-top-right">
+                        <div class="bn-pie-callout is-orange bn-callout-top-right">
                             <div>
                                 <small>Pending</small>
                                 <span>{{ seller_pending_pct }}%</span>
                             </div>
                         </div>
-                        <div class="bn-pie-callout is-red bn-callout-bottom">
+                        <div class="bn-pie-callout is-blue-3 bn-callout-bottom">
                             <div>
                                 <small>Rejected</small>
                                 <span>{{ seller_rejected_pct }}%</span>
@@ -1070,7 +1172,7 @@
         </div>
 
         <article class="bn-premium-card bn-table-card rounded-[1.4rem] overflow-hidden">
-            <div class="bn-panel-head flex items-center justify-between gap-2">
+            <div class="bn-panel-head is-blue flex items-center justify-between gap-2">
                 <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider">Products</h3>
                 <a href="{% url 'product_verification' %}" class="bn-inline-action click-shrink inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-primary transition-colors">
                     View More
@@ -1133,7 +1235,7 @@
         </article>
 
         <article class="bn-premium-card bn-table-card rounded-[1.4rem] overflow-hidden">
-            <div class="bn-panel-head flex items-center justify-between gap-2">
+            <div class="bn-panel-head is-blue flex items-center justify-between gap-2">
                 <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider">Sellers</h3>
                 <a href="{% url 'seller_management' %}" class="bn-inline-action click-shrink inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-primary transition-colors">
                     View More
@@ -1204,7 +1306,7 @@
         </article>
 
         <article class="bn-premium-card bn-table-card rounded-[1.4rem] overflow-hidden">
-            <div class="bn-panel-head flex items-center justify-between gap-2">
+            <div class="bn-panel-head is-blue flex items-center justify-between gap-2">
                 <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider">Customers</h3>
                 <a href="{% url 'usermanagement' %}" class="bn-inline-action click-shrink inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-primary transition-colors">
                     View More
@@ -1243,7 +1345,7 @@
                                 <span class="bn-cell-secondary">{{ customer.email }}</span>
                             </td>
                             <td class="px-4 py-3">
-                                <span class="bn-cell-secondary">{{ customer.phone_number|default:"-" }}</span>
+                                <span class="bn-cell-secondary">{{ customer.display_phone|default:"-" }}</span>
                             </td>
                             <td class="px-4 py-3">
                                 {% if customer.is_active %}
@@ -1269,3 +1371,6 @@
 
 </div>
 {% endblock %}
+
+
+
