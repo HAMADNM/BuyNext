@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BuyNext Seller Hub | {% block title %}Dashboard{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='white'/%3E%3Cpath d='M21 24h22l-2 23H23l-2-23Z' fill='none' stroke='%23F97316' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M26 24a6 6 0 0 1 12 0' fill='none' stroke='%23F97316' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E"/>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,20 +19,20 @@
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                     colors: {
-                        "primary": "#5F7534",
-                        "primary-dark": "#4B5E29",
-                        "brand-bg": "#FAF9EE",
-                        "brand-primary": "#556B2F",
-                        "brand-accent": "#DCCFC0",
-                        "brand-muted": "#EEEEEE",
-                        "text-main": "#1A1C19",
-                        "brandBlue": "#2874F0",
+                        "primary": "#1B5FCC",
+                        "primary-dark": "#153A86",
+                        "brand-bg": "#FFFFFF",
+                        "brand-primary": "#1B5FCC",
+                        "brand-accent": "#E6E0D1",
+                        "brand-muted": "#EAF1FE",
+                        "text-main": "#2B2E25",
+                        "brandBlue": "#1B5FCC",
                         "brandOrange": "#F97316",
                         brand: {
-                            blue: "#2563eb",
+                            blue: "#1B5FCC",
                             orange: "#f97316",
-                            olive: "#556B2F",
-                            cream: "#FAF9EE",
+                            olive: "#1B5FCC",
+                            cream: "#FFFFFF",
                         }
                     }
                 }
@@ -40,18 +41,7 @@
     </script>
     <script>
         (function () {
-            try {
-                const stored = localStorage.getItem('seller_sidebar_collapsed');
-                const collapsed = stored === '1';
-                if (collapsed) {
-                    document.documentElement.classList.add('sidebar-collapsed');
-                    document.documentElement.style.setProperty('--seller-sidebar-width', '5rem');
-                } else {
-                    document.documentElement.style.setProperty('--seller-sidebar-width', '18rem');
-                }
-            } catch (e) {
-                document.documentElement.style.setProperty('--seller-sidebar-width', '18rem');
-            }
+            document.documentElement.style.setProperty('--seller-sidebar-width', '18rem');
         })();
     </script>
 
@@ -61,12 +51,13 @@
         }
 
         .active-link {
-            background: #ffffff;
-            color: #5F7534 !important;
+            background: #F97316;
+            color: #ffffff !important;
+            box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.25);
         }
 
         .active-link span {
-            color: #5F7534 !important;
+            color: #ffffff !important;
         }
 
         .custom-scrollbar::-webkit-scrollbar {
@@ -74,7 +65,7 @@
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #d6cbb8;
+            background: #D7D0C1;
             border-radius: 10px;
         }
 
@@ -91,6 +82,7 @@
             width: var(--seller-sidebar-width);
             transition: width 0.08s linear, transform 0.08s linear;
             will-change: width, transform;
+            box-shadow: 0 18px 40px rgba(37, 99, 235, 0.12);
         }
 
         #seller-main {
@@ -99,9 +91,14 @@
         }
 
         #sidebarNav .nav-link {
-            transition-property: background-color, color;
+            transition-property: background-color, color, transform;
             transition-duration: 150ms;
             transition-timing-function: ease;
+        }
+
+        #sidebarNav .nav-link:hover .material-icons-outlined,
+        #sidebarNav .nav-link:hover .sidebar-text {
+            color: #ffffff;
         }
 
         #sidebarNav .material-icons-outlined {
@@ -129,115 +126,197 @@
                 margin-left: var(--seller-sidebar-width);
             }
         }
+
+        #seller-main {
+            --bn-blue: #1B5FCC;
+            --bn-orange: #F97316;
+        }
+
+        #seller-main .text-primary {
+            color: var(--bn-blue) !important;
+        }
+
+        #seller-main .bg-primary {
+            background-color: var(--bn-blue) !important;
+        }
+
+        #seller-main .border-primary {
+            border-color: var(--bn-blue) !important;
+        }
+
+        #seller-main .text-primary-dark {
+            color: var(--bn-orange) !important;
+        }
+
+        #seller-main .bg-primary-dark {
+            background-color: var(--bn-orange) !important;
+        }
+
+        #seller-main .border-primary-dark {
+            border-color: var(--bn-orange) !important;
+        }
+
+        #seller-main [class*="bg-[#556B2F]"],
+        #seller-main [class*="bg-[#4F5A2F]"],
+        #seller-main [class*="bg-[#43502A]"],
+        #seller-main [class*="bg-[#3f5620]"],
+        #seller-main [class*="bg-[#2f3a22]"],
+        #seller-main [class*="bg-[#5f7534]"],
+        #seller-main [class*="bg-[#7aa85c]"] {
+            background-color: var(--bn-blue) !important;
+        }
+
+        #seller-main [class*="text-[#556B2F]"],
+        #seller-main [class*="text-[#4F5A2F]"],
+        #seller-main [class*="text-[#43502A]"],
+        #seller-main [class*="text-[#3f5620]"],
+        #seller-main [class*="text-[#2f3a22]"],
+        #seller-main [class*="text-[#5f7534]"],
+        #seller-main [class*="text-[#7aa85c]"] {
+            color: var(--bn-blue) !important;
+        }
+
+        #seller-main [class*="border-[#556B2F]"],
+        #seller-main [class*="border-[#4F5A2F]"],
+        #seller-main [class*="border-[#43502A]"],
+        #seller-main [class*="border-[#3f5620]"],
+        #seller-main [class*="border-[#2f3a22]"],
+        #seller-main [class*="border-[#5f7534]"],
+        #seller-main [class*="border-[#7aa85c]"] {
+            border-color: var(--bn-blue) !important;
+        }
+
+        #seller-main [style*="#556B2F"],
+        #seller-main [style*="#4F5A2F"],
+        #seller-main [style*="#43502A"],
+        #seller-main [style*="#3f5620"],
+        #seller-main [style*="#2f3a22"],
+        #seller-main [style*="#5f7534"],
+        #seller-main [style*="#7aa85c"] {
+            color: var(--bn-blue) !important;
+            border-color: var(--bn-blue) !important;
+            background-color: var(--bn-blue) !important;
+        }
+
+        #seller-main table thead,
+        #seller-main table thead tr {
+            background: var(--bn-blue) !important;
+        }
+
+        #seller-main table thead th {
+            color: #ffffff !important;
+        }
     </style>
 </head>
 
 <body class="bg-brand-bg font-sans text-text-main">
 
     <!-- Sidebar -->
-    <aside id="seller-sidebar" class="fixed inset-y-0 left-0 bg-[#4b5e29] text-white border-r border-primary/15 hidden lg:flex flex-col z-50">
+    <aside id="seller-sidebar" class="fixed inset-y-0 left-0 bg-brand-bg text-text-main border-r border-brand-accent/70 hidden lg:flex flex-col z-50">
 
-        <div class="p-6 flex flex-col">
+        <div class="p-6 pb-2 flex flex-col gap-6">
 
             <!-- Logo Row -->
             <div id="seller-sidebar-header" class="flex items-center justify-between px-2">
 
                 <!-- Shopping Bag Icon -->
                 <div id="seller-brand-group" class="flex items-center gap-3 shrink-0">
-                <div class="w-10 h-10 rounded-xl bg-white/95 shadow-md flex items-center justify-center">
-                    <span class="material-icons-outlined text-primary text-xl">
-                        shopping_bag
-                    </span>
+                    <div class="w-11 h-11 rounded-2xl bg-white shadow-lg flex items-center justify-center">
+                        <span class="material-icons-outlined text-brandOrange text-[22px]">
+                            shopping_bag
+                        </span>
+                    </div>
+
+                    <!-- BuyNext + Seller Hub Block -->
+                    <div class="flex flex-col leading-tight">
+
+                        <!-- BuyNext -->
+                        <span class="text-2xl font-extrabold tracking-tight">
+                            <span class="text-brandBlue">Buy</span><span class="text-brandOrange">Next</span>
+                        </span>
+
+                        <!-- Seller Hub -->
+                        <span class="text-[10px] font-bold text-slate-400 tracking-[0.3em] uppercase mt-1">
+                            Seller Hub
+                        </span>
+
+                    </div>
                 </div>
-
-                <!-- BuyNext + Seller Hub Block -->
-                <div class="flex flex-col leading-tight">
-
-                    <!-- BuyNext -->
-                    <span class="text-2xl font-extrabold tracking-tight">
-                        <span class="text-[#e4efd1]">Buy</span><span class="text-orange-300">Next</span>
-                    </span>
-
-                    <!-- Seller Hub (Closer + Noticeable) -->
-                    <span class="text-xs font-bold text-white/70 tracking-widest uppercase mt-1">
-                        Seller Hub
-                    </span>
-
-                </div>
-                </div>
-                <button id="toggle-seller-sidebar" class="flex items-center justify-center w-10 h-10 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all shrink-0" type="button" aria-label="Toggle sidebar">
-                    <span class="material-icons-outlined text-2xl">menu_open</span>
-                </button>
+                <div class="w-10 h-10 shrink-0"></div>
 
             </div>
 
         </div>
 
         <!-- Sidebar Navigation -->
-        <nav id="sidebarNav" class="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
+        <nav id="sidebarNav" class="flex-1 px-4 pt-3 overflow-y-auto custom-scrollbar flex flex-col">
+
+            <div class="space-y-2">
 
             <a href="{% url 'seller_dashboard' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_dashboard' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                <span class="material-icons-outlined text-2xl shrink-0">dashboard</span> <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'seller_dashboard' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">dashboard</span> <span class="sidebar-text whitespace-nowrap">Dashboard</span>
             </a>
 
             <a href="{% url 'seller_product' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_product' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                <span class="material-icons-outlined text-2xl shrink-0">inventory_2</span> <span class="sidebar-text whitespace-nowrap">Products</span>
+                class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'seller_product' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">inventory_2</span> <span class="sidebar-text whitespace-nowrap">Products</span>
             </a>
 
             <a href="{% url 'add_product' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'add_product' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                <span class="material-icons-outlined text-2xl shrink-0">add_box</span> <span class="sidebar-text whitespace-nowrap">Add Product</span>
+                class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'add_product' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">add_box</span> <span class="sidebar-text whitespace-nowrap">Add Product</span>
             </a>
-            <a href="{% url 'product_status' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'product_status' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                <span class="material-icons-outlined text-2xl shrink-0">inventory</span>
+            <a href="{% url 'product_status' %}" class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'product_status' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">inventory</span>
                 <span class="sidebar-text whitespace-nowrap">Product Status</span>
             </a>
 
             <a href="{% url 'seller_orders' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_orders' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                <span class="material-icons-outlined text-2xl shrink-0">receipt_long</span> <span class="sidebar-text whitespace-nowrap">Orders</span>
+                class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'seller_orders' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">receipt_long</span> <span class="sidebar-text whitespace-nowrap">Orders</span>
             </a>
-            <a href="{% url 'seller_reviews' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_reviews' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                <span class="material-icons-outlined text-2xl shrink-0">rate_review</span> <span class="sidebar-text whitespace-nowrap">Customer Reviews</span>
+            <a href="{% url 'seller_reviews' %}" class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'seller_reviews' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">rate_review</span> <span class="sidebar-text whitespace-nowrap">Customer Reviews</span>
             </a>
 
             <a href="{% url 'offer_discount' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'offer_discount' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                <span class="material-icons-outlined text-2xl shrink-0">local_offer</span> <span class="sidebar-text whitespace-nowrap">Offers & Discounts</span>
+                class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'offer_discount' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">local_offer</span> <span class="sidebar-text whitespace-nowrap">Offers & Discounts</span>
             </a>
 
             <a href="{% url 'seller_inventory' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_inventory' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                <span class="material-icons-outlined text-2xl shrink-0">warehouse</span> <span class="sidebar-text whitespace-nowrap">Inventory</span>
+                class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'seller_inventory' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">warehouse</span> <span class="sidebar-text whitespace-nowrap">Inventory</span>
             </a>
 
             <a href="{% url 'seller_earnings' %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_earnings' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                <span class="material-icons-outlined text-2xl shrink-0">payments</span> <span class="sidebar-text whitespace-nowrap">Earnings</span>
+                class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'seller_earnings' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">payments</span> <span class="sidebar-text whitespace-nowrap">Earnings</span>
             </a>
 
-            <div class="pt-4 border-t border-white/10 mt-4">
+            </div>
+
+            <div class="pt-3 border-t border-brand-accent/70 mt-auto mb-2">
                 <a href="{% url 'seller_profile' %}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_profile' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                    <span class="material-icons-outlined text-2xl shrink-0">storefront</span> <span class="sidebar-text whitespace-nowrap">Store Profile</span>
+                    class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'seller_profile' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                    <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">storefront</span> <span class="sidebar-text whitespace-nowrap">Store Profile</span>
                 </a>
 
                 <a href="{% url 'seller_settings' %}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg {% if request.resolver_match.url_name == 'seller_settings' %}active-link{% else %}text-white/80 hover:bg-white/15 hover:text-white{% endif %} font-medium transition-all nav-link leading-none">
-                    <span class="material-icons-outlined text-2xl shrink-0">settings</span> <span class="sidebar-text whitespace-nowrap">Settings</span>
+                    class="flex items-center gap-4 px-4 py-3 rounded-2xl {% if request.resolver_match.url_name == 'seller_settings' %}active-link{% else %}text-slate-600 hover:bg-brandOrange hover:text-white{% endif %} font-semibold transition-all nav-link leading-none">
+                    <span class="material-icons-outlined text-[22px] text-brand-primary shrink-0">settings</span> <span class="sidebar-text whitespace-nowrap">Settings</span>
                 </a>
             </div>
         </nav>
 
         <!-- Logout -->
-        <div class="p-4 border-t border-white/10">
+        <div class="p-4 border-t border-brand-accent/70">
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit"
-                    class="w-full flex items-center gap-3 px-4 py-3 text-white/80 font-bold hover:bg-white/15 hover:text-white rounded-lg transition-all">
-                    <span class="material-icons-outlined">logout</span> Logout
+                    class="w-full flex items-center gap-3 px-5 py-3 text-slate-600 font-bold hover:bg-white/80 hover:text-slate-900 rounded-2xl transition-all border border-brand-accent/70">
+                    <span class="material-icons-outlined text-brand-primary">logout</span> Log Out
                 </button>
             </form>
         </div>
@@ -245,7 +324,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main id="seller-main" class="min-h-screen">
+<main id="seller-main" class="min-h-screen bg-brand-bg">
 
         <header
             class="h-20 bg-white/70 backdrop-blur-md sticky top-0 z-40 px-8 flex items-center justify-between border-b border-brand-accent/60">
@@ -316,30 +395,12 @@
 
     <!-- Active Sidebar Script -->
     <script>
-        const toggleBtn = document.getElementById('toggle-seller-sidebar');
-        const root = document.documentElement;
-        const storageKey = 'seller_sidebar_collapsed';
-
-        const applyCollapsedState = (collapsed) => {
-            root.classList.toggle('sidebar-collapsed', collapsed);
-            root.style.setProperty('--seller-sidebar-width', collapsed ? '5rem' : '18rem');
-        };
-
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
-                const collapsed = !root.classList.contains('sidebar-collapsed');
-                applyCollapsedState(collapsed);
-                try {
-                    localStorage.setItem(storageKey, collapsed ? '1' : '0');
-                } catch (e) {
-                    // ignore storage errors
-                }
-            });
-        }
+        // Sidebar toggle removed by request
     </script>
     {% block extra_js %}{% endblock %}
 
 </body>
 
 </html>
+
 

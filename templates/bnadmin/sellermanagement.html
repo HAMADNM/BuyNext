@@ -6,13 +6,15 @@
 {% block extra_css %}
 <style>
 :root{
---bn-cream:#ffffff;
---bn-sage:#5f7534;
---bn-sage-dark:#4b5e29;
---bn-text:#27311d;
---bn-muted:#6f7662;
---bn-line:#e3dccd;
---bn-soft:#ebe5d7;
+--bn-cream:#FAF9EE;
+--bn-sage:#1B5FCC;
+--bn-sage-dark:#F97316;
+--bn-text:#1A1C19;
+--bn-muted:#6D7463;
+--bn-line:#DCCFC0;
+--bn-soft:#EEEEEE;
+--bn-blue:#1B5FCC;
+--bn-orange:#F97316;
 }
 
 .management-shell{
@@ -53,8 +55,8 @@ font-weight:700;
 }
 
 .status-verified{
-background:#e4eed4;
-color:#3f5620;
+background:#EAF1FE;
+color:#1B5FCC;
 padding:4px 12px;
 border-radius:999px;
 font-size:12px;
@@ -98,8 +100,8 @@ background:#f6f4ec;
 }
 
 .tab-btn.active{
-background:var(--bn-sage);
-border-color:var(--bn-sage);
+background:var(--bn-blue);
+border-color:var(--bn-blue);
 color:#fff;
 }
 
@@ -119,12 +121,12 @@ transform:translateY(-1px);
 }
 
 .action-edit{
-color:var(--bn-sage);
-background:#edf2e3;
+color:var(--bn-blue);
+background:#eef2f7;
 }
 
 .action-edit:hover{
-background:#dfe8ce;
+background:#e1e8f1;
 }
 
 .action-delete{
@@ -146,22 +148,22 @@ background:#f4dddd;
 }
 
 .action-activate{
-color:#3f5620;
-background:#e7efda;
+color:var(--bn-blue);
+background:#EAF1FE;
 }
 
 .action-activate:hover{
-background:var(--bn-sage);
+background:var(--bn-blue);
 color:#fff;
 }
 
 .action-verify{
-color:var(--bn-sage);
-background:#edf2e3;
+color:var(--bn-blue);
+background:#EAF1FE;
 }
 
 .action-verify:hover{
-background:var(--bn-sage);
+background:var(--bn-blue);
 color:#fff;
 }
 
@@ -176,12 +178,12 @@ color:#fff;
 }
 
 .action-report{
-color:#3f5620;
-background:#e7efda;
+color:var(--bn-orange);
+background:#f4eadf;
 }
 
 .action-report:hover{
-background:var(--bn-sage);
+background:var(--bn-orange);
 color:#fff;
 }
 
@@ -200,8 +202,8 @@ transition:all 0.2s ease;
 
 .modal-form-control:focus{
 outline:none;
-border-color:var(--bn-sage) !important;
-box-shadow:0 0 0 4px rgba(95,117,52,0.14) !important;
+border-color:var(--bn-blue) !important;
+box-shadow:0 0 0 4px rgba(62, 85, 114,0.14) !important;
 }
 
 .theme-primary-btn{
@@ -211,8 +213,8 @@ align-items:center;
 gap:0.4rem;
 padding:0.65rem 1rem;
 border-radius:12px;
-border:1px solid var(--bn-sage);
-background:var(--bn-sage);
+border:1px solid var(--bn-blue);
+background:var(--bn-blue);
 color:#fff;
 font-size:14px;
 font-weight:700;
@@ -220,8 +222,8 @@ transition:all 0.2s ease;
 }
 
 .theme-primary-btn:hover{
-background:var(--bn-sage-dark);
-border-color:var(--bn-sage-dark);
+background:#153A86;
+border-color:#153A86;
 }
 
 .theme-secondary-btn{
@@ -253,7 +255,7 @@ background:#f8f6ef;
 <div class="space-y-2 mb-4">
 {% for message in messages %}
 <div class="px-4 py-2.5 rounded-xl border text-sm font-semibold
-{% if message.tags == 'success' %}bg-[#e7efda] border-[#cfdcb7] text-[#425a22]
+{% if message.tags == 'success' %}bg-[#EAF1FE] border-[#C7DBFF] text-[#1B5FCC]
 {% elif message.tags == 'warning' or message.tags == 'error' %}bg-[#f9eded] border-[#efd2d1] text-[#9a4745]
 {% else %}bg-[#f4f0e5] border-[#e5dece] text-[#716b5d]{% endif %}">
 {{ message }}
@@ -264,7 +266,7 @@ background:#f8f6ef;
 
 <div class="mb-6">
 <p class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#7b826f]">BuyNext Admin</p>
-<h1 class="text-3xl font-bold text-[#2f3a22]">Seller Management</h1>
+<h1 class="text-3xl font-bold text-[#1B5FCC]">Seller Management</h1>
 <p class="text-sm text-[#727a66] mt-1">Track store identity, owner contact and verification workflow.</p>
 </div>
 
@@ -282,7 +284,7 @@ class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#e1d9c9] bg-[#fffdf8] 
 </select>
 </div>
 <div class="lg:col-span-2 flex flex-col sm:flex-row gap-2">
-<button type="submit" class="w-full px-4 py-2.5 rounded-xl bg-[#4b5e29] text-white font-bold text-sm uppercase tracking-widest">Apply</button>
+<button type="submit" class="w-full px-4 py-2.5 rounded-xl bg-[#F97316] text-white font-bold text-sm uppercase tracking-widest">Apply</button>
 <a href="{% url 'seller_management' %}" class="w-full px-4 py-2.5 rounded-xl border border-[#e1d9c9] text-[#5f6357] font-bold text-sm uppercase tracking-widest text-center bg-white">Clear</a>
 </div>
 </form>
@@ -448,7 +450,7 @@ Reject
 <div id="rejectSellerModal" class="bn-modal-overlay hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
 <div class="bn-modal-card max-w-3xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden">
 <div class="grid lg:grid-cols-[1fr_1.1fr]">
-<div class="bg-[#5f7534] text-white p-8 flex flex-col justify-between">
+<div class="bg-[#1B5FCC] text-white p-8 flex flex-col justify-between">
 <div>
 <p class="text-[11px] uppercase tracking-[0.25em] font-bold text-white/70">Reject Seller</p>
 <h3 class="text-2xl font-bold mt-2">Provide a clear reason</h3>
@@ -463,7 +465,7 @@ Help the seller fix and resubmit.
 <div class="p-6 sm:p-8">
 <div class="mb-5">
 <p class="text-[11px] uppercase tracking-[0.25em] font-bold text-[#7b826f]">Seller Review</p>
-<h3 class="text-2xl font-bold text-[#2f3a22] mt-2">Add Rejection Reason</h3>
+<h3 class="text-2xl font-bold text-[#1B5FCC] mt-2">Add Rejection Reason</h3>
 <p id="rejectSellerName" class="text-sm text-[#7a816e] mt-2">Add a reason for rejection.</p>
 </div>
 
@@ -577,3 +579,6 @@ closeRejectSellerModal()
 
 </script>
 {% endblock %}
+
+
+

@@ -5,64 +5,38 @@
 
 {% block content %}
 <div class="space-y-6">
-    <section class="rounded-[2rem] bg-brand-olive text-white p-6 md:p-7 shadow-lg border border-white/10">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div class="flex flex-col gap-2">
-                <p class="text-xs font-bold uppercase tracking-widest text-white/70">Overview</p>
-                <h2 class="text-3xl md:text-4xl font-extrabold leading-tight flex items-center gap-2">
-                    <span class="material-icons-outlined text-brand-orange text-2xl md:text-3xl">dashboard</span>
-                    Seller Performance Dashboard
-                </h2>
-                <p class="text-sm text-white/80 font-medium">
-                    A clear snapshot of your store activity and orders.
-                </p>
-            </div>
-            <div class="flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-widest text-brand-olive bg-white/90 shadow">
-                <span class="material-icons-outlined text-brand-orange text-base">calendar_today</span>
-                {% now "M d, Y" %}
-            </div>
-        </div>
-    </section>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-[#e3dccd] transition-transform hover:translate-y-[-4px]">
-            <div class="w-12 h-12 bg-brand-olive/10 text-brand-olive rounded-2xl flex items-center justify-center mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-brand-blue p-6 rounded-[2rem] shadow-sm border border-brand-blue/70 text-white transition-transform hover:translate-y-[-4px]">
+            <div class="w-12 h-12 bg-white text-brand-orange rounded-2xl flex items-center justify-center mb-4">
                 <span class="material-icons-outlined">inventory_2</span>
             </div>
-            <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Total Products</p>
-            <h3 class="text-2xl font-black text-slate-800">{{ total_products }}</h3>
+            <p class="text-white/80 text-[10px] font-black uppercase tracking-widest">Total Products</p>
+            <h3 class="text-2xl font-black text-white">{{ total_products }}</h3>
         </div>
 
-        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-[#e3dccd] transition-transform hover:translate-y-[-4px]">
-            <div class="w-12 h-12 bg-brand-orange/10 text-brand-orange rounded-2xl flex items-center justify-center mb-4">
+        <div class="bg-brand-orange p-6 rounded-[2rem] shadow-sm border border-brand-orange/70 text-white transition-transform hover:translate-y-[-4px]">
+            <div class="w-12 h-12 bg-white text-brand-blue rounded-2xl flex items-center justify-center mb-4">
                 <span class="material-icons-outlined">receipt</span>
             </div>
-            <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Total Orders</p>
-            <h3 class="text-2xl font-black text-slate-800">{{ total_orders }}</h3>
+            <p class="text-white/80 text-[10px] font-black uppercase tracking-widest">Total Orders</p>
+            <h3 class="text-2xl font-black text-white">{{ total_orders }}</h3>
         </div>
 
-        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-[#e3dccd] transition-transform hover:translate-y-[-4px]">
-            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4">
+        <div class="bg-brand-blue p-6 rounded-[2rem] shadow-sm border border-brand-blue/70 text-white transition-transform hover:translate-y-[-4px]">
+            <div class="w-12 h-12 bg-white text-brand-orange rounded-2xl flex items-center justify-center mb-4">
                 <span class="material-icons-outlined">currency_rupee</span>
             </div>
-            <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Total Revenue</p>
-            <h3 class="text-2xl font-black text-slate-800">&#8377;{{ revenue }}</h3>
+            <p class="text-white/80 text-[10px] font-black uppercase tracking-widest">Total Revenue</p>
+            <h3 class="text-2xl font-black text-white">&#8377;{{ revenue }}</h3>
         </div>
 
-        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-[#e3dccd] transition-transform hover:translate-y-[-4px]">
-            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-4">
+        <div class="bg-brand-orange p-6 rounded-[2rem] shadow-sm border border-brand-orange/70 text-white transition-transform hover:translate-y-[-4px]">
+            <div class="w-12 h-12 bg-white text-brand-blue rounded-2xl flex items-center justify-center mb-4">
                 <span class="material-icons-outlined">hourglass_top</span>
             </div>
-            <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Pending Orders</p>
-            <h3 class="text-2xl font-black text-slate-800">{{ pending_orders }}</h3>
-        </div>
-
-        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-red-100 bg-red-50/30 transition-transform hover:translate-y-[-4px]">
-            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mb-4">
-                <span class="material-icons-outlined">warning</span>
-            </div>
-            <p class="text-red-500 text-[10px] font-black uppercase tracking-widest">Low Stock Alerts</p>
-            <h3 class="text-2xl font-black text-red-600">{{ low_stock }}</h3>
+            <p class="text-white/80 text-[10px] font-black uppercase tracking-widest">Pending Orders</p>
+            <h3 class="text-2xl font-black text-white">{{ pending_orders }}</h3>
         </div>
     </div>
 
@@ -79,15 +53,15 @@
                 </select>
             </div>
             <div class="h-64 flex items-end gap-3 px-2">
-                <div class="flex-1 bg-[#f1eee4] rounded-t-xl hover:bg-brand-olive transition-all h-[45%] relative group">
-                    <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-brand-olive text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">&#8377;12k</span>
+                <div class="flex-1 bg-[#e9f1ff] rounded-t-xl hover:bg-brand-blue transition-all h-[45%] relative group">
+                    <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-brand-blue text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">&#8377;12k</span>
                 </div>
-                <div class="flex-1 bg-[#f1eee4] rounded-t-xl hover:bg-brand-olive transition-all h-[60%]"></div>
-                <div class="flex-1 bg-[#f1eee4] rounded-t-xl hover:bg-brand-olive transition-all h-[35%]"></div>
+                <div class="flex-1 bg-[#e9f1ff] rounded-t-xl hover:bg-brand-blue transition-all h-[60%]"></div>
+                <div class="flex-1 bg-[#e9f1ff] rounded-t-xl hover:bg-brand-blue transition-all h-[35%]"></div>
                 <div class="flex-1 bg-brand-orange rounded-t-xl h-[85%]"></div>
-                <div class="flex-1 bg-[#f1eee4] rounded-t-xl hover:bg-brand-olive transition-all h-[55%]"></div>
-                <div class="flex-1 bg-brand-olive rounded-t-xl h-[95%]"></div>
-                <div class="flex-1 bg-[#f1eee4] rounded-t-xl hover:bg-brand-olive transition-all h-[70%]"></div>
+                <div class="flex-1 bg-[#e9f1ff] rounded-t-xl hover:bg-brand-blue transition-all h-[55%]"></div>
+                <div class="flex-1 bg-brand-blue rounded-t-xl h-[95%]"></div>
+                <div class="flex-1 bg-[#e9f1ff] rounded-t-xl hover:bg-brand-blue transition-all h-[70%]"></div>
             </div>
             <div class="flex justify-between mt-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4">
                 <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
@@ -97,7 +71,7 @@
         <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-[#e3dccd]">
             <h3 class="font-bold text-slate-800 mb-6">Order Statistics</h3>
             <div class="relative flex justify-center py-4">
-                <div class="w-48 h-48 rounded-full border-[18px] border-[#f1eee4] border-t-brand-olive border-r-brand-orange border-l-emerald-500 rotate-45"></div>
+                <div class="w-48 h-48 rounded-full border-[18px] border-[#e9f1ff] border-t-brand-blue border-r-brand-orange border-l-blue-500 rotate-45"></div>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
                     <p class="text-3xl font-black text-slate-800">1.2k</p>
                     <p class="text-[10px] font-bold text-slate-500 uppercase">Total Orders</p>
@@ -105,7 +79,7 @@
             </div>
             <div class="mt-8 space-y-4">
                 <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-brand-olive"></span> Shipped</span>
+                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-brand-blue"></span> Shipped</span>
                     <span class="text-slate-800">720</span>
                 </div>
                 <div class="flex items-center justify-between text-xs font-bold">
@@ -113,7 +87,7 @@
                     <span class="text-slate-800">310</span>
                 </div>
                 <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Completed</span>
+                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Completed</span>
                     <span class="text-slate-800">210</span>
                 </div>
             </div>
@@ -124,11 +98,11 @@
         <div class="lg:col-span-2 bg-white rounded-[2.5rem] shadow-sm border border-[#e3dccd] overflow-hidden">
             <div class="p-8 border-b border-[#efe7d7] flex items-center justify-between">
                 <h3 class="font-bold text-slate-800">Recent Orders</h3>
-                <a href="orders.html" class="text-xs font-bold text-brand-olive hover:underline">View All</a>
+                <a href="orders.html" class="text-xs font-bold text-brand-blue hover:underline">View All</a>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
-                    <thead class="bg-[#f8f6ef] text-[10px] uppercase font-black text-slate-500 tracking-widest">
+                    <thead class="bg-brand-orange text-[10px] uppercase font-black text-white tracking-widest">
                         <tr>
                             <th class="px-8 py-5">Order ID</th>
                             <th class="px-8 py-5">Customer</th>
@@ -138,13 +112,13 @@
                     </thead>
                     <tbody class="divide-y divide-[#f2ece0]">
                         <tr class="hover:bg-[#fbfaf5] transition-colors">
-                            <td class="px-8 py-5 font-bold text-brand-olive">#ORD-9921</td>
+                            <td class="px-8 py-5 font-bold text-brand-blue">#ORD-9921</td>
                             <td class="px-8 py-5 text-sm font-semibold">Lakshmi</td>
                             <td class="px-8 py-5 font-bold">&#8377;4000</td>
-                            <td class="px-8 py-5"><span class="px-3 py-1 bg-brand-olive/10 text-brand-olive rounded-lg text-[10px] font-black uppercase">Shipped</span></td>
+                            <td class="px-8 py-5"><span class="px-3 py-1 bg-brand-blue/10 text-brand-blue rounded-lg text-[10px] font-black uppercase">Shipped</span></td>
                         </tr>
                         <tr class="hover:bg-[#fbfaf5] transition-colors">
-                            <td class="px-8 py-5 font-bold text-brand-olive">#ORD-9840</td>
+                            <td class="px-8 py-5 font-bold text-brand-blue">#ORD-9840</td>
                             <td class="px-8 py-5 text-sm font-semibold">Akhila</td>
                             <td class="px-8 py-5 font-bold">&#8377;1450.00</td>
                             <td class="px-8 py-5"><span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-black uppercase">Pending</span></td>
@@ -163,7 +137,7 @@
                         <p class="text-sm font-bold text-slate-800">Roasted Almonds</p>
                         <p class="text-[10px] text-slate-500 font-bold uppercase">412 Sales</p>
                     </div>
-                    <p class="font-bold text-brand-olive">&#8377;450</p>
+                    <p class="font-bold text-brand-blue">&#8377;450</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-2xl bg-[#f1eee4] flex-shrink-0"></div>
@@ -171,7 +145,7 @@
                         <p class="text-sm font-bold text-slate-800">Organic Honey</p>
                         <p class="text-[10px] text-slate-500 font-bold uppercase">380 Sales</p>
                     </div>
-                    <p class="font-bold text-brand-olive">&#8377;720</p>
+                    <p class="font-bold text-brand-blue">&#8377;720</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-2xl bg-[#f1eee4] flex-shrink-0"></div>
@@ -179,10 +153,11 @@
                         <p class="text-sm font-bold text-slate-800">Green Tea Packs</p>
                         <p class="text-[10px] text-slate-500 font-bold uppercase">295 Sales</p>
                     </div>
-                    <p class="font-bold text-brand-olive">&#8377;310</p>
+                    <p class="font-bold text-brand-blue">&#8377;310</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
