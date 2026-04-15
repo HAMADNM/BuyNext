@@ -726,10 +726,10 @@ def seller_profile(request):
 
     if request.method == "POST":
 
-        store_name = request.POST.get("store_name")
-        description = request.POST.get("description")
-        email = request.POST.get("business_email","").strip().lower()
-        phone = request.POST.get("business_phone","").strip()
+        store_name = (request.POST.get("store_name") or "").strip()
+        description = (request.POST.get("description") or "").strip()
+        email = (request.POST.get("business_email") or "").strip().lower()
+        phone = (request.POST.get("business_phone") or "").strip()
         if SellerProfile.objects.filter(store_name=store_name).exclude(user=request.user).exists():
             messages.error(request, "Store name already taken")
             return redirect("seller_profile")
