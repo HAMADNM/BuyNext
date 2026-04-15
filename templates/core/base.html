@@ -119,8 +119,7 @@
                     <span class="material-icons-outlined text-brand-primary text-lg md:text-xl">shopping_bag</span>
                 </div>
                 <span class="text-lg md:text-2xl font-extrabold tracking-tight">
-                    <span class="text-blue-600">Buy</span><span class="text-orange-500">Next
-                    </span>
+                    <span class="text-blue-600">Buy</span><span class="text-orange-500">Next</span>
                 </span>
             </a>
 
@@ -204,6 +203,9 @@
                 </div>
                 {% else %}
                 <div class="hidden md:flex items-center gap-3">
+                    <a href="{% url 'user_seller' %}" class="text-[10px] uppercase tracking-tighter font-extrabold text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-xl transition-all flex items-center gap-1">
+                        <span class="material-icons-outlined text-sm">storefront</span> Sell on BuyNext
+                    </a>
                     <a href="{% url 'login' %}" class="text-sm font-bold text-brand-primary px-4 py-2 hover:bg-brand-muted rounded-xl transition-all">Login</a>
                     <a href="{% url 'register' %}" class="text-sm font-bold bg-brand-primary text-white px-5 py-2 rounded-xl shadow-md hover:scale-[1.02] transition-all">Sign Up</a>
                 </div>
@@ -275,7 +277,7 @@
     </main>
 
     {% load static %}
-<footer class="bg-[#111311] text-light pt-12 md:pt-20 pb-8 border-t-4 border-brand-primary mt-auto overflow-hidden relative">
+    <footer class="bg-[#111311] text-light pt-12 md:pt-20 pb-8 border-t-4 border-brand-primary mt-auto overflow-hidden relative">
         <div class="absolute inset-0 opacity-5 pointer-events-none">
             <div class="absolute top-0 right-0 w-96 h-96 bg-brand-primary rounded-full -translate-y-1/2 translate-x-1/2"></div>
         </div>
@@ -289,10 +291,9 @@
                             <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                                 <span class="material-icons-outlined text-brand-primary">shopping_bag</span>
                             </div>
-                           <span class="text-xl font-bold tracking-wide">
-                            <span class="text-blue-600">Buy</span><span class="text-orange-500">Next
-                    </span>
-                           </span>
+                            <span class="text-xl font-bold tracking-wide">
+                                <span class="text-blue-600">Buy</span><span class="text-orange-500">Next</span>
+                            </span>
                         </a>
                     </div>
                     <p class="text-gray-400 text-sm leading-relaxed mb-6 font-medium">Elevating your lifestyle through curated collections. Quality is our standard, elegance is our soul.</p>
