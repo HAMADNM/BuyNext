@@ -475,7 +475,7 @@ def all_products(request):
 
 
 @admin_not_required
-def subcategory_view(request, category_slug):
+def category_view(request, category_slug):
 
     active_category = get_object_or_404(
         Category,
@@ -583,6 +583,113 @@ def subcategory_view(request, category_slug):
     }
 
     return render(request, "core/subcategory.html", context)
+
+@admin_not_required
+def subcategory_view(request, subcategory_slug):
+
+    selected_subcategory = get_object_or_404(
+        SubCategory,
+        slug=subcategory_slug,
+        is_active=True
+    )
+
+    active_category = selected_subcategory.category
+
+    all_categories = Category.objects.filter(
+        is_active=True
+    ).order_by("display_order", "name")
+
+    subcategories = active_category.subcategories.filter(
+        is_active=True
+    ).order_by("display_order", "name")
+
+    sort = request.GET.get("sort", "newest")
+
+    products = Product.objects.filter(
+        is_active=True,
+        approval_status="APPROVED",
+        subcategory=selected_subcategory   # ✅ MAIN DIFFERENCE
+    ).select_related(
+        "seller",
+        "subcategory",
+        "subcategory__category"
+    ).prefetch_related(
+        "variants",
+        "variants__images",
+        "gallery"
+    )
+
+ 
+    products = products.annotate(
+        min_selling_price=Min("variants__selling_price"),
+        min_mrp=Min("variants__mrp"),
+        stock_quantity=Max("variants__stock_quantity"),
+        average_rating=Coalesce(
+            Avg("reviews__rating", filter=Q(reviews__is_approved=True)),
+            Value(0.0)
+        ),
+        save_price=Min("variants__mrp") - Min("variants__selling_price")
+    )
+
+    rating_filter = request.GET.get("rating")
+
+    if rating_filter:
+        products = products.filter(average_rating__gte=float(rating_filter))
+
+ 
+    if sort == "price_low_high":
+        products = products.order_by("min_selling_price")
+    elif sort == "price_high_low":
+        products = products.order_by("-min_selling_price")
+    else:
+        products = products.order_by("-created_at")
+
+    for product in products:
+        variant = product.variants.filter(is_active=True, stock_quantity__gt=0).first()
+
+        if not variant:
+            variant = product.variants.filter(is_active=True).first()
+
+        product.variant_id = variant.id if variant else None
+
+        gallery = product.gallery.first()
+
+        if gallery:
+            product.primary_image = gallery.image
+        else:
+            if variant and variant.images.first():
+                product.primary_image = variant.images.first().image
+            else:
+                product.primary_image = None
+
+        if request.user.is_authenticated and variant:
+            product.is_in_wishlist = WishlistItem.objects.filter(
+                wishlist__user=request.user,
+                variant=variant
+            ).exists()
+        else:
+            product.is_in_wishlist = False
+
+        product.review_count = Review.objects.filter(
+            product=product,
+            is_approved=True
+        ).count()
+
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get("page")
+    products = paginator.get_page(page_number)
+
+    context = {
+        "all_categories": all_categories,
+        "active_category": active_category,
+        "subcategories": subcategories,
+        "selected_subcategory": selected_subcategory,  
+        "products": products,
+        "sort": sort,
+    }
+
+    return render(request, "core/subcategory.html", context)
+
 @admin_not_required
 def product_detail(request, slug):
 
@@ -614,10 +721,7 @@ def product_detail(request, slug):
 
     gallery_images = ProductGallery.objects.filter(product=product)
 
-    default_variant = variants.filter(stock_quantity__gt=0).first()
-
-    if not default_variant:
-        default_variant = variants.first()
+    default_variant = variants.filter(stock_quantity__gt=0).first() or variants.first()
 
     if default_variant:
         if request.user.is_authenticated:
@@ -627,15 +731,19 @@ def product_detail(request, slug):
         else:
             default_variant.is_in_wishlist = False
 
+ 
     reviews = Review.objects.filter(
         product=product,
         is_approved=True
-    ).select_related("user").order_by("-created_at")
+    ).select_related("user").prefetch_related(
+        Prefetch(
+            "replies",
+            queryset=ReviewReply.objects.select_related("seller").order_by("-created_at")
+        )
+    ).order_by("-created_at")
 
     rating_data = reviews.aggregate(avg=Avg("rating"))
-
     average_rating = round(rating_data["avg"] or 0, 1)
-
     review_count = reviews.count()
 
     user_has_reviewed = False
@@ -643,6 +751,18 @@ def product_detail(request, slug):
     if request.user.is_authenticated:
         user_review = reviews.filter(user=request.user).first()
         user_has_reviewed = user_review is not None
+
+   
+    similar_products = Product.objects.filter(
+    subcategory=product.subcategory,
+    is_active=True,
+    approval_status="APPROVED"
+).exclude(id=product.id).annotate(
+    average_rating=Coalesce(
+        Avg("reviews__rating", filter=Q(reviews__is_approved=True)),
+        Value(0.0)
+    )
+)[:8]
 
     context = {
         "product": product,
@@ -654,6 +774,7 @@ def product_detail(request, slug):
         "review_count": review_count,
         "user_has_reviewed": user_has_reviewed,
         "user_review": user_review,
+        "similar_products": similar_products, 
     }
 
     return render(request, "core/product_detail.html", context)
