@@ -115,7 +115,7 @@ load_dotenv(dotenv_path=BASE_DIR / ".env", override=True)
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1")
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "insecure-dev-key")
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
@@ -145,12 +145,36 @@ WSGI_APPLICATION = 'BuyNext.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 AUTH_USER_MODEL = 'core.User'
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+AUTH_USER_MODEL = 'core.User'
+
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+AUTH_USER_MODEL = 'core.User'
+
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+if ENVIRONMENT == "production":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv("DB_NAME"),        # RDS DB name
+            'USER': os.getenv("DB_USER"),        # RDS master username
+            'PASSWORD': os.getenv("DB_PASSWORD"),# RDS password
+            'HOST': os.getenv("DB_HOST"),        # RDS endpoint
+            'PORT': os.getenv("DB_PORT", "3306"),
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+            }
+        }
     }
-}
+else:  # local/dev
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
