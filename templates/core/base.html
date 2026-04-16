@@ -256,6 +256,9 @@
                 <a href="{% url 'view_cart' %}" class="text-lg font-bold p-4 rounded-2xl hover:bg-brand-bg flex justify-between items-center">
                     My Cart <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded-lg">{{cart_count}}</span>
                 </a>
+                <a href="{% url 'view_wishlist' %}" class="text-lg font-bold p-4 rounded-2xl hover:bg-brand-bg flex justify-between items-center">
+                    My Wishlists <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded-lg">{{wishlist_count}}</span>
+                </a>
                 <a href="{% url 'user_seller' %}" class="mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 rounded-2xl font-bold">
                     <span class="material-icons-outlined">storefront</span> Sell on BuyNext
                 </a>
