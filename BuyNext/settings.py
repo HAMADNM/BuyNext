@@ -116,6 +116,7 @@ DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1")
 
 
 SECRET_KEY = os.getenv("SECRET_KEY", "insecure-dev-key")
+SITE_ID = int(os.getenv("SITE_ID", 1))
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
