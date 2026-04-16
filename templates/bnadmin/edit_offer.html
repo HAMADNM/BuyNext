@@ -1,0 +1,210 @@
+{% extends "bnadmin/base.html" %}
+
+{% block title %}Edit Offer{% endblock %}
+{% block extra_css %}
+<style>
+    .offer-edit-card {
+        border: 2px solid #F97316;
+        background:
+            radial-gradient(700px 220px at 5% -10%, rgba(255, 255, 255, 0.18), transparent 70%),
+            radial-gradient(600px 220px at 95% 0%, rgba(255, 255, 255, 0.12), transparent 72%),
+            linear-gradient(160deg, #1B5FCC 0%, #205fc7 55%, #1A56B8 100%);
+        box-shadow: 0 28px 60px -40px rgba(15, 23, 42, 0.65);
+    }
+
+    .offer-edit-card :is(
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="file"],
+        select,
+        textarea
+    ) {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #bfdbfe !important;
+    }
+
+    .offer-edit-card :is(
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="file"],
+        select,
+        textarea
+    ):focus {
+        border-color: #F97316 !important;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2) !important;
+    }
+
+    .offer-edit-card input[type="checkbox"] {
+        width: 1.1rem;
+        height: 1.1rem;
+        border: 2px solid #F97316;
+        border-radius: 0.35rem;
+        appearance: none;
+        -webkit-appearance: none;
+        background: #ffffff;
+        display: inline-grid;
+        place-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .offer-edit-card input[type="checkbox"]:checked {
+        background-color: #F97316;
+        border-color: #F97316;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M6.2 11.2 3.3 8.3l-1.1 1.1 4 4 7.6-7.6-1.1-1.1z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 0.85rem 0.85rem;
+    }
+
+    .offer-edit-card .clearable-file-input,
+    .offer-edit-card .clearable-file-input a,
+    .offer-edit-card .clearable-file-input label {
+        color: #ffffff !important;
+    }
+
+    .offer-edit-card .clearable-file-input input[type="checkbox"] {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div>
+        <a href="{% url 'offer_management' %}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700">
+            <span class="material-icons-outlined text-base">arrow_back</span>
+            Back to Offer Management
+        </a>
+    </div>
+
+    {% if messages %}
+    <div class="space-y-2">
+        {% for message in messages %}
+        <div class="px-4 py-3 rounded-xl text-sm font-semibold
+            {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-200
+            {% elif message.tags == 'error' %}bg-rose-50 text-rose-700 border border-rose-200
+            {% else %}bg-primary/10 text-primary border border-primary/25{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="offer-edit-card rounded-2xl p-6">
+        <h1 class="text-2xl font-bold text-white mb-2">Edit Offer</h1>
+        <p class="text-white/85 mb-6">Update the details for <span class="font-semibold">{{ offer.title }}</span>.</p>
+
+        <form method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% csrf_token %}
+            <div>
+                <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium mb-1 text-white">Title</label>
+                {{ form.title }}
+                {% for error in form.title.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div>
+                <label for="{{ form.offer_type.id_for_label }}" class="block text-sm font-medium mb-1 text-white">Offer Type</label>
+                {{ form.offer_type }}
+                {% for error in form.offer_type.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="md:col-span-2">
+                <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium mb-1 text-white">Description</label>
+                {{ form.description }}
+                {% for error in form.description.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="md:col-span-2">
+                <label for="{{ form.redirect_url.id_for_label }}" class="block text-sm font-medium mb-1 text-white">Redirect URL</label>
+                {{ form.redirect_url }}
+                {% for error in form.redirect_url.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div id="offer-products-row" class="md:col-span-2">
+                <label for="{{ form.products.id_for_label }}" class="block text-sm font-medium mb-1 text-white">Products</label>
+                {{ form.products }}
+                {% if form.products.help_text %}<p class="text-[11px] text-white/80 mt-1">{{ form.products.help_text }}</p>{% endif %}
+                {% for error in form.products.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div id="offer-categories-row" class="md:col-span-2">
+                <label for="{{ form.categories.id_for_label }}" class="block text-sm font-medium mb-1 text-white">Categories</label>
+                {{ form.categories }}
+                {% if form.categories.help_text %}<p class="text-[11px] text-white/80 mt-1">{{ form.categories.help_text }}</p>{% endif %}
+                {% for error in form.categories.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div id="offer-subcategories-row" class="md:col-span-2">
+                <label for="{{ form.subcategories.id_for_label }}" class="block text-sm font-medium mb-1 text-white">SubCategories</label>
+                {{ form.subcategories }}
+                {% if form.subcategories.help_text %}<p class="text-[11px] text-white/80 mt-1">{{ form.subcategories.help_text }}</p>{% endif %}
+                {% for error in form.subcategories.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div>
+                <label for="{{ form.banner_image.id_for_label }}" class="block text-sm font-medium mb-1 text-white">Banner Image</label>
+                <input
+                    type="file"
+                    name="banner_image"
+                    id="{{ form.banner_image.id_for_label }}"
+                    accept="image/*"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900"
+                >
+                {% if offer.banner_image %}
+                <img src="{{ offer.banner_image.url }}" alt="{{ offer.title }}" class="mt-3 h-20 w-32 rounded object-cover border border-slate-200">
+                {% endif %}
+                {% for error in form.banner_image.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="flex items-center gap-2 mt-6">
+                {{ form.is_active }}
+                <label for="{{ form.is_active.id_for_label }}" class="text-sm font-medium text-white">Active</label>
+            </div>
+            <div>
+                <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium mb-1 text-white">Start Date</label>
+                {{ form.start_date }}
+                {% for error in form.start_date.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div>
+                <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium mb-1 text-white">End Date</label>
+                {{ form.end_date }}
+                {% for error in form.end_date.errors %}<p class="text-xs text-rose-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            {% if form.non_field_errors %}
+            <div class="md:col-span-2">
+                {% for error in form.non_field_errors %}
+                <p class="text-sm text-rose-600">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="md:col-span-2 flex items-center gap-3">
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold border border-[#EA580C]">Save Offer</button>
+                <a href="{% url 'offer_management' %}" class="px-5 py-2.5 rounded-xl border border-white/30 bg-white/10 text-white font-semibold hover:bg-white/20">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const offerType = document.getElementById("id_offer_type");
+        const productRow = document.getElementById("offer-products-row");
+        const categoryRow = document.getElementById("offer-categories-row");
+        const subcategoryRow = document.getElementById("offer-subcategories-row");
+
+        const toggleTargetRows = () => {
+            if (!offerType) return;
+            const selected = offerType.value;
+            const showProducts = selected === "PRODUCT";
+            const showCategories = selected === "CATEGORY";
+
+            productRow?.classList.toggle("hidden", !showProducts);
+            categoryRow?.classList.toggle("hidden", !showCategories);
+            subcategoryRow?.classList.toggle("hidden", !showCategories);
+        };
+
+        toggleTargetRows();
+        offerType?.addEventListener("change", toggleTargetRows);
+    });
+</script>
+{% endblock %}

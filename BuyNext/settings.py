@@ -115,7 +115,9 @@ load_dotenv(dotenv_path=BASE_DIR / ".env", override=True)
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1")
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+# Prevent local 500 errors when .env is missing SECRET_KEY.
+# Keep a real SECRET_KEY set in production environments.
+SECRET_KEY = os.getenv("SECRET_KEY") or "dev-only-insecure-secret-key-change-me"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"

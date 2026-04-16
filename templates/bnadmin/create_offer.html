@@ -1,0 +1,290 @@
+{% extends "bnadmin/base.html" %}
+
+{% block title %}Create Offer{% endblock %}
+
+{% block extra_css %}
+<style>
+    .offer-create-card {
+        border: 2px solid #F97316;
+        background:
+            radial-gradient(700px 220px at 5% -10%, rgba(255, 255, 255, 0.18), transparent 70%),
+            radial-gradient(600px 220px at 95% 0%, rgba(255, 255, 255, 0.12), transparent 72%),
+            linear-gradient(160deg, #1B5FCC 0%, #205fc7 55%, #1A56B8 100%);
+        box-shadow: 0 28px 60px -40px rgba(15, 23, 42, 0.65);
+    }
+
+    .offer-create-card :is(
+        input[type="text"],
+        input[type="datetime-local"],
+        select,
+        textarea
+    ) {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #bfdbfe !important;
+    }
+
+    .offer-create-card :is(
+        input[type="text"],
+        input[type="datetime-local"],
+        select,
+        textarea
+    ):focus {
+        border-color: #F97316 !important;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2) !important;
+    }
+
+    .offer-create-card input[type="checkbox"] {
+        width: 1.1rem;
+        height: 1.1rem;
+        border: 2px solid #F97316;
+        border-radius: 0.35rem;
+        appearance: none;
+        -webkit-appearance: none;
+        background: #ffffff;
+        display: inline-grid;
+        place-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .offer-create-card input[type="checkbox"]:checked {
+        background-color: #F97316;
+        border-color: #F97316;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M6.2 11.2 3.3 8.3l-1.1 1.1 4 4 7.6-7.6-1.1-1.1z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 0.85rem 0.85rem;
+    }
+
+    .offer-upload-shell {
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        background: rgba(255, 255, 255, 0.10);
+        backdrop-filter: blur(8px);
+    }
+
+    .offer-upload-shell input[type="file"] {
+        position: absolute !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    .offer-file-chip {
+        border: 1px solid rgba(249, 115, 22, 0.7);
+        background: rgba(255, 255, 255, 0.94);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <section class="rounded-[2rem] border border-[#EA580C] bg-gradient-to-r from-[#F97316] to-[#EA580C] p-7 shadow-[0_24px_70px_-30px_rgba(234,88,12,0.55)]">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <p class="text-[11px] uppercase tracking-[0.3em] text-white/80 font-black">Campaign Builder</p>
+                <h1 class="text-3xl font-black text-white">Create Offer</h1>
+                <p class="text-white/85 mt-1">Design an offer banner and schedule when it should go live.</p>
+            </div>
+            <a href="{% url 'offer_management' %}" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-[#1B5FCC] font-extrabold text-xs uppercase tracking-widest border border-white/70 hover:bg-slate-50">
+                <span class="material-symbols-outlined text-base">arrow_back</span>
+                Back To Offers
+            </a>
+        </div>
+    </section>
+
+    {% if messages %}
+    <div class="space-y-2">
+        {% for message in messages %}
+        <div class="px-4 py-3 rounded-xl text-sm font-semibold
+            {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-200
+            {% elif message.tags == 'error' %}bg-rose-50 text-rose-700 border border-rose-200
+            {% else %}bg-primary/10 text-primary border border-primary/25{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <section class="offer-create-card rounded-2xl bg-[#1B5FCC] p-6 md:p-7">
+        <form method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% csrf_token %}
+            <div>
+                <label for="{{ form.title.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">Title</label>
+                {{ form.title }}
+                {% for error in form.title.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div>
+                <label for="{{ form.offer_type.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">Offer Type</label>
+                {{ form.offer_type }}
+                {% for error in form.offer_type.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="md:col-span-2">
+                <label for="{{ form.description.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">Description</label>
+                {{ form.description }}
+                {% for error in form.description.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="md:col-span-2">
+                <label for="{{ form.redirect_url.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">Redirect URL</label>
+                {{ form.redirect_url }}
+                {% for error in form.redirect_url.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div id="offer-products-row" class="md:col-span-2">
+                <label for="{{ form.products.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">Products</label>
+                {{ form.products }}
+                {% if form.products.help_text %}<p class="text-[11px] text-white/80 mt-1">{{ form.products.help_text }}</p>{% endif %}
+                {% for error in form.products.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div id="offer-categories-row" class="md:col-span-2">
+                <label for="{{ form.categories.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">Categories</label>
+                {{ form.categories }}
+                {% if form.categories.help_text %}<p class="text-[11px] text-white/80 mt-1">{{ form.categories.help_text }}</p>{% endif %}
+                {% for error in form.categories.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div id="offer-subcategories-row" class="md:col-span-2">
+                <label for="{{ form.subcategories.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">SubCategories</label>
+                {{ form.subcategories }}
+                {% if form.subcategories.help_text %}<p class="text-[11px] text-white/80 mt-1">{{ form.subcategories.help_text }}</p>{% endif %}
+                {% for error in form.subcategories.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div>
+                <label for="{{ form.banner_image.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">Banner Image</label>
+                <div class="offer-upload-shell rounded-2xl p-3 relative">
+                    {{ form.banner_image }}
+                    <div id="offer-upload-empty" class="flex items-center justify-between gap-3">
+                        <p class="text-xs text-white/90 font-medium">Upload banner image (PNG, JPG, WEBP)</p>
+                        <button type="button" id="offer-image-trigger" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-slate-100 text-[#1B5FCC] text-xs font-bold uppercase tracking-widest border border-white/80">
+                            <span class="material-symbols-outlined text-sm">image</span>
+                            Choose Image
+                        </button>
+                    </div>
+
+                    <div id="offer-upload-selected" class="hidden items-center justify-between gap-3 offer-file-chip rounded-2xl p-2.5">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <img id="offer-image-preview" src="" alt="Selected banner preview" class="h-12 w-12 rounded-xl object-cover border border-slate-200">
+                            <div class="min-w-0">
+                                <p id="offer-image-name" class="text-sm text-slate-800 font-semibold truncate"></p>
+                                <p class="text-[11px] text-slate-500">Image selected</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" id="offer-image-clear" class="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50" aria-label="Remove selected image">
+                                <span class="material-symbols-outlined text-sm">close</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% for error in form.banner_image.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="flex items-center gap-2 mt-6">
+                {{ form.is_active }}
+                <label for="{{ form.is_active.id_for_label }}" class="text-sm font-semibold text-white">Active</label>
+            </div>
+            <div>
+                <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">Start Date</label>
+                {{ form.start_date }}
+                {% for error in form.start_date.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div>
+                <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-semibold mb-1 text-white">End Date</label>
+                {{ form.end_date }}
+                {% for error in form.end_date.errors %}<p class="text-xs text-rose-100 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="md:col-span-2">
+                {% for error in form.non_field_errors %}
+                <p class="text-sm text-rose-100">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="md:col-span-2 flex flex-wrap items-center gap-3 pt-2">
+                <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold border border-[#EA580C]">
+                    <span class="material-symbols-outlined text-base">check_circle</span>
+                    Create Offer
+                </button>
+                <a href="{% url 'offer_management' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 text-white border border-white/30 hover:bg-white/20 font-semibold">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("id_banner_image");
+        const emptyState = document.getElementById("offer-upload-empty");
+        const selectedState = document.getElementById("offer-upload-selected");
+        const preview = document.getElementById("offer-image-preview");
+        const name = document.getElementById("offer-image-name");
+        const trigger = document.getElementById("offer-image-trigger");
+        const clear = document.getElementById("offer-image-clear");
+        const offerType = document.getElementById("id_offer_type");
+        const productRow = document.getElementById("offer-products-row");
+        const categoryRow = document.getElementById("offer-categories-row");
+        const subcategoryRow = document.getElementById("offer-subcategories-row");
+
+        if (!fileInput) return;
+
+        const openPicker = () => fileInput.click();
+
+        const resetPicker = () => {
+            fileInput.value = "";
+            preview.src = "";
+            name.textContent = "";
+            selectedState.classList.add("hidden");
+            selectedState.classList.remove("flex");
+            emptyState.classList.remove("hidden");
+            emptyState.classList.add("flex");
+        };
+
+        const showSelection = (file) => {
+            name.textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                preview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+            emptyState.classList.add("hidden");
+            emptyState.classList.remove("flex");
+            selectedState.classList.remove("hidden");
+            selectedState.classList.add("flex");
+        };
+
+        trigger?.addEventListener("click", openPicker);
+        clear?.addEventListener("click", resetPicker);
+
+        fileInput.addEventListener("change", function () {
+            const file = this.files && this.files[0];
+            if (!file) {
+                resetPicker();
+                return;
+            }
+            showSelection(file);
+        });
+
+        const toggleTargetRows = () => {
+            if (!offerType) return;
+            const selected = offerType.value;
+            const showProducts = selected === "PRODUCT";
+            const showCategories = selected === "CATEGORY";
+
+            productRow?.classList.toggle("hidden", !showProducts);
+            categoryRow?.classList.toggle("hidden", !showCategories);
+            subcategoryRow?.classList.toggle("hidden", !showCategories);
+        };
+
+        toggleTargetRows();
+        offerType?.addEventListener("change", toggleTargetRows);
+    });
+</script>
+{% endblock %}

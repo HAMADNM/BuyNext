@@ -126,7 +126,7 @@
 
 <td class="px-8 py-5 text-center">
 <button 
-onclick="openOrderDetails('{{ item.order.order_number }}','{{ item.order.user.username }}','{{ item.item_status|lower }}')"
+onclick="openOrderDetails('{{ item.id }}','{{ item.order.order_number }}','{{ item.order.user.username }}','{{ item.item_status|lower }}')"
 class="w-10 h-10 bg-slate-50 text-slate-400 hover:bg-brand-blue hover:text-white rounded-xl transition-all">
 <span class="material-icons-outlined text-xl">visibility</span>
 </button>
@@ -198,14 +198,14 @@ class="w-10 h-10 bg-slate-50 text-slate-400 hover:bg-brand-blue hover:text-white
 let currentOrderId = null;
 
 
-function openOrderDetails(orderId, customerName, status) {
+function openOrderDetails(itemId, orderNumber, customerName, status) {
 
-    currentOrderId = orderId;
+    currentOrderId = itemId;
 
   
     const title = document.getElementById("modalOrderTitle");
     if(title){
-        title.innerText = "Order #" + orderId;
+        title.innerText = "Order #" + orderNumber;
     }
 
   

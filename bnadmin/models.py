@@ -20,6 +20,7 @@ class Offer(models.Model):
     description = models.TextField(blank=True)
     offer_type = models.CharField(max_length=20, choices=OFFER_TYPE, default='PRODUCT', db_index=True)
     banner_image = models.ImageField(upload_to='offer_banners/', null=True, blank=True)
+    redirect_url = models.URLField(blank=True, null=True)
     is_active = models.BooleanField(default=True, db_index=True)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)

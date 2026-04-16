@@ -20,11 +20,12 @@ urlpatterns = [
           path("offerdiscount/",views.offer_discount,name="offer_discount"),
           path("sellerreviews/",views.seller_reviews,name="seller_reviews"),
           path("review-reply/<uuid:review_id>/", views.reply_review, name="reply_review"),
+          path("review-reply/<uuid:review_id>/delete/", views.delete_reply, name="delete_reply"),
           path("sellerprofile/",views.seller_profile,name="seller_profile"),
           path("sellersettings/",views.seller_settings,name="seller_settings"),
           path("inventory/", views.inventory_dashboard, name="seller_inventory"),
           path("inventory/adjust/", views.adjust_inventory, name="adjust_inventory"),
-          path("update-order-status/<int:item_id>/",views.update_order_item_status, name="update_order_status"),
+          path("update-order-status/<uuid:item_id>/",views.update_order_item_status, name="update_order_status"),
           
 
 

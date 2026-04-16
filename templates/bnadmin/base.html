@@ -583,6 +583,12 @@
                 <span class="sidebar-text whitespace-nowrap">Products</span>
             </a>
 
+            <a class="flex items-center gap-3 px-4 py-4 rounded-lg {% if request.resolver_match.url_name == 'offer_management' or request.resolver_match.url_name == 'create_offer' or request.resolver_match.url_name == 'edit_offer' or request.resolver_match.url_name == 'toggle_offer_status' or request.resolver_match.url_name == 'delete_offer' %}bg-[#F97316] text-white{% else %}text-text-muted hover:bg-[#F97316] hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
+               href="{% url 'offer_management' %}" title="Offers">
+                <span class="material-symbols-outlined text-2xl shrink-0">local_offer</span>
+                <span class="sidebar-text whitespace-nowrap">Offers & Banners</span>
+            </a>
+
             <a class="flex items-center gap-3 px-4 py-4 rounded-lg {% if request.resolver_match.url_name == 'order_management' or request.resolver_match.url_name == 'order_detail' %}bg-[#F97316] text-white{% else %}text-text-muted hover:bg-[#F97316] hover:text-white{% endif %} font-medium transition-all nav-link leading-none"
                href="{% url 'order_management' %}" title="Orders">
                 <span class="material-symbols-outlined text-2xl shrink-0">receipt_long</span>

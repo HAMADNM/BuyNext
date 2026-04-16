@@ -12,7 +12,8 @@ from django.utils import timezone
 from core.decorator import admin_required
 from core.models import Category, SubCategory, User
 from customer.models import Order, OrderItem
-from .models import ProductRejectionReason
+from .forms import OfferForm
+from .models import Offer, ProductRejectionReason
 from seller.models import (
     Attribute,
     AttributeOption,
@@ -886,6 +887,107 @@ def admin_search(request):
         "total_results": len(customers) + len(sellers) + len(orders) + len(products),
     }
     return render(request, "bnadmin/search_results.html", context)
+
+
+@admin_required
+def offer_management(request):
+    if request.method == "POST":
+        return redirect("create_offer")
+
+    query = request.GET.get("q", "").strip()
+    status = request.GET.get("status", "").strip().lower()
+    offer_type = request.GET.get("offer_type", "").strip().upper()
+
+    offers = Offer.objects.all()
+    if query:
+        offers = offers.filter(
+            Q(title__icontains=query)
+            | Q(slug__icontains=query)
+            | Q(description__icontains=query)
+        )
+    if status == "active":
+        offers = offers.filter(is_active=True)
+    elif status == "inactive":
+        offers = offers.filter(is_active=False)
+    if offer_type in {"PRODUCT", "CATEGORY", "SITE_WIDE"}:
+        offers = offers.filter(offer_type=offer_type)
+
+    offers = offers.order_by("-created_at")
+
+    context = {
+        "offers": offers,
+        "q": query,
+        "selected_status": status,
+        "selected_offer_type": offer_type,
+    }
+    return render(request, "bnadmin/offer_management.html", context)
+
+
+@admin_required
+def create_offer(request):
+    if request.method == "POST":
+        form = OfferForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Offer created successfully.")
+            return redirect("offer_management")
+        messages.error(request, "Please correct the errors in the form.")
+    else:
+        form = OfferForm()
+
+    return render(request, "bnadmin/create_offer.html", {"form": form})
+
+
+@admin_required
+def edit_offer(request, offer_id):
+    offer = get_object_or_404(Offer, id=offer_id)
+
+    if request.method == "POST":
+        form = OfferForm(request.POST, request.FILES, instance=offer)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Offer updated successfully.")
+            return redirect("offer_management")
+        messages.error(request, "Please correct the errors in the form.")
+    else:
+        form = OfferForm(instance=offer)
+
+    return render(
+        request,
+        "bnadmin/edit_offer.html",
+        {"form": form, "offer": offer},
+    )
+
+
+@admin_required
+def toggle_offer_status(request, offer_id):
+    if request.method != "POST":
+        messages.error(request, "Invalid request method.")
+        return redirect("offer_management")
+
+    offer = get_object_or_404(Offer, id=offer_id)
+    offer.is_active = not offer.is_active
+    offer.save(update_fields=["is_active", "updated_at"])
+    messages.success(
+        request,
+        f'Offer "{offer.title}" is now {"active" if offer.is_active else "inactive"}.',
+    )
+    return redirect("offer_management")
+
+
+@admin_required
+def delete_offer(request, offer_id):
+    if request.method != "POST":
+        messages.error(request, "Invalid request method.")
+        return redirect("offer_management")
+
+    offer = get_object_or_404(Offer, id=offer_id)
+    offer_title = offer.title
+    if offer.banner_image:
+        offer.banner_image.delete(save=False)
+    offer.delete()
+    messages.success(request, f'Offer "{offer_title}" deleted successfully.')
+    return redirect("offer_management")
 
 
 @admin_required

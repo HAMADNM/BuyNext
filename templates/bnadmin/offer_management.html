@@ -1,0 +1,127 @@
+{% extends "bnadmin/base.html" %}
+
+{% block title %}Offer Management{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <section class="rounded-[2rem] border border-slate-200 bg-gradient-to-r from-[#1B5FCC] to-[#2A6FE2] p-7 shadow-[0_24px_70px_-30px_rgba(27,95,204,0.55)]">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <p class="text-[11px] uppercase tracking-[0.3em] text-white/80 font-black">Offers Studio</p>
+                <h1 class="text-3xl font-black text-white">Offer Management</h1>
+                <p class="text-white/85 mt-1">Review all offers and launch new campaigns from a dedicated builder.</p>
+            </div>
+            <a href="{% url 'create_offer' %}" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#F97316] text-white font-extrabold text-xs uppercase tracking-widest border border-[#EA580C] hover:bg-[#EA580C]">
+                <span class="material-symbols-outlined text-base">add</span>
+                Create Offer
+            </a>
+        </div>
+    </section>
+
+    {% if messages %}
+    <div class="space-y-2">
+        {% for message in messages %}
+        <div class="px-4 py-3 rounded-xl text-sm font-semibold
+            {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-200
+            {% elif message.tags == 'error' %}bg-rose-50 text-rose-700 border border-rose-200
+            {% else %}bg-primary/10 text-primary border border-primary/25{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_18px_42px_-30px_rgba(15,23,42,0.45)]">
+        <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <input type="text" name="q" value="{{ q }}" placeholder="Search by title or slug"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-200">
+            <select name="status" class="w-full px-4 py-2.5 rounded-xl border border-slate-200">
+                <option value="">All Status</option>
+                <option value="active" {% if selected_status == "active" %}selected{% endif %}>Active</option>
+                <option value="inactive" {% if selected_status == "inactive" %}selected{% endif %}>Inactive</option>
+            </select>
+            <select name="offer_type" class="w-full px-4 py-2.5 rounded-xl border border-slate-200">
+                <option value="">All Types</option>
+                <option value="PRODUCT" {% if selected_offer_type == "PRODUCT" %}selected{% endif %}>Product Offer</option>
+                <option value="CATEGORY" {% if selected_offer_type == "CATEGORY" %}selected{% endif %}>Category Offer</option>
+                <option value="SITE_WIDE" {% if selected_offer_type == "SITE_WIDE" %}selected{% endif %}>Site-Wide Offer</option>
+            </select>
+            <div class="flex gap-2">
+                <button type="submit" class="w-full px-4 py-2.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold border border-[#EA580C]">Filter</button>
+                <a href="{% url 'offer_management' %}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-center font-semibold text-slate-600">Clear</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-[0_24px_54px_-36px_rgba(15,23,42,0.5)]">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm min-w-[980px]">
+                <thead class="bg-slate-50 text-slate-500 uppercase text-xs tracking-wider">
+                    <tr>
+                        <th class="px-5 py-3 text-left">Title</th>
+                        <th class="px-5 py-3 text-left">Type</th>
+                        <th class="px-5 py-3 text-left">Banner</th>
+                        <th class="px-5 py-3 text-left">Schedule</th>
+                        <th class="px-5 py-3 text-left">Status</th>
+                        <th class="px-5 py-3 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for offer in offers %}
+                    <tr class="hover:bg-slate-50/70">
+                        <td class="px-5 py-4">
+                            <p class="font-semibold">{{ offer.title }}</p>
+                            <p class="text-xs text-slate-500">{{ offer.slug }}</p>
+                        </td>
+                        <td class="px-5 py-4">{{ offer.get_offer_type_display }}</td>
+                        <td class="px-5 py-4">
+                            {% if offer.banner_image %}
+                            <img src="{{ offer.banner_image.url }}" alt="{{ offer.title }}" class="h-14 w-24 rounded object-cover border border-slate-200">
+                            {% else %}
+                            <span class="text-slate-400 text-xs">No image</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-5 py-4">
+                            <p class="text-xs text-slate-600">Start: {{ offer.start_date|date:"Y-m-d H:i"|default:"-" }}</p>
+                            <p class="text-xs text-slate-600">End: {{ offer.end_date|date:"Y-m-d H:i"|default:"-" }}</p>
+                        </td>
+                        <td class="px-5 py-4">
+                            {% if offer.is_active %}
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-[#A7D7B5] bg-[#EAF9F0] text-[#1F7A3D]">
+                                <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#1F7A3D]"></span>
+                                Active
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-[#D1D5DB] bg-[#F3F4F6] text-[#4B5563]">
+                                <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#6B7280]"></span>
+                                Inactive
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-5 py-4">
+                            <div class="flex items-center gap-2">
+                                <a href="{% url 'edit_offer' offer.id %}" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold">Edit</a>
+                                <form method="POST" action="{% url 'toggle_offer_status' offer.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold">
+                                        {% if offer.is_active %}Deactivate{% else %}Activate{% endif %}
+                                    </button>
+                                </form>
+                                <form method="POST" action="{% url 'delete_offer' offer.id %}" onsubmit="return confirm('Delete this offer?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="px-3 py-1.5 rounded-lg border border-rose-200 text-rose-600 text-xs font-semibold">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-5 py-12 text-center text-slate-400 font-medium">No offers found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

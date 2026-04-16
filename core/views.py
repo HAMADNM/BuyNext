@@ -404,11 +404,41 @@ def home_view(request):
     from django.utils import timezone
     now = timezone.now()
 
-    banners = Banner.objects.filter(
+    banners = list(
+        Banner.objects.filter(
         is_active=True,
         start_date__lte=now,
         end_date__gte=now
     ).order_by('-created_at')[:5]
+    )
+
+    # Make bnadmin Offer banners visible on the home carousel as well.
+    # This keeps existing core Banner behavior intact while allowing Offer
+    # entries with banner images to work immediately.
+    from types import SimpleNamespace
+    from bnadmin.models import Offer
+
+    offer_banners = Offer.objects.filter(
+        is_active=True,
+    ).filter(
+        Q(start_date__isnull=True) | Q(start_date__lte=now),
+        Q(end_date__isnull=True) | Q(end_date__gte=now),
+    ).order_by("-created_at")[:5]
+
+    for offer in offer_banners:
+        banners.append(
+            SimpleNamespace(
+                title=offer.title,
+                image_url=offer.banner_image,
+                heading=offer.title,
+                sub_heading=offer.description,
+                button_text="Shop Offer",
+                redirect_url=offer.redirect_url or f"{reverse('all_products')}?q={offer.title}",
+                created_at=offer.created_at,
+            )
+        )
+
+    banners = sorted(banners, key=lambda item: item.created_at, reverse=True)[:5]
 
     trending_product = None
     trending_data = get_trending_products(days=30, limit=1)

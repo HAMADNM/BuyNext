@@ -952,7 +952,11 @@ def seller_order_detail(request, order_id):
 @verified_seller_required
 def delete_reply(request, review_id):
 
-    review = get_object_or_404(Review, id=review_id)
+    review = get_object_or_404(
+        Review,
+        id=review_id,
+        product__seller=request.user.seller_profile
+    )
 
     reply = ReviewReply.objects.filter(
         review=review,
@@ -967,7 +971,11 @@ def delete_reply(request, review_id):
 @verified_seller_required
 def reply_review(request, review_id):
 
-    review = get_object_or_404(Review, id=review_id)
+    review = get_object_or_404(
+        Review,
+        id=review_id,
+        product__seller=request.user.seller_profile
+    )
 
     if request.method == "POST":
         reply_text = request.POST.get("reply")
