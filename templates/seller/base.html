@@ -203,9 +203,14 @@
                     <span class="absolute top-1 right-1 w-2 h-2 bg-brandOrange rounded-full border-2 border-white"></span>
                 </button>
 
-                <a href="{% url 'home' %}" class="hidden md:flex items-center gap-2 px-4 py-2 bg-white border-2 border-brand-primary rounded-xl text-sm font-bold transition-all shadow-sm hover:bg-brand-muted hover:scale-105">
+             <a href="{% url 'home' %}"
+                    class="flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-brand-primary rounded-xl text-sm font-bold transition-all shadow-md hover:bg-brand-muted hover:border-brand-primary hover:scale-105">
                     <span class="material-icons-outlined text-base">arrow_back</span>
-                    <span>Home</span>
+                    Go Back to
+                    <span class="font-extrabold">
+                        <span class="text-brandBlue">Buy</span>
+                        <span class="text-brandOrange">Next</span>
+                    </span>
                 </a>
 
                 <div class="flex items-center gap-3 border-l pl-4 md:pl-6 border-brand-accent/60">
