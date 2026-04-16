@@ -158,7 +158,9 @@
                         <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlistGrid(event, this)" 
                             class="wishlist-btn absolute top-4 right-4 md:top-6 md:right-6 w-9 h-9 md:w-11 md:h-11 glass-effect border border-gray-100 rounded-full flex items-center justify-center shadow-sm z-20 hover:scale-110 active:scale-95 transition-all
                             {% if product.is_in_wishlist %}text-red-500{% else %}text-gray-400{% endif %}" 
-                            {% if product.default_variant %}data-variant-id="{{ product.variant_id }}"{% endif %}>
+                           {% if product.variant_id %}
+        data-variant-id="{{ product.variant_id }}"
+    {% endif %}>{% if product.default_variant %}
                             <span class="material-icons text-base md:text-lg">
                                 {% if product.is_in_wishlist %}favorite{% else %}favorite_border{% endif %}
                             </span>

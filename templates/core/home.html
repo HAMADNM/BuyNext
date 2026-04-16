@@ -5,185 +5,148 @@
 {% block content %}
 <div class="bg-gray-50/50 min-h-screen pb-20">
     
-    <section class="bg-white py-10 border-b border-gray-100">
-        <div class="container mx-auto px-6">
-            <div class="flex items-center justify-between mb-10">
+    <section class="bg-white py-6 md:py-10 border-b border-gray-100">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="flex items-center justify-between mb-6 md:mb-10">
                 <div class="space-y-1">
-                    <h2 class="text-2xl font-extrabold tracking-tight text-gray-900">Shop by Categories</h2>
-                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Find exactly what you need</p>
+                    <h2 class="text-xl md:text-2xl font-extrabold tracking-tight text-gray-900">Shop by Categories</h2>
+                    <p class="text-[10px] md:text-xs text-gray-400 font-medium uppercase tracking-widest">Find exactly what you need</p>
                 </div>
                 {% if not show_all and total_categories > 8 %}
-                    <a href="?show_all=true" class="group flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
+                    <a href="?show_all=true" class="group flex items-center gap-2 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
                         View All <span class="material-icons text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
                     </a>
                 {% elif show_all %}
-                    <a href="{% url 'home' %}" class="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">Show Less</a>
+                    <a href="{% url 'home' %}" class="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-blue-600">Show Less</a>
                 {% endif %}
             </div>
             
-            <div class="flex flex-wrap justify-center lg:justify-start gap-6 md:gap-10">
+            <div class="flex overflow-x-auto pb-4 md:pb-0 md:flex-wrap justify-start lg:justify-start gap-6 md:gap-10 scrollbar-hide">
                 {% for category in categories %}
-                <a href="{% url 'category' category.slug %}" class="group flex flex-col items-center w-24 md:w-28">
+                <a href="{% url 'category' category.slug %}" class="group flex flex-col items-center min-w-[80px] w-20 md:w-28 flex-shrink-0">
                     <div class="relative w-full aspect-square mb-3">
-                        <div class="absolute -inset-1.5 rounded-full border-2 border-blue-600/0 group-hover:border-blue-600/100 group-hover:scale-110 transition-all duration-500 ease-out"></div>
+                        <div class="absolute -inset-1 rounded-full border-2 border-blue-600/0 group-hover:border-blue-600/100 group-hover:scale-110 transition-all duration-500 ease-out"></div>
                         <div class="relative w-full h-full rounded-full overflow-hidden bg-white shadow-sm ring-1 ring-gray-100 group-hover:shadow-xl transition-all duration-300">
                             {% if category.image %}
                                 <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
                             {% else %}
                                 <div class="w-full h-full bg-gray-50 flex items-center justify-center">
-                                    <span class="material-icons-outlined text-2xl text-gray-300">category</span>
+                                    <span class="material-icons-outlined text-xl md:text-2xl text-gray-300">category</span>
                                 </div>
                             {% endif %}
                         </div>
                     </div>
-                    <h3 class="font-bold text-[11px] md:text-xs text-gray-900 tracking-wide text-center uppercase">{{ category.name }}</h3>
+                    <h3 class="font-bold text-[10px] md:text-xs text-gray-900 tracking-wide text-center uppercase truncate w-full">{{ category.name }}</h3>
                 </a>
                 {% endfor %}
             </div>
         </div>
     </section>
 
-<section class="relative w-full h-[70vh] md:h-[85vh] overflow-hidden group/carousel bg-black">
-    <div id="carousel" class="flex h-full will-change-transform transition-transform duration-1000 ease-[cubic-bezier(0.65,0,0.35,1)]">
-        {% if banners %}
-            {% for banner in banners %}
-            <div class="min-w-full w-full h-full relative flex-shrink-0 overflow-hidden">
-                {% if banner.image_url %}
-                    <img src="{{ banner.image_url.url }}" class="absolute inset-0 w-full h-full object-cover object-center" alt="{{ banner.title }}">
-                {% else %}
-                    <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-900 to-black flex items-center justify-end px-20">
-                        <span class="material-icons text-[20vw] text-white/5 select-none">Collections</span>
-                    </div>
-                {% endif %}
-                
-                <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent"></div>
+    <section class="relative w-full h-[60vh] md:h-[85vh] overflow-hidden group/carousel bg-black">
+        <div id="carousel" class="flex h-full will-change-transform transition-transform duration-1000 ease-[cubic-bezier(0.65,0,0.35,1)]">
+            {% if banners %}
+                {% for banner in banners %}
+                <div class="min-w-full w-full h-full relative flex-shrink-0 overflow-hidden">
+                    {% if banner.image_url %}
+                        <img src="{{ banner.image_url.url }}" class="absolute inset-0 w-full h-full object-cover object-center" alt="{{ banner.title }}">
+                    {% else %}
+                        <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-900 to-black flex items-center justify-end px-10 md:px-20">
+                            <span class="material-icons text-[30vw] md:text-[20vw] text-white/5 select-none">Collections</span>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent"></div>
 
-                <div class="container mx-auto px-6 h-full flex items-center relative z-10">
-                    <div class="max-w-3xl space-y-6">
-                        <span class="inline-block py-1.5 px-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.4em] rounded-full">
-                            {{ banner.title|default:"Limited Edition" }}
-                        </span>
-                        <h1 class="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter">
-                            {{ banner.heading|default:"THE NEW STANDARD" }}
-                        </h1>
-                        <p class="text-gray-300 text-sm md:text-lg font-medium max-w-md hidden md:block opacity-80 leading-relaxed">
-                            {{ banner.sub_heading|default:"Experience premium quality products" }}
-                        </p>
-                        <div class="pt-4">
-                            <a href="{{ banner.redirect_url|default:'#' }}"
-                               class="inline-flex items-center gap-3 bg-white text-black hover:bg-blue-600 hover:text-white px-10 py-4 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-500 transform active:scale-95 shadow-2xl">
-                                  {{ banner.button_text|default:"Explore" }}
-                                <span class="material-icons text-sm">north_east</span>
-                            </a>
+                    <div class="container mx-auto px-6 h-full flex items-center relative z-10">
+                        <div class="max-w-3xl space-y-4 md:space-y-6">
+                            <span class="inline-block py-1 px-3 md:py-1.5 md:px-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-[0.4em] rounded-full">
+                                {{ banner.title|default:"Limited Edition" }}
+                            </span>
+                            <h1 class="text-4xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter">
+                                {{ banner.heading|default:"THE NEW STANDARD"|linebreaksbr }}
+                            </h1>
+                            <p class="text-gray-300 text-xs md:text-lg font-medium max-w-xs md:max-w-md opacity-80 leading-relaxed line-clamp-2 md:line-clamp-none">
+                                {{ banner.sub_heading|default:"Experience premium quality products" }}
+                            </p>
+                            <div class="pt-2 md:pt-4">
+                                <a href="{{ banner.redirect_url|default:'#' }}"
+                                   class="inline-flex items-center gap-2 md:gap-3 bg-white text-black hover:bg-blue-600 hover:text-white px-6 py-3 md:px-10 md:py-4 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 transform active:scale-95 shadow-2xl">
+                                      {{ banner.button_text|default:"Explore" }}
+                                    <span class="material-icons text-xs md:text-sm">north_east</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
-            
-            {% with first_banner=banners|first %}
-            <div class="min-w-full w-full h-full relative flex-shrink-0 overflow-hidden">
-                {% if first_banner.image_url %}
-                    <img src="{{ first_banner.image_url.url }}" class="absolute inset-0 w-full h-full object-cover object-center" alt="{{ first_banner.title }}">
-                {% endif %}
-                <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent"></div>
-            </div>
-            {% endwith %}
-
-      {% else %}
-            <div class="min-w-full w-full h-full relative flex-shrink-0 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="Minimal Space">
-                <div class="absolute inset-0 bg-black/60"></div>
-                <div class="container mx-auto px-6 h-full flex items-center relative z-10">
-                    <div class="max-w-3xl space-y-6">
-                        <span class="inline-block py-1.5 px-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.4em] rounded-full">New Season</span>
-                        <h1 class="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter">ESSENTIAL<br>COLLECTION</h1>
-                        <p class="text-gray-300 text-sm md:text-lg font-medium max-w-md opacity-80 leading-relaxed">Redefining modern aesthetics with functional design.</p>
-                        <div class="pt-4"><a href="#" class="inline-flex items-center gap-3 bg-white text-black px-10 py-4 rounded-full text-xs font-black uppercase tracking-widest shadow-2xl">Shop Now <span class="material-icons text-sm">north_east</span></a></div>
+                {% endfor %}
+            {% else %}
+                <div class="min-w-full w-full h-full relative flex-shrink-0 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="Minimal Space">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="container mx-auto px-6 h-full flex items-center relative z-10">
+                        <div class="max-w-3xl space-y-6">
+                            <span class="inline-block py-1.5 px-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.4em] rounded-full">New Season</span>
+                            <h1 class="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter">ESSENTIAL<br>COLLECTION</h1>
+                            <p class="text-gray-300 text-sm md:text-lg font-medium max-w-md opacity-80">Redefining modern aesthetics with functional design.</p>
+                            <div class="pt-4"><a href="#" class="inline-flex items-center gap-3 bg-white text-black px-8 py-3 md:px-10 md:py-4 rounded-full text-xs font-black uppercase tracking-widest shadow-2xl">Shop Now <span class="material-icons text-sm">north_east</span></a></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="min-w-full w-full h-full relative flex-shrink-0 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="Fashion Store">
-                <div class="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-black/80"></div>
-                <div class="container mx-auto px-6 h-full flex items-center relative z-10">
-                    <div class="max-w-3xl space-y-6">
-                        <span class="inline-block py-1.5 px-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.4em] rounded-full">Exclusives</span>
-                        <h1 class="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter">CURATED<br>QUALITY</h1>
-                        <p class="text-gray-300 text-sm md:text-lg font-medium max-w-md opacity-80 leading-relaxed">Discover hand-picked selections from global brands.</p>
-                        <div class="pt-4"><a href="#" class="inline-flex items-center gap-3 bg-white text-black px-10 py-4 rounded-full text-xs font-black uppercase tracking-widest shadow-2xl">Discover <span class="material-icons text-sm">north_east</span></a></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="min-w-full w-full h-full relative flex-shrink-0 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="Premium Tech">
-                <div class="absolute inset-0 bg-black/70"></div>
-                <div class="container mx-auto px-6 h-full flex items-center relative z-10">
-                    <div class="max-w-3xl space-y-6">
-                        <span class="inline-block py-1.5 px-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.4em] rounded-full">Premium</span>
-                        <h1 class="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter">TIMELESS<br>STYLE</h1>
-                        <p class="text-gray-300 text-sm md:text-lg font-medium max-w-md opacity-80 leading-relaxed">Luxury and elegance delivered to your doorstep.</p>
-                        <div class="pt-4"><a href="#" class="inline-flex items-center gap-3 bg-white text-black px-10 py-4 rounded-full text-xs font-black uppercase tracking-widest shadow-2xl">Explore <span class="material-icons text-sm">north_east</span></a></div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-
-    <button onclick="prevSlide()" class="absolute left-8 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-white/10 backdrop-blur-md text-white flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all duration-500 hover:bg-white hover:text-black z-30">
-        <span class="material-icons">west</span>
-    </button>
-    <button onclick="nextSlide()" class="absolute right-8 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-white/10 backdrop-blur-md text-white flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all duration-500 hover:bg-white hover:text-black z-30">
-        <span class="material-icons">east</span>
-    </button>
-
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-30">
-        {% if banners %}
-            {% for banner in banners %}
-            <button onclick="goToSlide({{ forloop.counter0 }})" class="banner-indicator w-12 h-[3px] bg-white/20 rounded-full overflow-hidden transition-all duration-500">
-                <div class="indicator-progress h-full bg-white w-0 transition-none"></div>
-            </button>
-            {% endfor %}
-        {% else %}
-            <button onclick="goToSlide(0)" class="banner-indicator w-12 h-[3px] bg-white/20 rounded-full overflow-hidden transition-all duration-500"><div class="indicator-progress h-full bg-white w-0 transition-none"></div></button>
-            <button onclick="goToSlide(1)" class="banner-indicator w-12 h-[3px] bg-white/20 rounded-full overflow-hidden transition-all duration-500"><div class="indicator-progress h-full bg-white w-0 transition-none"></div></button>
-            <button onclick="goToSlide(2)" class="banner-indicator w-12 h-[3px] bg-white/20 rounded-full overflow-hidden transition-all duration-500"><div class="indicator-progress h-full bg-white w-0 transition-none"></div></button>
-        {% endif %}
-    </div>
-</section>
-
-    <section class="container mx-auto px-6 py-8">
-        <div class="flex items-end justify-between mb-8">
-            <div class="space-y-1">
-                <h2 class="text-3xl font-black tracking-tighter text-gray-900">Trending Now</h2>
-                <p class="text-sm text-gray-400">The most sought-after pieces of the week</p>
-            </div>
-            <a href="{% url 'trending' %}" class="hidden md:block text-xs font-bold uppercase tracking-widest text-blue-600 border-b-2 border-blue-600 pb-1 hover:text-gray-900 hover:border-gray-900 transition-all">Explore Trends</a>
+            {% endif %}
         </div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-6">
+        <button onclick="prevSlide()" class="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-white/10 backdrop-blur-md text-white items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all duration-500 hover:bg-white hover:text-black z-30">
+            <span class="material-icons">west</span>
+        </button>
+        <button onclick="nextSlide()" class="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-white/10 backdrop-blur-md text-white items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all duration-500 hover:bg-white hover:text-black z-30">
+            <span class="material-icons">east</span>
+        </button>
+
+        <div class="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex gap-2 md:gap-3 z-30">
+            {% if banners %}
+                {% for banner in banners %}
+                <button onclick="goToSlide({{ forloop.counter0 }})" class="banner-indicator w-8 md:w-12 h-[3px] bg-white/20 rounded-full overflow-hidden transition-all duration-500">
+                    <div class="indicator-progress h-full bg-white w-0 transition-none"></div>
+                </button>
+                {% endfor %}
+            {% else %}
+                <button onclick="goToSlide(0)" class="banner-indicator w-8 md:w-12 h-[3px] bg-white/20 rounded-full overflow-hidden transition-all duration-500"><div class="indicator-progress h-full bg-white w-0 transition-none"></div></button>
+                <button onclick="goToSlide(1)" class="banner-indicator w-8 md:w-12 h-[3px] bg-white/20 rounded-full overflow-hidden transition-all duration-500"><div class="indicator-progress h-full bg-white w-0 transition-none"></div></button>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="container mx-auto px-4 md:px-6 py-8 md:py-12">
+          <div class="flex items-end justify-between mb-6 md:mb-8">
+            <div class="space-y-1">
+                <h2 class="text-2xl md:text-3xl font-black tracking-tighter text-gray-900">Trending Now</h2>
+                <p class="text-xs md:text-sm text-gray-400">The most sought-after pieces of the week</p>
+            </div>
+            <a href="{% url 'trending' %}" class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-blue-600 border-b-2 border-blue-600 pb-1">Explore Trends</a>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
             {% if trending_product %}
-            <div class="group bg-white rounded-3xl p-5 border border-gray-100 transition-all duration-500 hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-2 relative overflow-hidden">
+            <div class="group bg-white rounded-2xl md:rounded-3xl p-3 md:p-5 border border-gray-100 transition-all duration-500 hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-1 relative overflow-hidden">
                 <button onclick="toggleWishlistGrid(event, this)"
-                        class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center transition-all hover:bg-red-50 hover:text-red-500 {% if trending_product.is_in_wishlist %}text-red-500{% else %}text-gray-300{% endif %}"
+                        class="absolute top-2 right-2 md:top-4 md:right-4 z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-50 flex items-center justify-center transition-all hover:bg-red-50 hover:text-red-500 {% if trending_product.is_in_wishlist %}text-red-500{% else %}text-gray-300{% endif %}"
                         data-variant-id="{{ trending_product.variant_id }}">
-                    <span class="material-icons text-lg">{% if trending_product.is_in_wishlist %}favorite{% else %}favorite_border{% endif %}</span>
+                    <span class="material-icons text-base md:text-lg">{% if trending_product.is_in_wishlist %}favorite{% else %}favorite_border{% endif %}</span>
                 </button>
 
                 <a href="{% url 'product_details' trending_product.slug %}" class="block">
-                    <div class="aspect-square mb-6 bg-gray-50 rounded-2xl flex items-center justify-center p-6 overflow-hidden">
+                    <div class="aspect-square mb-4 md:mb-6 bg-gray-50 rounded-xl md:rounded-2xl flex items-center justify-center p-4 md:p-6 overflow-hidden">
                         {% if trending_product.primary_image %}
                         <img src="{{ trending_product.primary_image }}" class="max-w-full max-h-full object-contain mix-blend-multiply transform group-hover:scale-110 transition-transform duration-700" alt="{{ trending_product.name }}">
                         {% else %}
-                        <span class="material-icons text-gray-200 text-5xl">image</span>
+                        <span class="material-icons text-gray-200 text-4xl md:text-5xl">image</span>
                         {% endif %}
                     </div>
                     <div class="space-y-1">
-                        <p class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Featured</p>
-                        <h3 class="text-sm font-bold text-gray-900 line-clamp-1">{{ trending_product.name }}</h3>
-                        <p class="text-lg font-black text-gray-900">₹{{ trending_product.min_price|floatformat:0 }}</p>
+                        <p class="text-[8px] md:text-[10px] font-bold text-blue-600 uppercase tracking-widest">Featured</p>
+                        <h3 class="text-xs md:text-sm font-bold text-gray-900 line-clamp-1">{{ trending_product.name }}</h3>
+                        <p class="text-base md:text-lg font-black text-gray-900">₹{{ trending_product.min_price|floatformat:0 }}</p>
                     </div>
                 </a>
             </div>
@@ -191,47 +154,45 @@
         </div>
     </section>
 
-    <section class="container mx-auto px-6 py-12">
-        <div class="flex items-end justify-between mb-8">
+    <section class="container mx-auto px-4 md:px-6 py-8 md:py-12">
+        <div class="flex items-end justify-between mb-6 md:mb-8">
             <div class="space-y-1">
-                <h2 class="text-3xl font-black tracking-tighter text-gray-900">New Arrivals</h2>
-                <p class="text-sm text-gray-400">Freshly dropped in the store</p>
+                <h2 class="text-2xl md:text-3xl font-black tracking-tighter text-gray-900">New Arrivals</h2>
+                <p class="text-xs md:text-sm text-gray-400">Freshly dropped in the store</p>
             </div>
-            <a href="{% url 'new_arrivals' %}?sort=newest" class="hidden md:block text-xs font-bold uppercase tracking-widest text-blue-600 border-b-2 border-blue-600 pb-1 hover:text-gray-900 hover:border-gray-900 transition-all">
-            Explore More
-        </a>
+            <a href="{% url 'new_arrivals' %}?sort=newest" class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-blue-600 border-b-2 border-blue-600 pb-1">Explore More</a>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
             {% for product in newest_products %}
-            <div class="group bg-white rounded-3xl p-5 border border-gray-100 transition-all duration-500 hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-2 relative overflow-hidden">
-                <div class="absolute top-4 left-4 z-20">
-                    <span class="bg-blue-600 text-white text-[8px] font-black uppercase px-3 py-1 rounded-full shadow-lg shadow-blue-200">New</span>
+            <div class="group bg-white rounded-2xl md:rounded-3xl p-3 md:p-5 border border-gray-100 transition-all duration-500 hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-1 relative overflow-hidden">
+                <div class="absolute top-2 left-2 md:top-4 md:left-4 z-20">
+                    <span class="bg-blue-600 text-white text-[7px] md:text-[8px] font-black uppercase px-2 md:px-3 py-1 rounded-full shadow-lg shadow-blue-200">New</span>
                 </div>
 
                 <button onclick="toggleWishlistGrid(event, this)"
-                        class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center transition-all hover:bg-red-50 hover:text-red-500 {% if product.is_in_wishlist %}text-red-500{% else %}text-gray-300{% endif %}"
+                        class="absolute top-2 right-2 md:top-4 md:right-4 z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-50 flex items-center justify-center transition-all hover:bg-red-50 hover:text-red-500 {% if product.is_in_wishlist %}text-red-500{% else %}text-gray-300{% endif %}"
                         data-variant-id="{{ product.variant_id }}">
-                    <span class="material-icons text-lg">{% if product.is_in_wishlist %}favorite{% else %}favorite_border{% endif %}</span>
+                    <span class="material-icons text-base md:text-lg">{% if product.is_in_wishlist %}favorite{% else %}favorite_border{% endif %}</span>
                 </button>
 
                 <a href="{% url 'product_details' product.slug %}" class="block">
-                    <div class="aspect-square mb-6 bg-gray-50 rounded-2xl flex items-center justify-center p-8 overflow-hidden relative">
+                    <div class="aspect-square mb-4 md:mb-6 bg-gray-50 rounded-xl md:rounded-2xl flex items-center justify-center p-6 md:p-8 overflow-hidden relative">
                         {% if product.primary_image %}
                         <img src="{{ product.primary_image }}" class="max-w-full max-h-full object-contain mix-blend-multiply transform group-hover:scale-110 transition-transform duration-700" alt="{{ product.name }}">
                         {% endif %}
                     </div>
                     <div class="space-y-1">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ product.category_name|default:"General" }}</p>
-                        <h3 class="text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">{{ product.name }}</h3>
-                        <p class="text-lg font-black text-gray-900">₹{{ product.min_price|floatformat:0 }}</p>
+                        <p class="text-[8px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ product.category_name|default:"General" }}</p>
+                        <h3 class="text-xs md:text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">{{ product.name }}</h3>
+                        <p class="text-base md:text-lg font-black text-gray-900">₹{{ product.min_price|floatformat:0 }}</p>
                     </div>
                 </a>
             </div>
             {% empty %}
-            <div class="col-span-full py-20 text-center bg-white rounded-3xl border-2 border-dashed border-gray-100">
-                <span class="material-icons text-5xl text-gray-100 mb-4">inventory_2</span>
-                <p class="text-gray-400 font-bold">New arrivals are landing soon.</p>
+            <div class="col-span-full py-12 md:py-20 text-center bg-white rounded-3xl border-2 border-dashed border-gray-100">
+                <span class="material-icons text-4xl md:text-5xl text-gray-100 mb-4">inventory_2</span>
+                <p class="text-xs md:text-gray-400 font-bold">New arrivals are landing soon.</p>
             </div>
             {% endfor %}
         </div>
@@ -242,7 +203,10 @@
 
 <style>
     .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-    .banner-indicator.active { width: 64px; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .banner-indicator.active { width: 40px; }
+    @media (min-width: 768px) { .banner-indicator.active { width: 64px; } }
     .banner-indicator.active .indicator-progress {
         width: 100%;
         transition: width 3000ms linear;
@@ -257,6 +221,10 @@
     const slideInterval = 3000; 
     let autoPlayTimer;
     let isTransitioning = false;
+
+    // Added touch support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
 
     function updateIndicators(activeIndex) {
         indicators.forEach((bar, i) => {
@@ -276,13 +244,7 @@
 
     function showSlide(instant = false) {
         if (!slidesContainer) return;
-        
-        if (instant) {
-            slidesContainer.style.transition = "none";
-        } else {
-            slidesContainer.style.transition = "transform 1000ms cubic-bezier(0.65, 0, 0.35, 1)";
-        }
-        
+        slidesContainer.style.transition = instant ? "none" : "transform 1000ms cubic-bezier(0.65, 0, 0.35, 1)";
         slidesContainer.style.transform = `translateX(-${index * 100}%)`;
         updateIndicators(index);
     }
@@ -335,6 +297,14 @@
         autoPlayTimer = setInterval(nextSlide, slideInterval);
     }
 
+    // Touch events for mobile swiping
+    slidesContainer.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
+    slidesContainer.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) nextSlide();
+        if (touchEndX - touchStartX > 50) prevSlide();
+    });
+
     if (slidesContainer && totalOriginalSlides > 0) {
         showSlide();
         resetAutoPlay();
@@ -343,65 +313,59 @@
         carouselArea.addEventListener('mouseleave', resetAutoPlay);
     }
 
- function toggleWishlistGrid(event, button) {
-    event.preventDefault();
-    event.stopPropagation();
+    // Toggle Wishlist Logic
+    function toggleWishlistGrid(event, button) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (button.disabled) return;
+        button.disabled = true;
 
-    if (button.disabled) return;
-    button.disabled = true;
+        const variantId = button.dataset.variantId;
+        const csrfToken = document.querySelector('#global-csrf [name=csrfmiddlewaretoken]').value;
+        const icon = button.querySelector('span');
 
-    const variantId = button.dataset.variantId;
-    const csrfToken = document.querySelector('#global-csrf [name=csrfmiddlewaretoken]').value;
-    const icon = button.querySelector('span');
-
-    fetch(`/wishlist/add/${variantId}/`, {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": csrfToken,
-            "X-Requested-With": "XMLHttpRequest"
-        }
-    })
-    .then(response => {
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            window.location.href = "/login/";
-            return;
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (!data) return;
-        if (data.status === "login_required") {
-            window.location.href = data.redirect_url || "/login/";
-            return;
-        }
-        if (data.status === "added") {
-            icon.textContent = "favorite";
-            button.classList.add("text-red-500");
-            button.classList.remove("text-gray-300");
-            showToast("Added to Wishlist ❤️");
-        }
-        else {
-            icon.textContent = "favorite_border";
-            button.classList.add("text-gray-300");
-            button.classList.remove("text-red-500");
-            showToast("Removed from Wishlist");
-        }
-    })
-    .catch(() => {
-        showToast("Something went wrong");
-    })
-    .finally(() => {
-        button.disabled = false;
-    });
-}
+        fetch(`/wishlist/add/${variantId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(response => {
+            if (!response.headers.get("content-type")?.includes("application/json")) {
+                window.location.href = "/login/";
+                return;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+               if (data.status === "login_required") {
+        window.location.href = data.redirect_url;
+        return;
+    }
+            if (data.status === "added") {
+                icon.textContent = "favorite";
+                button.classList.add("text-red-500");
+                button.classList.remove("text-gray-300");
+                showToast("Added to Wishlist ❤️");
+            } else {
+                icon.textContent = "favorite_border";
+                button.classList.add("text-gray-300");
+                button.classList.remove("text-red-500");
+                showToast("Removed from Wishlist");
+            }
+        })
+        .catch(() => showToast("Something went wrong"))
+        .finally(() => button.disabled = false);
+    }
 
     function showToast(message) {
         let toast = document.getElementById("wishlist-toast");
         if (!toast) {
             toast = document.createElement("div");
             toast.id = "wishlist-toast";
-            toast.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-8 py-4 rounded-full shadow-2xl z-50 text-xs font-bold uppercase tracking-widest transition-opacity duration-300 opacity-0 pointer-events-none";
+            toast.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-8 py-4 rounded-full shadow-2xl z-50 text-[10px] font-bold uppercase tracking-widest transition-opacity duration-300 opacity-0 pointer-events-none";
             document.body.appendChild(toast);
         }
         toast.textContent = message;
