@@ -149,7 +149,10 @@ Detailed breakdown by product and customer
 
 {% if review.is_verified_purchase %}
 <span class="flex items-center gap-1 text-[9px] font-black text-emerald-500 uppercase tracking-tighter">
-<span class="material-icons text-[12px]">verified</span> Verified
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3">
+<path d="M12 2 9.8 4.2l-3.1-.2-.8 3-2.8 1.4 1.4 2.8-1.4 2.8 2.8 1.4.8 3 3.1-.2L12 22l2.2-2.2 3.1.2.8-3 2.8-1.4-1.4-2.8 1.4-2.8-2.8-1.4-.8-3-3.1.2L12 2Zm-1 14-4-4 1.4-1.4 2.6 2.6 4.6-4.6L17 10l-6 6Z"></path>
+</svg>
+Verified
 </span>
 {% endif %}
 
@@ -197,68 +200,12 @@ Detailed breakdown by product and customer
 
 
 <td class="px-8 py-6 text-center">
-
-{% if review.seller_reply_obj %}
-
-   
-    <div class="flex flex-col items-center gap-2">
-
-        <p class="text-xs text-slate-700 bg-slate-100 p-2 rounded-lg w-40">
-            {{ review.seller_reply_obj.reply }}
-        </p>
-
-        <!-- EDIT FORM -->
-        <form method="POST" action="{% url 'reply_review' review.id %}">
-            {% csrf_token %}
-            <textarea
-                name="reply"
-                class="border border-slate-200 rounded-lg p-2 text-xs w-32 h-16 resize-none"
-            >{{ review.seller_reply_obj.reply }}</textarea>
-
-            <button
-                type="submit"
-                class="bg-blue-500 text-white text-xs px-3 py-1 rounded-md mt-1">
-                Edit
-            </button>
-        </form>
-
-        <!-- DELETE BUTTON -->
-        <form method="POST" action="{% url 'delete_reply' review.id %}">
-            {% csrf_token %}
-            <button
-                type="submit"
-                class="bg-red-500 text-white text-xs px-3 py-1 rounded-md">
-                Delete
-            </button>
-        </form>
-
-    </div>
-
-{% else %}
-
-    <form method="POST" action="{% url 'reply_review' review.id %}">
-        {% csrf_token %}
-
-        <div class="flex flex-col items-center gap-2">
-
-            <textarea
-                name="reply"
-                class="border border-slate-200 rounded-lg p-2 text-xs w-32 h-16 resize-none"
-                placeholder="Reply to customer..."
-                required>
-            </textarea>
-
-            <button
-                type="submit"
-                class="bg-blue-500 text-white text-xs px-3 py-1 rounded-md">
-                Reply
-            </button>
-
-        </div>
-
-    </form>
-
-{% endif %}
+<button
+    type="button"
+    onclick="openReplyModal('{% url 'reply_review' review.id %}', '{{ review.user.username|escapejs }}', '{{ review.seller_reply_obj.reply|default_if_none:''|escapejs }}')"
+    class="bg-brand-orange text-white text-xs px-5 py-2 rounded-xl font-bold shadow-lg shadow-orange-100 hover:bg-orange-600 transition-all">
+    Reply
+</button>
 
 </td>
 </tr>
@@ -273,6 +220,55 @@ Detailed breakdown by product and customer
 
 </div>
 
+<div id="replyModal" class="fixed inset-0 z-[90] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeReplyModal()"></div>
+    <div class="relative w-full max-w-xl bg-white rounded-[2rem] shadow-[0_24px_60px_rgba(15,23,42,0.25)] border border-slate-100 overflow-hidden">
+        <div class="bg-gradient-to-r from-brand-blue to-blue-600 px-6 py-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-black text-white/80 uppercase tracking-widest mb-1">Customer Review Reply</p>
+                    <h3 class="text-xl font-black text-white">Write A Professional Response</h3>
+                </div>
+                <button type="button" onclick="closeReplyModal()" class="w-9 h-9 rounded-full bg-white/15 text-white hover:bg-white/25 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" class="w-4 h-4 mx-auto">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <form id="replyForm" method="POST" action="" class="p-6 md:p-7">
+            {% csrf_token %}
+            <div class="space-y-5">
+                <div>
+                    <label for="replyRecipient" class="block text-[11px] font-black text-slate-500 uppercase tracking-wider mb-2">Recipient</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                                <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3.314 0-6 2.239-6 5v1h12v-1c0-2.761-2.686-5-6-5Z"></path>
+                            </svg>
+                        </span>
+                        <input id="replyRecipient" type="text" readonly class="w-full border border-slate-200 rounded-xl pl-10 pr-3 py-3 text-sm bg-slate-50 text-slate-700 font-semibold">
+                    </div>
+                </div>
+                <div>
+                    <label for="replyMessage" class="block text-[11px] font-black text-slate-500 uppercase tracking-wider mb-2">Message</label>
+                    <textarea id="replyMessage" name="reply" required rows="6" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm resize-none leading-relaxed focus:outline-none focus:ring-4 focus:ring-orange-100 focus:border-brand-orange" placeholder="Write your reply here..."></textarea>
+                </div>
+            </div>
+
+            <div class="mt-7 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                <button type="button" onclick="closeReplyModal()" class="px-5 py-2.5 text-sm font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                    Cancel
+                </button>
+                <button type="submit" class="px-5 py-2.5 text-sm font-bold rounded-xl bg-brand-orange text-white shadow-lg shadow-orange-100 hover:bg-orange-600 transition-all">
+                    Send Reply
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <style>
 .line-clamp-2{
@@ -283,5 +279,28 @@ overflow:hidden;
 }
 </style>
 
-{% endblock %}
+<script>
+function openReplyModal(actionUrl, recipientName, existingReply) {
+    const modal = document.getElementById("replyModal");
+    const form = document.getElementById("replyForm");
+    const recipient = document.getElementById("replyRecipient");
+    const message = document.getElementById("replyMessage");
 
+    form.action = actionUrl;
+    recipient.value = recipientName;
+    message.value = existingReply || "";
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.style.overflow = "hidden";
+}
+
+function closeReplyModal() {
+    const modal = document.getElementById("replyModal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.style.overflow = "auto";
+}
+</script>
+
+{% endblock %}
