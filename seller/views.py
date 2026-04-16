@@ -949,25 +949,15 @@ def seller_order_detail(request, order_id):
         "items": items
     })
 
-@verified_seller_required
-def delete_reply(request, review_id):
-
-    review = get_object_or_404(Review, id=review_id)
-
-    reply = ReviewReply.objects.filter(
-        review=review,
-        seller=request.user.seller_profile
-    ).first()
-
-    if request.method == "POST" and reply:
-        reply.delete()
-
-    return redirect("seller_reviews")
 
 @verified_seller_required
 def reply_review(request, review_id):
 
-    review = get_object_or_404(Review, id=review_id)
+    review = get_object_or_404(
+        Review,
+        id=review_id,
+        product__seller=request.user.seller_profile
+    )
 
     if request.method == "POST":
         reply_text = request.POST.get("reply")

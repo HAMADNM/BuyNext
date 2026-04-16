@@ -399,7 +399,7 @@ def home_view(request):
     ).order_by('display_order', 'name')
 
     if not show_all:
-        categories = categories[:10]
+        categories = categories[:9]
 
     from django.utils import timezone
     now = timezone.now()
