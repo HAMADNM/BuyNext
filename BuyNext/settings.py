@@ -112,8 +112,7 @@ TEMPLATES = [
 
 load_dotenv(dotenv_path=BASE_DIR / ".env", override=True)
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1")
-
-
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 SECRET_KEY = os.getenv("SECRET_KEY", "insecure-dev-key")
 SITE_ID = int(os.getenv("SITE_ID", 1))
 
